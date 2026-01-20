@@ -29,7 +29,7 @@ st.set_page_config(
 # 🔑 2. API SETUP
 # ==========================================
 # 👇 YOUR API KEY IS INTEGRATED HERE
-GOOGLE_API_KEY = "AIzaSyBKF8fWsfq07ugSxavdLL8PztLqFSCdKG0" 
+GOOGLE_API_KEY = "abcd" 
 
 gemini_active = False
 try:
