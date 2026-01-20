@@ -1,0 +1,54 @@
+# ========================
+# 1. Python Internals (Junk)
+# ========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ========================
+# 2. Virtual Environments
+# ========================
+venv/
+env/
+.venv/
+
+# ========================
+# 3. Security (CRITICAL)
+# ========================
+# Never upload API keys or secrets to GitHub
+.env
+.streamlit/secrets.toml
+
+# ========================
+# 4. Large Model Files (>100MB)
+# ========================
+# GitHub blocks files larger than 100MB. 
+# We ignore them here and you can provide a download link in README instead.
+*.pth
+*.pt
+*.h5
+*.onnx
+*.pkl
+
+# Specific folder for weights if you have one
+model_weights/
+
+# ========================
+# 5. IDE Settings (VS Code)
+# ========================
+.vscode/
+.idea/
+
+# ========================
+# 6. Large Media Files
+# ========================
+# Avoid uploading testing videos that bloat the repo
+*.mp4
+*.avi
+*.mov
+
+# ========================
+# 7. System Files
+# ========================
+.DS_Store
+Thumbs.db
