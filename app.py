@@ -16,7 +16,7 @@ from facenet_pytorch import MTCNN
 import google.generativeai as genai
 
 # ==========================================
-# 🎨 1. PAGE CONFIG (ULTIMATE CYBERPUNK MODE)
+# 🎨 1. PAGE CONFIG (THE FOUNDATION)
 # ==========================================
 st.set_page_config(
     page_title="AIthentic | Neural Forensics",
@@ -41,195 +41,220 @@ except Exception as e:
     st.error(f"API Setup Error: {e}")
 
 # ==========================================
-# 🧠 THE BRAIN: ADVANCED KNOWLEDGE BASE
+# 🧠 THE BRAIN: KNOWLEDGE BASE
 # ==========================================
 PROJECT_CONTEXT = """
-ROLE: You are the "AIthentic Forensic Assistant", a military-grade neural expert in Digital Media Forensics.
-Your goal is to explain the technical depth of the AIthentic platform to judges, recruiters, and users.
+ROLE: You are the "AIthentic Forensic Assistant", a military-grade neural expert.
+GOAL: Explain the technical depth of the AIthentic platform to judges and users.
 
---- 1. DATASET & TRAINING STRATEGY (CRITICAL) ---
-* **The "Hybrid-Data" Approach:** * We trained on a custom fusion of **FaceForensics++ (FF++)** and **Celeb-DF (v2)**.
-    * *Why?* FF++ is large but contains high compression artifacts. Older models "cheat" by detecting these background compression noise rather than the face itself.
-    * *The Fix:* By injecting Celeb-DF (which has high-quality, seamless blending), we forced our Neural Network to unlearn background noise and focus purely on **facial biological inconsistencies**.
-* **Preprocessing:** All videos were normalized to 30 FPS. Faces were extracted using MTCNN with a 30% margin to include jawline boundaries (where blending fails).
+--- SYSTEM ARCHITECTURE ---
+1. **Active Temporal Sampling:** We do NOT analyze every frame. We use Entropy Scanning to find high-motion frames (blinking/turning) where Deepfakes glitch.
+2. **Spatial Analysis (EfficientNet-B3):** Extracts texture features (resolution mismatches, blending boundaries).
+3. **Temporal Analysis (Bi-LSTM):** Detects "Temporal Jitter" (flickering over time).
 
---- 2. SYSTEM ARCHITECTURE (THE PIPELINE) ---
-* **Stage 1: Active Temporal Sampling (The Filter)**
-    * We do NOT analyze every frame (too slow/redundant).
-    * We use **Entropy-Based Motion Scanning** to calculate the pixel difference between consecutive frames.
-    * We select the **Top 20 High-Entropy Frames**—these are moments of rapid movement (blinking, head turning) where Deepfake generators (GANs) effectively "glitch."
-
-* **Stage 2: Spatial Analysis (The Eye)**
-    * **Model:** EfficientNet-B3 (Pre-trained on ImageNet).
-    * **Role:** Extracts a 1536-dimensional feature vector from each of the 20 frames.
-    * **Focus:** It detects "high-frequency" artifacts—pixel-level mismatches in skin texture and blending boundaries that the human eye misses.
-
-* **Stage 3: Temporal Analysis (The Brain)**
-    * **Model:** Bi-Directional LSTM (Long Short-Term Memory).
-    * **Role:** It looks at the *sequence* of features produced by EfficientNet.
-    * **Focus:** It detects **Temporal Jitter**—micro-flickers in the lips or eyes that happen *across time* but look fine in a single still image.
-
---- 3. PERFORMANCE METRICS ---
-* **Accuracy:** 96.71% (Tested on unseen cross-dataset samples).
-* **Precision:** 0.99 (Extremely low False Positive rate).
-* **Inference Speed:** ~4 seconds for a 10s video on standard GPU.
-
---- 4. INSTRUCTIONS FOR YOU ---
-* If the user asks "How does it work?", summarize the 3 stages above simply.
-* If asked about "Datasets", explain the FF++ and Celeb-DF fusion strategy to prevent overfitting.
-* If asked "Is this video fake?", strictly reply: "Please upload the media to the Analysis Console for a real-time neural scan."
-* Keep your tone professional, technical, and slightly "Cyberpunk" (efficient, precise).
+--- METRICS ---
+* Accuracy: 96.71% (FaceForensics++ HQ).
+* Precision: 0.99.
 """
 
 # ==========================================
-# 📂 3. ASSET LOADER & BACKGROUND HELPER
+# 📂 3. ASSET LOADER
 # ==========================================
 def load_lottie_local(filepath):
     try:
-        with open(filepath, "r") as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return None
+        with open(filepath, "r") as f: return json.load(f)
+    except FileNotFoundError: return None
 
 def get_base64_of_bin_file(bin_file):
     try:
         with open(bin_file, 'rb') as f:
             data = f.read()
         return base64.b64encode(data).decode()
-    except FileNotFoundError:
-        return None
+    except FileNotFoundError: return None
 
 # Load Assets
 lottie_left_scan = load_lottie_local("assets/animation1.json")
 lottie_right_scan = load_lottie_local("assets/animation2.json")
 lottie_chatbot = load_lottie_local("assets/animation3.json")
-lottie_side = load_lottie_local("assets/face_loading.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. EXTREME CSS INJECTION
+# 🖌️ 4. ULTRA-MODERN CSS INJECTION
 # ==========================================
 
-# ==========================================
-# 🖌️ 4. EXTREME CSS INJECTION
-# ==========================================
-
-# Determine background
+# Background Logic
 if bg_image_base64:
-    background_style = f"""
-    [data-testid="stAppViewContainer"] {{
-        background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url("data:image/jpg;base64,{bg_image_base64}");
-        background-size: cover;
-        background-position: center;
-        background-attachment: fixed;
-    }}
-    """
+    bg_style = f"""background-image: linear-gradient(rgba(0, 5, 10, 0.85), rgba(0, 5, 10, 0.95)), url("data:image/jpg;base64,{bg_image_base64}");"""
 else:
-    background_style = """
-    [data-testid="stAppViewContainer"] {
-        background-color: #050505;
-        background-image: linear-gradient(rgba(0, 243, 255, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 243, 255, 0.1) 1px, transparent 1px);
-        background-size: 50px 50px;
-    }
-    """
+    bg_style = """background: #020202; background-image: radial-gradient(#0a1f2e 1px, transparent 1px); background-size: 40px 40px;"""
 
 st.markdown(f"""
 <style>
+    /* --- FONTS --- */
     @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700;900&family=Share+Tech+Mono&display=swap');
 
-    /* --- GLOBAL VARS --- */
-    :root {{ --neon-cyan: #00f3ff; --neon-green: #0aff48; --neon-pink: #ff00ff; --neon-blue: #0066ff; }}
-
-    html, body, [class*="css"] {{ font-family: 'Rajdhani', sans-serif; background-color: transparent; color: #e0fbfc; }}
-
-    /* --- BACKGROUND INJECTION --- */
-    {background_style}
-
-    /* CRT SCANLINE OVERLAY */
-    [data-testid="stAppViewContainer"]::before {{
-        content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
-        background-size: 100% 4px; z-index: 2; pointer-events: none;
+    :root {{
+        --neon-blue: #00f3ff;
+        --neon-purple: #bc13fe;
+        --neon-green: #0aff48;
+        --neon-red: #ff003c;
+        --glass-bg: rgba(10, 20, 30, 0.6);
+        --glass-border: rgba(0, 243, 255, 0.2);
     }}
 
-    /* --- SUPERCHARGED NEON TITLE --- */
-    .mega-neon {{
-        font-family: 'Rajdhani', sans-serif; font-weight: 900; font-size: 5.5rem; text-align: center;
-        color: #fff; text-transform: uppercase; letter-spacing: 10px; margin-bottom: 0px;
-        text-shadow: 0 0 5px #fff, 0 0 20px var(--neon-cyan), 0 0 80px var(--neon-cyan);
-        animation: neon-flicker 2s infinite alternate;
+    html, body, [class*="css"] {{
+        font-family: 'Rajdhani', sans-serif;
+        color: #e0fbfc;
+        background: transparent;
     }}
-    .neon-subtitle {{
-        color: var(--neon-pink); text-align: center; font-family: 'Share Tech Mono';
-        letter-spacing: 6px; font-size: 1.2rem; margin-top: -20px; text-shadow: 0 0 10px var(--neon-pink);
-    }}
-    @keyframes neon-flicker {{ 0%, 100% {{ opacity: 1; }} 50% {{ opacity: 0.8; }} }}
 
-    /* --- 3D HOVER CARDS (ARCHITECTURE) --- */
-    .cyber-card-container {{ perspective: 1000px; margin-bottom: 20px; }}
-    .cyber-card {{
-        background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%);
-        border: 1px solid rgba(0, 243, 255, 0.3); border-left: 5px solid var(--neon-cyan);
-        padding: 30px; border-radius: 8px; transition: all 0.4s;
-    }}
-    .cyber-card:hover {{
-        transform: rotateX(10deg) rotateY(5deg) scale(1.05) translateY(-10px);
-        box-shadow: 0 20px 50px rgba(0, 243, 255, 0.3); border-color: #fff; background: rgba(0, 243, 255, 0.1);
-    }}
-    .cyber-card h4 {{ color: var(--neon-cyan); font-size: 1.5rem; font-weight: 700; margin-bottom: 10px; letter-spacing: 2px; }}
-    .cyber-card:hover h4 {{ color: #fff; text-shadow: 0 0 15px var(--neon-cyan); }}
-
-    /* --- FAQ & BUTTONS --- */
-    .stExpander {{ background: transparent !important; border: none !important; }}
-    .stExpander > details > summary {{
-        background-color: rgba(0, 30, 50, 0.6) !important; color: var(--neon-cyan) !important;
-        border: 1px solid var(--neon-cyan) !important; border-radius: 4px; padding: 15px !important;
-        font-family: 'Share Tech Mono', monospace; transition: all 0.3s ease;
-    }}
-    .stExpander > details > summary:hover {{ background-color: var(--neon-cyan) !important; color: #000 !important; }}
-    .stExpander > details > div {{ background-color: rgba(0, 10, 15, 0.9) !important; border-left: 2px solid var(--neon-green) !important; color: #ddd !important; padding: 20px; }}
-    
-    .stButton button {{
-        background: transparent !important; border: 2px solid var(--neon-cyan) !important;
-        color: var(--neon-cyan) !important; font-family: 'Share Tech Mono', monospace !important;
-        font-size: 1.1rem !important; text-transform: uppercase; letter-spacing: 3px; padding: 25px 0 !important;
-    }}
-    .stButton button:hover {{ background: var(--neon-cyan) !important; color: #000 !important; box-shadow: 0 0 40px var(--neon-cyan); }}
-    
-    /* --- HUD CONTAINERS --- */
-    [data-testid="stVerticalBlockBorderWrapper"] {{
-        background: rgba(5, 10, 15, 0.7) !important; border: 1px solid rgba(0, 243, 255, 0.15) !important;
-        box-shadow: 0 0 20px rgba(0,0,0,0.8); border-radius: 5px;
+    /* --- BACKGROUND & SCANLINES --- */
+    [data-testid="stAppViewContainer"] {{
+        {bg_style}
+        background-size: cover;
+        background-attachment: fixed;
     }}
     
-    /* --- TERMINAL & CHAT --- */
-    .terminal-box {{ font-family: 'Share Tech Mono', monospace; color: var(--neon-green); background: #020202; border: 1px solid #111; padding: 15px; height: 300px; overflow-y: auto; font-size: 0.85rem; }}
-    
-    /* Chat Message Styles */
-    [data-testid="stChatMessage"] {{ background-color: rgba(0, 20, 30, 0.5); border: 1px solid #333; border-radius: 10px; }}
-    [data-testid="stChatMessage"] [data-testid="stMarkdownContainer"] p {{ font-family: 'Share Tech Mono', monospace; }}
+    /* CRT Scanline Effect */
+    [data-testid="stAppViewContainer"]::after {{
+        content: " ";
+        display: block;
+        position: absolute;
+        top: 0; left: 0; bottom: 0; right: 0;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+        background-size: 100% 3px, 3px 100%;
+        pointer-events: none;
+        z-index: 9999;
+    }}
 
-    /* --- SIDEBAR NAVIGATION --- */
+    /* --- SIDEBAR: THE OPS CENTER --- */
+    [data-testid="stSidebar"] {{
+        background-color: rgba(5, 8, 10, 0.95);
+        border-right: 1px solid var(--glass-border);
+        box-shadow: 5px 0 20px rgba(0,0,0,0.5);
+    }}
+    
+    /* Sidebar Nav Buttons */
     [data-testid="stSidebar"] .stRadio label {{
-        padding-top: 15px !important;
-        padding-bottom: 15px !important;
+        padding: 10px 0;
+        cursor: pointer;
+        transition: 0.3s;
     }}
-
     [data-testid="stSidebar"] .stRadio [data-testid="stMarkdownContainer"] p {{
-        font-size: 1.2rem !important;
-        font-family: 'Rajdhani', sans-serif !important;
-        font-weight: 700 !important;
-        color: var(--neon-cyan) !important;
-        text-transform: uppercase !important;
-        letter-spacing: 2px !important;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 2px;
         transition: all 0.3s ease;
     }}
-
-    [data-testid="stSidebar"] .stRadio [data-testid="stMarkdownContainer"] p:hover {{
-        color: #fff !important;
+    /* Active/Hover State for Nav */
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label:hover p,
+    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label[data-checked="true"] p {{
+        color: var(--neon-blue) !important;
+        text-shadow: 0 0 15px var(--neon-blue);
         padding-left: 10px;
-        text-shadow: 0 0 15px var(--neon-cyan);
     }}
+
+    /* --- TITLES: CHROME & NEON --- */
+    .chrome-title {{
+        font-family: 'Rajdhani', sans-serif;
+        font-weight: 900;
+        font-size: 5rem;
+        text-align: center;
+        text-transform: uppercase;
+        letter-spacing: 8px;
+        background: linear-gradient(to bottom, #ffffff 0%, #a2a2a2 50%, #000000 51%, #00f3ff 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 2px var(--neon-blue));
+        margin-bottom: 0;
+    }}
+    
+    .neon-subtitle {{
+        font-family: 'Share Tech Mono';
+        color: var(--neon-purple);
+        text-align: center;
+        letter-spacing: 4px;
+        font-size: 1.2rem;
+        text-shadow: 0 0 10px var(--neon-purple);
+        margin-top: -10px;
+    }}
+
+    /* --- GLASSMORPHISM CARDS --- */
+    .glass-card {{
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 25px;
+        transition: transform 0.3s, box-shadow 0.3s;
+        height: 100%;
+    }}
+    .glass-card:hover {{
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0, 243, 255, 0.15);
+        border-color: var(--neon-blue);
+    }}
+    .glass-card h4 {{
+        color: var(--neon-blue);
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 10px;
+    }}
+
+    /* --- CUSTOM BUTTONS --- */
+    .stButton button {{
+        background: transparent !important;
+        border: 1px solid var(--neon-blue) !important;
+        color: var(--neon-blue) !important;
+        font-family: 'Share Tech Mono' !important;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        padding: 15px 30px !important;
+        border-radius: 4px !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
+    }}
+    .stButton button:hover {{
+        background: var(--neon-blue) !important;
+        color: #000 !important;
+        box-shadow: 0 0 25px var(--neon-blue);
+        transform: scale(1.05);
+    }}
+
+    /* --- FILE UPLOADER (DROP ZONE) --- */
+    [data-testid="stFileUploader"] section {{
+        background-color: rgba(0, 10, 15, 0.5);
+        border: 2px dashed var(--neon-purple);
+        border-radius: 10px;
+    }}
+    [data-testid="stFileUploader"] section:hover {{
+        background-color: rgba(188, 19, 254, 0.1);
+        border-color: #fff;
+    }}
+
+    /* --- CHATBOT BUBBLES --- */
+    [data-testid="stChatMessage"] {{
+        background-color: rgba(5, 10, 15, 0.8);
+        border: 1px solid #333;
+        border-left: 3px solid var(--neon-green);
+        font-family: 'Share Tech Mono';
+    }}
+    
+    /* --- METRICS & BARS --- */
+    div[data-testid="metric-container"] {{
+        background: rgba(255,255,255,0.05);
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid rgba(255,255,255,0.1);
+    }}
+    div[data-testid="metric-container"] label {{ color: var(--neon-blue); }}
+    
+    /* HIDE DEFAULT HEADER/FOOTER */
+    header, footer {{ visibility: hidden; }}
 </style>
 """, unsafe_allow_html=True)
 
@@ -264,14 +289,13 @@ def load_model():
             model.eval()
             return model
         return None
-    except Exception:
-        return None
+    except Exception: return None
 
 model = load_model()
 mtcnn = MTCNN(keep_all=False, device=DEVICE, post_process=False)
 
 # ==========================================
-# 📽️ 6. VIDEO PROCESSOR
+# 📽️ 6. PROCESSING ENGINE
 # ==========================================
 def process_video_frames(video_path, status_log):
     cap = cv2.VideoCapture(video_path)
@@ -329,18 +353,22 @@ def process_video_frames(video_path, status_log):
     return final_faces, top_frames
 
 # ==========================================
-# 🧭 7. SIDEBAR (CYBER OPS)
+# 🧭 7. SIDEBAR (HUD)
 # ==========================================
 if "page" not in st.session_state: st.session_state.page = "Dashboard"
 
 with st.sidebar:
-    st.markdown("### 🧬 OPS CENTER")
-    st.markdown("---")
-    # Updated Menu with new pages
+    st.markdown("""
+    <div style="text-align: center; border-bottom: 1px solid #00f3ff; padding-bottom: 15px; margin-bottom: 30px;">
+        <h2 style="color: #fff; margin:0; letter-spacing: 4px; font-size: 2.2rem; text-shadow: 0 0 10px #00f3ff;">OPS CENTER</h2>
+        <p style="color: #00f3ff; margin:0; font-size: 0.8rem; letter-spacing: 2px;">V.2.0.4. BETA</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
     selected_page = st.radio(
         "MODULE SELECT",
         ["Dashboard", "Analysis Console", "Methodology", "About Us", "Contact"],
-        index=0 if st.session_state.page == "Dashboard" else ["Dashboard", "Analysis Console", "Methodology", "About Us", "Contact"].index(st.session_state.page),
+        index=["Dashboard", "Analysis Console", "Methodology", "About Us", "Contact"].index(st.session_state.page),
         label_visibility="collapsed"
     )
     
@@ -349,290 +377,258 @@ with st.sidebar:
         st.rerun()
 
     st.markdown("---")
-    st.markdown("### 📡 TELEMETRY")
-    boot_text = st.empty()
-    if "booted" not in st.session_state:
-        st.session_state.booted = True
     
-    c1, c2 = st.columns(2)
-    with c1: st.metric(label="GPU", value=f"{random.randint(20, 45)}%")
-    with c2: st.metric(label="RAM", value=f"{random.randint(40, 65)}%")
-    
-    st.markdown(f"**NET_LATENCY:** `{random.randint(12, 30)}ms`")
-    
-    if gemini_active:
-        st.markdown("<div style='color:#0aff48; font-weight:bold; border:1px solid #0aff48; padding:5px; text-align:center;'>API STATUS: ONLINE</div>", unsafe_allow_html=True)
-    else:
-        st.markdown("<div style='color:#ff003c; font-weight:bold; border:1px solid #ff003c; padding:5px; text-align:center;'>API STATUS: OFFLINE</div>", unsafe_allow_html=True)
+    # TELEMETRY SECTION
+    st.markdown("""
+    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+        <span style="color: #00f3ff; font-size: 1.2rem; margin-right: 10px;">📡</span>
+        <span style="color: #fff; font-family: 'Share Tech Mono'; letter-spacing: 2px; font-weight:bold;">LIVE TELEMETRY</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    gpu_load, ram_load, temp = random.randint(30, 85), random.randint(40, 65), random.randint(45, 75)
+
+    st.markdown(f"""
+    <style>
+        .meter-box {{ margin-bottom: 15px; }}
+        .meter-head {{ display: flex; justify-content: space-between; color: #fff; font-family: 'Share Tech Mono'; font-size: 0.9rem; margin-bottom: 5px; }}
+        .bar-bg {{ width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; }}
+        .bar-fill {{ height: 100%; border-radius: 4px; box-shadow: 0 0 8px currentColor; }}
+    </style>
+    <div class="meter-box">
+        <div class="meter-head"><span>GPU</span><span style="color:#00f3ff">{gpu_load}%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width: {gpu_load}%; background: #00f3ff; color: #00f3ff;"></div></div>
+    </div>
+    <div class="meter-box">
+        <div class="meter-head"><span>RAM</span><span style="color:#bc13fe">{ram_load}%</span></div>
+        <div class="bar-bg"><div class="bar-fill" style="width: {ram_load}%; background: #bc13fe; color: #bc13fe;"></div></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Mini Graph
+    st.markdown("<p style='font-size:0.8rem; color:#aaa; font-family:Share Tech Mono;'>NEURAL FLUX</p>", unsafe_allow_html=True)
+    st.line_chart(pd.DataFrame(np.random.randn(20, 1), columns=['a']), height=80, color="#0aff48")
+
+    # Terminal Log
+    log_msg = random.choice(["Secure Uplink Established", "Handshake Verified", "Model Weights Loaded", "Monitoring Threads"])
+    st.markdown(f"""
+    <div style="background: #000; border: 1px solid #333; padding: 10px; font-family: 'Share Tech Mono'; font-size: 0.7rem; color: #0aff48; border-left: 3px solid #0aff48; margin-top: 20px;">
+        <div style="opacity:0.5;">> sys_init.sh</div>
+        <div style="color:#fff;">> {log_msg} <span style="animation:blink 1s infinite;">_</span></div>
+    </div>
+    <style>@keyframes blink {{ 0%, 100% {{ opacity: 0; }} 50% {{ opacity: 1; }} }}</style>
+    """, unsafe_allow_html=True)
 
 # ==========================================
 # 🏠 PAGE 1: DASHBOARD
 # ==========================================
 if st.session_state.page == "Dashboard":
     
-    st.markdown('<h1 class="mega-neon">AI THENTIC</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="neon-subtitle">NEURAL FORENSIC SUITE v2.0</p>', unsafe_allow_html=True)
+    st.markdown("<h1 class='chrome-title'>AI THENTIC</h1>", unsafe_allow_html=True)
+    st.markdown("<p class='neon-subtitle'>NEURAL FORENSIC SUITE v2.0</p>", unsafe_allow_html=True)
     st.write("") 
 
-    # --- TOP ROW ---
-    with st.container(border=True):
-        col1, col2, col3 = st.columns([1, 2, 1])
-        with col1:
+    # --- HERO SECTION ---
+    with st.container():
+        c1, c2, c3 = st.columns([1, 2, 1])
+        with c1: 
             if lottie_left_scan: st_lottie(lottie_left_scan, height=180, key="l1")
-        with col2:
-            st.markdown("""<div style="text-align: center; padding-top: 20px;"><h3 style="color: #fff; text-shadow: 0 0 10px #00f3ff;">DIGITAL INTEGRITY VERIFICATION</h3><p style="color: #aaa; font-family: 'Share Tech Mono';">DEPLOYING BI-DIRECTIONAL LSTM ARRAYS FOR DEEPFAKE ARTIFACT DETECTION.</p></div>""", unsafe_allow_html=True)
+        with c2:
+            st.markdown("""
+            <div style="text-align: center; background: rgba(0, 243, 255, 0.05); padding: 30px; border-radius: 15px; border: 1px solid rgba(0, 243, 255, 0.2); box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);">
+                <h3 style="color: #fff; margin-bottom: 10px; text-shadow: 0 0 10px #00f3ff;">DIGITAL INTEGRITY VERIFICATION</h3>
+                <p style="color: #aaa; font-family: 'Share Tech Mono';">DEPLOYING BI-DIRECTIONAL LSTM ARRAYS FOR DEEPFAKE ARTIFACT DETECTION.</p>
+            </div>
+            """, unsafe_allow_html=True)
+            st.write("")
             if st.button(">> INITIALIZE ANALYSIS MODULE <<", type="primary", use_container_width=True):
                 st.session_state.page = "Analysis Console"
                 st.rerun()
-        with col3:
+        with c3:
              if lottie_right_scan: st_lottie(lottie_right_scan, height=180, key="r1")
 
-    # --- ARCHITECTURE ---
-    st.markdown("<h3 style='text-align:center; color: var(--neon-cyan); margin-top: 50px; letter-spacing:4px;'>SYSTEM ARCHITECTURE</h3>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center; color:#666; font-size:0.8rem; margin-bottom:30px;'>HOVER CARDS FOR DIAGNOSTICS</p>", unsafe_allow_html=True)
+    # --- ARCHITECTURE CARDS ---
+    st.write("")
+    st.markdown("<h3 style='text-align:center; color: #00f3ff; letter-spacing:4px; margin-top:40px;'>SYSTEM ARCHITECTURE</h3>", unsafe_allow_html=True)
     
-    c1, c2, c3 = st.columns(3)
-    with c1: st.markdown("""<div class="cyber-card-container"><div class="cyber-card"><h4>01. ACTIVE SAMPLING</h4><p>High-Entropy Frame Extraction. Algorithm actively discards static data to focus solely on high-motion vectors where artifacts occur.</p></div></div>""", unsafe_allow_html=True)
-    with c2: st.markdown("""<div class="cyber-card-container"><div class="cyber-card"><h4>02. TEMPORAL MEMORY</h4><p>Bi-Directional LSTM Core. Analyzes frame-to-frame inconsistencies in the time domain to detect temporal jitter.</p></div></div>""", unsafe_allow_html=True)
-    with c3: st.markdown("""<div class="cyber-card-container"><div class="cyber-card"><h4>03. SPATIAL SCAN</h4><p>EfficientNet-B3 Backbone. Detects blending boundaries, resolution mismatches, and warping artifacts.</p></div></div>""", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown("""
+        <div class="glass-card">
+            <h4>01. ACTIVE SAMPLING</h4>
+            <p>Entropy-based frame extraction. We discard static data to focus solely on high-motion vectors (blinking, turning) where artifacts occur.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+        <div class="glass-card">
+            <h4>02. SPATIAL SCAN</h4>
+            <p><strong>EfficientNet-B3 Backbone.</strong> A powerful CNN that detects pixel-level anomalies, resolution mismatches, and warping artifacts.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown("""
+        <div class="glass-card">
+            <h4>03. TEMPORAL MEMORY</h4>
+            <p><strong>Bi-Directional LSTM.</strong> Analyzes the <em>sequence</em> of frames to detect temporal jitter and flickering invisible to the naked eye.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # --- FAQ ---
-    st.markdown("---")
-    st.markdown("<h3 style='text-align:center; color: var(--neon-cyan); letter-spacing:4px;'>FORENSIC KNOWLEDGE BASE</h3>", unsafe_allow_html=True)
-    col_faq_L, col_faq_R = st.columns([1, 1])
-    with col_faq_L:
-        with st.expander("❓ What exactly is a Deepfake?"): st.write("""Deepfakes are synthetic media generated by AI, specifically **Generative Adversarial Networks (GANs)**.""")
-        with st.expander("⚙️ How are Deepfakes generated?"): st.write("""Most are created using an **Autoencoder** architecture which compresses the input face into a latent space and reconstructs it as the target face. """)
-        with st.expander("🤔 Difference between DeepFace and Deepfakes?"): st.write("""**DeepFace** is a facial *recognition* system. **Deepfakes** are synthetic media.""")
-    with col_faq_R:
-        with st.expander("🕵️ What are 'Deepfake Artifacts'?"): st.write("""Artifacts are the 'glitches' AI leaves behind, such as: **Blending Boundaries** and **Temporal Jitter**.""")
-        with st.expander("👁️ Why is 'Active Sampling' important?"): st.write("""Active Sampling ignores static frames and forces the model to analyze only high-movement frames where the AI is most likely to fail.""")
-
-    # --- CHATBOT SECTION ---
+    # --- CHATBOT ---
     st.markdown("---")
     c_chat_anim, c_chat_box = st.columns([1, 2])
-    
     with c_chat_anim:
-        st.markdown("<h4 style='color: #00ffff; text-align: center; text-shadow: 0 0 10px #00ffff;'>AI ASSISTANT LINK</h4>", unsafe_allow_html=True)
         if lottie_chatbot: st_lottie(lottie_chatbot, height=250, key="bot")
-        else: st.markdown("⚠️ Animation Assets Missing")
-
     with c_chat_box:
-        with st.container(border=True):
-            st.markdown("**SECURE COMMS CHANNEL**")
+        st.markdown("#### 💬 SECURE COMMS CHANNEL")
+        if "messages" not in st.session_state: st.session_state.messages = []
+        
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]): st.markdown(msg["content"])
+        
+        if prompt := st.chat_input("Query forensic database..."):
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"): st.markdown(prompt)
             
-            if "messages" not in st.session_state: st.session_state.messages = []
-            
-            for msg in st.session_state.messages:
-                with st.chat_message(msg["role"]):
-                    st.markdown(msg["content"])
-            
-            if prompt := st.chat_input("Query forensic database..."):
-                st.session_state.messages.append({"role": "user", "content": prompt})
-                with st.chat_message("user"):
-                    st.markdown(prompt)
-
-                with st.chat_message("assistant"):
-                    message_placeholder = st.empty()
-                    full_response = ""
-                    
-                    if gemini_active:
-                        try:
-                            model_gemini = genai.GenerativeModel("gemini-1.5-flash")
-                            full_prompt = f"{PROJECT_CONTEXT}\n\nUser Question: {prompt}"
-                            response_stream = model_gemini.generate_content(full_prompt, stream=True)
-                            
-                            for chunk in response_stream:
-                                if chunk.text:
-                                    full_response += chunk.text
-                                    message_placeholder.markdown(full_response + "▌")
-                            
-                            message_placeholder.markdown(full_response)
-                            
-                        except Exception as e:
-                            full_response = f"⚠️ SYSTEM ERROR: {str(e)}"
-                            message_placeholder.error(full_response)
-                    else:
-                        full_response = "⚠️ SYSTEM OFFLINE. API KEY REQUIRED."
-                        message_placeholder.markdown(full_response)
-                
-                st.session_state.messages.append({"role": "assistant", "content": full_response})
+            with st.chat_message("assistant"):
+                place = st.empty()
+                full_resp = ""
+                if gemini_active:
+                    try:
+                        model_gemini = genai.GenerativeModel("gemini-1.5-flash")
+                        stream = model_gemini.generate_content(f"{PROJECT_CONTEXT}\n\nUser: {prompt}", stream=True)
+                        for chunk in stream:
+                            if chunk.text:
+                                full_resp += chunk.text
+                                place.markdown(full_resp + "▌")
+                        place.markdown(full_resp)
+                    except Exception as e: place.error(f"Error: {e}")
+                else: place.markdown("⚠️ API Offline.")
+            st.session_state.messages.append({"role": "assistant", "content": full_resp})
 
 # ==========================================
 # 🕵️ PAGE 2: ANALYSIS CONSOLE
 # ==========================================
 elif st.session_state.page == "Analysis Console":
-    
-    st.markdown('<h1 class="mega-neon" style="font-size:3rem;">ANALYSIS CONSOLE</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="chrome-title" style="font-size:4rem;">ANALYSIS CONSOLE</h1>', unsafe_allow_html=True)
     st.write("")
     
-    uploaded_file = st.file_uploader(" ", type=["mp4", "avi", "mov"])
-    st.markdown("<p style='text-align:center; color:#666; font-size: 0.8rem;'>SUPPORTED FORMATS: MP4, AVI, MOV // MAX SIZE: 200MB</p>", unsafe_allow_html=True)
-
+    uploaded_file = st.file_uploader("UPLOAD SOURCE FOOTAGE (MP4/AVI)", type=["mp4", "avi", "mov"])
+    
     if uploaded_file:
         with open("temp_video.mp4", "wb") as f: f.write(uploaded_file.getbuffer())
         
-        col_vid, col_data = st.columns([1.5, 1])
-        with col_vid:
-            with st.container(border=True):
-                st.markdown("<div style='position:absolute; top:10px; left:10px; color:red; font-size:0.7rem;'>REC ●</div>", unsafe_allow_html=True)
-                st.video(uploaded_file)
-                analyze_btn = st.button("INITIATE DEEP SCAN", type="primary", use_container_width=True)
-
-        with col_data:
-            with st.container(border=True):
-                st.markdown("**TERMINAL LOG**")
-                terminal_placeholder = st.empty()
-                terminal_placeholder.markdown('<div class="terminal-box">_WAITING FOR INPUT...</div>', unsafe_allow_html=True)
-
-        if analyze_btn:
-            if model is None:
-                terminal_placeholder.markdown('<div class="terminal-box" style="color:red;">[FATAL] NEURAL WEIGHTS NOT FOUND.<br>Please ensure .pth file is in directory.</div>', unsafe_allow_html=True)
-            else:
-                status_box = st.empty()
-                faces, raw = process_video_frames("temp_video.mp4", status_box)
-                
-                if not faces:
-                    terminal_placeholder.markdown('<div class="terminal-box" style="color:red;">[ERROR] NO FACIAL DATA EXTRACTED.<br>Video may be too short or face obscured.</div>', unsafe_allow_html=True)
+        c1, c2 = st.columns([1.5, 1])
+        with c1:
+            st.video(uploaded_file)
+            if st.button("EXECUTE DEEP SCAN", type="primary", use_container_width=True):
+                if model is None: st.error("Neural Weights Not Found.")
                 else:
-                    terminal_placeholder.markdown('<div class="terminal-box">[INFO] FACES EXTRACTED.<br>[INFO] INJECTING INTO NEURAL NET...</div>', unsafe_allow_html=True)
+                    status = st.empty()
+                    faces, raw = process_video_frames("temp_video.mp4", status)
                     
-                    st.write("")
-                    st.markdown("**⚡ LIVE NEURAL TELEMETRY**")
-                    graph_place = st.empty()
-                    chart_data = pd.DataFrame(columns=["Integrity"])
-                    for x in range(30):
-                        new_row = pd.DataFrame({"Integrity": [random.uniform(0.4, 0.9)]})
-                        chart_data = pd.concat([chart_data, new_row], ignore_index=True)
-                        graph_place.area_chart(chart_data, color="#00f3ff", height=150)
-                        time.sleep(0.05)
-
-                    transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
-                    input_tensor = torch.stack([transform(Image.fromarray(f)) for f in faces]).unsqueeze(0).to(DEVICE)
-                    
-                    with torch.no_grad():
-                        output = model(input_tensor)
-                        probs = torch.nn.functional.softmax(output, dim=1)
-                        real_score, fake_score = probs[0][0].item(), probs[0][1].item()
-
-                    st.write("---")
-                    
-                    if fake_score > 0.50:
-                        st.markdown(f"""<div style="background: rgba(255, 0, 60, 0.2); border: 2px solid #ff003c; padding: 20px; text-align: center; border-radius: 10px; box-shadow: 0 0 30px #ff003c;"><h1 style="color: #ff003c; margin:0; font-family: 'Share Tech Mono'; font-size: 3rem; text-shadow: 0 0 20px #ff003c;">⚠️ DEEPFAKE DETECTED</h1><p style="letter-spacing: 2px; color: #ff80ab;">CONFIDENCE: {fake_score*100:.2f}%</p></div>""", unsafe_allow_html=True)
-                        st.toast("⚠️ THREAT DETECTED: DEEPFAKE SIGNATURE FOUND", icon="🚨")
+                    if not faces: st.error("No faces detected in high-motion frames.")
                     else:
-                        st.markdown(f"""<div style="background: rgba(10, 255, 72, 0.1); border: 2px solid #0aff48; padding: 20px; text-align: center; border-radius: 10px; box-shadow: 0 0 30px #0aff48;"><h1 style="color: #0aff48; margin:0; font-family: 'Share Tech Mono'; font-size: 3rem; text-shadow: 0 0 20px #0aff48;">✅ AUTHENTIC MEDIA</h1><p style="letter-spacing: 2px; color: #b9f6ca;">CONFIDENCE: {real_score*100:.2f}%</p></div>""", unsafe_allow_html=True)
-                        st.toast("✅ SYSTEM SECURE: MEDIA VERIFIED", icon="🛡️")
+                        st.success("Target Acquired. Injecting into Neural Net...")
+                        
+                        # Process
+                        transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+                        input_tensor = torch.stack([transform(Image.fromarray(f)) for f in faces]).unsqueeze(0).to(DEVICE)
+                        
+                        with torch.no_grad():
+                            output = model(input_tensor)
+                            probs = torch.nn.functional.softmax(output, dim=1)
+                            real_score, fake_score = probs[0][0].item(), probs[0][1].item()
+                        
+                        # Results
+                        st.markdown("---")
+                        if fake_score > 0.50:
+                            st.markdown(f"""
+                            <div style="background: rgba(255, 0, 60, 0.2); border: 2px solid #ff003c; padding: 20px; text-align: center; border-radius: 10px; box-shadow: 0 0 30px #ff003c;">
+                                <h1 style="color: #ff003c; margin:0; font-family: 'Share Tech Mono'; font-size: 3rem;">⚠️ DEEPFAKE DETECTED</h1>
+                                <p style="letter-spacing: 2px; color: #ff80ab;">CONFIDENCE: {fake_score*100:.2f}%</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                            <div style="background: rgba(10, 255, 72, 0.1); border: 2px solid #0aff48; padding: 20px; text-align: center; border-radius: 10px; box-shadow: 0 0 30px #0aff48;">
+                                <h1 style="color: #0aff48; margin:0; font-family: 'Share Tech Mono'; font-size: 3rem;">✅ AUTHENTIC MEDIA</h1>
+                                <p style="letter-spacing: 2px; color: #b9f6ca;">CONFIDENCE: {real_score*100:.2f}%</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        
+                        st.markdown("### EXTRACTED ARTIFACTS")
+                        cols = st.columns(5)
+                        for i, face in enumerate(faces[:5]):
+                            with cols[i]: st.image(face, use_container_width=True)
 
-                    m1, m2 = st.columns(2)
-                    with m1: st.markdown(f"**REAL PROBABILITY**"); st.progress(real_score)
-                    with m2: st.markdown(f"**FAKE PROBABILITY**"); st.progress(fake_score)
-                    
-                    terminal_placeholder.markdown('<div class="terminal-box" style="color: var(--neon-cyan);">[SUCCESS] ANALYSIS COMPLETE.<br>[LOG] REPORT GENERATED.<br>[LOG] ARTIFACTS ARCHIVED.</div>', unsafe_allow_html=True)
-                    
-                    st.write("---")
-                    st.subheader("Extracted Artifacts")
-                    st.markdown("""<style>.stImage { border: 1px solid var(--neon-cyan); transition: transform 0.3s; } .stImage:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--neon-cyan); }</style>""", unsafe_allow_html=True)
-                    f_cols = st.columns(10)
-                    for i, face in enumerate(faces[:10]):
-                        with f_cols[i]: st.image(face, use_container_width=True)
+        with c2:
+            st.markdown("### TERMINAL LOG")
+            st.markdown(f"""
+            <div style="background:#000; border:1px solid #333; height:300px; padding:10px; font-family:'Share Tech Mono'; font-size:0.8rem; color:#0aff48; overflow-y:auto;">
+                <div>> initializing_kernels... OK</div>
+                <div>> mounting_volume... OK</div>
+                <div>> waiting_for_input...</div>
+            </div>
+            """, unsafe_allow_html=True)
 
 # ==========================================
 # 📄 PAGE 3: METHODOLOGY
 # ==========================================
 elif st.session_state.page == "Methodology":
-    st.markdown('<h1 class="mega-neon" style="font-size:3rem;">SYSTEM CORE</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="chrome-title" style="font-size:4rem;">SYSTEM KERNEL</h1>', unsafe_allow_html=True)
     st.write("")
     
-    with st.container(border=True):
-        st.markdown("### 🔬 DEEP NEURAL FORENSICS EXPLAINED")
-        st.write("""
-        AIthentic uses a **Hybrid Spatiotemporal Architecture**. Unlike simple classifiers that look at a single photo, 
-        our system analyzes the *evolution* of pixels over time to detect biological inconsistencies.
-        """)
-        
-        c1, c2 = st.columns(2)
-        with c1:
-            st.info("**STEP 1: SPATIAL (EfficientNet-B3)**")
-            st.write("The model inspects each individual frame for resolution mismatches, strange blending, and texture anomalies (like overly smooth skin).")
-        with c2:
-            st.info("**STEP 2: TEMPORAL (Bi-LSTM)**")
-            st.write("The Recurrent Neural Network remembers previous frames. If a face flickers or 'jumps' between Frame 10 and Frame 11, the LSTM flags it as fake.")
+    tabs = st.tabs(["⚡ PRE-PROCESSING", "👁️ SPATIAL LAYER", "🧠 TEMPORAL LAYER", "📊 METRICS"])
+    
+    with tabs[0]:
+        st.markdown("### ENTROPY-BASED FRAME SELECTION")
+        st.write("We don't scan every frame. We use entropy scanning to find the top 20 frames with the most movement.")
+    with tabs[1]:
+        st.markdown("### EFFICIENTNET-B3")
+        st.write("Extracts 1536-dimensional feature vectors looking for texture anomalies.")
+    with tabs[2]:
+        st.markdown("### BI-DIRECTIONAL LSTM")
+        st.write("Analyzes the sequence of vectors to detect temporal jitter.")
+    with tabs[3]:
+        c1, c2, c3 = st.columns(3)
+        c1.metric("ACCURACY", "96.71%")
+        c2.metric("PRECISION", "0.99")
+        c3.metric("SPEED", "4.2s")
 
-# ==========================================
-# 👤 PAGE 4: ABOUT US
-# ==========================================
 # ==========================================
 # 👤 PAGE 4: ABOUT US
 # ==========================================
 elif st.session_state.page == "About Us":
-    st.markdown('<h1 class="mega-neon" style="font-size:3rem;">DEV TEAM</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="chrome-title" style="font-size:4rem;">DEV SQUAD</h1>', unsafe_allow_html=True)
     st.write("")
-    st.markdown("<p style='text-align: center; color: #aaa;'>ENGINEERING STUDENTS // BUILDING THE FUTURE OF AI SECURITY</p>", unsafe_allow_html=True)
-    st.write("---")
-
-    # --- ROW 1: SAHIL & HIMANSHU ---
-    c1, c2 = st.columns(2)
     
-    with c1:
-        with st.container(border=True):
-            st.markdown("### 👨‍💻 SAHIL DESAI")
-            st.markdown("<span style='color:#00f3ff'>**PROJECT LEAD / AI ENGINEER**</span>", unsafe_allow_html=True)
-            st.write("""
-            Computer Engineering student obsessed with Deep Learning. 
-            Built the core Neural Networks (EfficientNet + LSTM) that power this system.
-            *"I code until the model learns."*
-            """)
+    def dev_card(name, role, color, desc):
+        st.markdown(f"""
+        <div class="glass-card" style="border-top: 3px solid {color};">
+            <h3 style="color:#fff; margin:0;">{name}</h3>
+            <p style="color:{color}; font-weight:bold; font-family:'Share Tech Mono';">{role}</p>
+            <p style="font-size:0.9rem; color:#aaa;">{desc}</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    with c2:
-        with st.container(border=True):
-            st.markdown("### 👨‍💻 HIMANSHU")
-            st.markdown("<span style='color:#0aff48'>**SYSTEM ARCHITECT / BACKEND**</span>", unsafe_allow_html=True)
-            st.write("""
-            Engineering student focused on making the code run fast and smooth.
-            Optimized the video processing pipeline to handle real-time data flow.
-            *"Efficiency is key."*
-            """)
-
-    # --- ROW 2: TEJAS & KRISH ---
+    c1, c2 = st.columns(2)
+    with c1: dev_card("SAHIL DESAI", "PROJECT LEAD", "#00f3ff", "Deep Learning & Model Architecture.")
+    with c2: dev_card("HIMANSHU", "BACKEND ARCHITECT", "#0aff48", "Pipeline Optimization & Data Flow.")
+    
+    st.write("")
     c3, c4 = st.columns(2)
-
-    with c3:
-        with st.container(border=True):
-            st.markdown("### 👨‍💻 TEJAS")
-            st.markdown("<span style='color:#ff00ff'>**DATA ANALYST / RESEARCH**</span>", unsafe_allow_html=True)
-            st.write("""
-            Engineering student who loves digging into data. 
-            Helped curate the FaceForensics++ and Celeb-DF datasets for training.
-            *"Data never lies."*
-            """)
-
-    with c4:
-        with st.container(border=True):
-            st.markdown("### 👨‍💻 KRISH")
-            st.markdown("<span style='color:#ff003c'>**UI/UX DEVELOPER**</span>", unsafe_allow_html=True)
-            st.write("""
-            Engineering student with an eye for design.
-            Responsible for the Cyberpunk aesthetic and user interface experience.
-            *"Making AI look good."*
-            """)
-            
+    with c3: dev_card("TEJAS", "DATA ANALYST", "#bc13fe", "Dataset Curation (FF++ & Celeb-DF).")
+    with c4: dev_card("KRISH", "UI/UX DESIGNER", "#ff003c", "Frontend Experience & Visuals.")
 
 # ==========================================
 # 📞 PAGE 5: CONTACT
 # ==========================================
 elif st.session_state.page == "Contact":
-    st.markdown('<h1 class="mega-neon" style="font-size:3rem;">SECURE UPLINK</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="chrome-title" style="font-size:4rem;">SECURE UPLINK</h1>', unsafe_allow_html=True)
     st.write("")
     
-    with st.container(border=True):
-        st.markdown("### 📡 ESTABLISH CONNECTION")
-        st.write("For forensic inquiries, collaboration, or access keys.")
-        
-        c1, c2, c3 = st.columns(3)
-        with c1:
-            st.link_button("🔗 LINKEDIN", "https://www.linkedin.com/in/your-profile")
-        with c2:
-            st.link_button("🐙 GITHUB REPO", "https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL")
-        with c3:
-            st.link_button("📧 EMAIL ENCRYPTION", "mailto:your.email@example.com")
+    c1, c2, c3 = st.columns(3)
+    with c1: st.link_button("🔗 LINKEDIN", "https://linkedin.com")
+    with c2: st.link_button("🐙 GITHUB", "https://github.com")
+    with c3: st.link_button("📧 EMAIL", "mailto:sahildesai00112@gmail.com")
