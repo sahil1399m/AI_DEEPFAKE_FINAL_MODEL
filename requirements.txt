@@ -1,0 +1,10 @@
+streamlit
+torch
+torchvision
+opencv-python-headless
+numpy
+pandas
+Pillow
+streamlit-lottie
+facenet-pytorch
+google-generativeai
