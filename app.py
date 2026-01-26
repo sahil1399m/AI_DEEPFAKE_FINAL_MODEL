@@ -302,10 +302,15 @@ st.markdown(f"""
 # ==========================================
 # 🧠 5. MODEL BACKEND
 # ==========================================
+# ==========================================
+# 🧠 5. MODEL BACKEND
+# ==========================================
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+# 👇 PASTE THE NEW FUNCTION HERE, REPLACING THE OLD ONE 👇
 @st.cache_resource
 def load_model():
+    # 1. Define the Neural Network Architecture
     class EfficientNetLSTM(nn.Module):
         def __init__(self, num_classes=2):
             super(EfficientNetLSTM, self).__init__()
@@ -323,14 +328,32 @@ def load_model():
             lstm_out, _ = self.lstm(features)
             return self.fc(lstm_out[:, -1, :])
 
+    # 2. Initialize Model
     model = EfficientNetLSTM().to(DEVICE)
+    model_path = "efficientnet_b3_lstm_active.pth"
+
+    # 3. AUTO-DOWNLOAD FROM DRIVE IF MISSING
+    if not os.path.exists(model_path):
+        # 👇 YOUR SPECIFIC ID IS PASTED HERE 👇
+        file_id = "1IpeVbi0jvwHaXD5qCMtF_peUVR9uJDw0"
+        
+        url = f'https://drive.google.com/uc?id={file_id}'
+        try:
+            print(f"Downloading model from Drive (ID: {file_id})...")
+            gdown.download(url, model_path, quiet=False)
+        except Exception as e:
+            st.error(f"Failed to download model: {e}")
+            return None
+
+    # 4. Load Weights
     try:
-        if os.path.exists("efficientnet_b3_lstm_active.pth"):
-            model.load_state_dict(torch.load("efficientnet_b3_lstm_active.pth", map_location=DEVICE))
+        if os.path.exists(model_path):
+            model.load_state_dict(torch.load(model_path, map_location=DEVICE))
             model.eval()
             return model
         return None
-    except Exception:
+    except Exception as e:
+        st.error(f"Error loading weights: {e}")
         return None
 
 model = load_model()
