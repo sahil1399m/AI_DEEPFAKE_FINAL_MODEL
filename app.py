@@ -14,6 +14,7 @@ import pandas as pd
 from streamlit_lottie import st_lottie
 from facenet_pytorch import MTCNN
 import google.generativeai as genai
+import gdown  
 
 # ==========================================
 # 🎨 1. PAGE CONFIG (ULTIMATE CYBERPUNK MODE)
