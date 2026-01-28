@@ -532,7 +532,7 @@ if st.session_state.page == "Dashboard":
     
     st.markdown('<div style="margin-top: 20px;"></div>', unsafe_allow_html=True)
     st.markdown('<h1 class="neon-title">AI THENTIC</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="tech-subtitle">>> MILITARY-GRADE NEURAL FORENSICS <<</p>', unsafe_allow_html=True)
+    st.markdown('<p class="tech-subtitle">>> S.A.F.E. (Strategic Algorithmic Forensic Evaluation) <<</p>', unsafe_allow_html=True)
     st.write("") 
 
     # --- TOP ROW ---
