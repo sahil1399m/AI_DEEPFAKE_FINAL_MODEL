@@ -15,7 +15,7 @@ from streamlit_lottie import st_lottie
 from facenet_pytorch import MTCNN
 import google.generativeai as genai
 import gdown
-import plotly.graph_objects as go # 🆕 ADDED FOR COOL CHARTS
+import plotly.graph_objects as go 
 
 # ==========================================
 # 🎨 1. PAGE CONFIG
@@ -39,12 +39,8 @@ try:
         genai.configure(api_key=clean_key)
         gemini_active = True
 except Exception as e:
-    # Silent fail for UI aesthetics, handled in logic
     pass
 
-# ==========================================
-# 🧠 THE BRAIN: CONTEXT
-# ==========================================
 PROJECT_CONTEXT = """
 ROLE: You are the "AIthentic Forensic Assistant", a military-grade neural expert.
 GOAL: Explain the technical depth of the AIthentic platform.
@@ -69,18 +65,17 @@ def get_base64_of_bin_file(bin_file):
         return base64.b64encode(data).decode()
     except FileNotFoundError: return None
 
-# Load Assets (Error handling included for portability)
 lottie_left_scan = load_lottie_local("assets/animation1.json")
 lottie_right_scan = load_lottie_local("assets/animation2.json")
 lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE (THE CRAZY STUFF)
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE (FIXED SYNTAX)
 # ==========================================
 
-# Determine background
 if bg_image_base64:
+    # Note: We use double braces {{ }} for CSS, single { } for f-string variables
     background_style = f"""
     [data-testid="stAppViewContainer"] {{
         background: radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%), url("data:image/jpg;base64,{bg_image_base64}");
@@ -89,7 +84,6 @@ if bg_image_base64:
     }}
     """
 else:
-    # If no image, fall back to a cool dark grid
     background_style = """
     [data-testid="stAppViewContainer"] {
         background-color: #050505;
@@ -99,9 +93,9 @@ else:
     }
     """
 
+# ⚠️ CRITICAL FIX: All CSS braces inside f-string are doubled {{ }}
 st.markdown(f"""
 <style>
-    /* ---------------- IMPORTS ---------------- */
     @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
     :root {{ 
@@ -109,19 +103,15 @@ st.markdown(f"""
         --neon-purple: #bc13fe; 
         --neon-green: #0aff48; 
         --neon-red: #ff003c; 
-        --glass-bg: rgba(10, 15, 20, 0.75);
-        --glass-border: 1px solid rgba(0, 243, 255, 0.2);
     }}
 
-    /* ---------------- GLOBAL OVERRIDES ---------------- */
     html, body, [class*="css"] {{ font-family: 'Rajdhani', sans-serif; color: #e0fbfc; }}
     
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar {{ width: 10px; background: #000; }}
+    /* Scrollbar */
+    ::-webkit-scrollbar {{ width: 8px; background: #000; }}
     ::-webkit-scrollbar-thumb {{ background: var(--neon-blue); border-radius: 2px; }}
-    ::-webkit-scrollbar-thumb:hover {{ background: var(--neon-purple); }}
 
-    /* CRT Scanline Overlay Effect (The "Monitor" Look) */
+    /* Scanlines */
     .scanlines {{
         position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
         background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
@@ -131,15 +121,12 @@ st.markdown(f"""
 
     {background_style}
     
-    /* Sidebar Blur */
     [data-testid="stSidebar"] {{
-        background-color: rgba(5, 5, 10, 0.9);
-        backdrop-filter: blur(10px);
+        background-color: rgba(5, 5, 10, 0.95);
         border-right: 1px solid rgba(0, 243, 255, 0.1);
     }}
 
-    /* ---------------- TEXT EFFECTS ---------------- */
-    /* Glitch Animation for Titles */
+    /* Glitch Title */
     @keyframes glitch-skew {{
         0% {{ transform: skew(0deg); }}
         20% {{ transform: skew(-2deg); }}
@@ -148,166 +135,162 @@ st.markdown(f"""
         80% {{ transform: skew(1deg); }}
         100% {{ transform: skew(0deg); }}
     }}
-    
     .glitch-title {{
         font-family: 'Orbitron', sans-serif;
-        font-weight: 900;
-        font-size: 4.5rem;
-        text-align: center;
-        color: #fff;
-        text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-blue);
+        font-weight: 900; font-size: 4rem; text-align: center;
+        color: #fff; text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-blue);
         animation: glitch-skew 3s infinite linear alternate-reverse;
-        margin-bottom: 0px;
-        letter-spacing: 5px;
+        margin-bottom: 0px; letter-spacing: 5px;
     }}
-
     .tech-subtitle {{
-        font-family: 'Share Tech Mono', monospace;
-        color: var(--neon-blue);
-        text-align: center;
-        font-size: 1.1rem;
-        letter-spacing: 6px;
-        text-transform: uppercase;
-        margin-top: -10px;
-        opacity: 0.9;
+        font-family: 'Share Tech Mono', monospace; color: var(--neon-blue);
+        text-align: center; font-size: 1.1rem; letter-spacing: 6px;
+        text-transform: uppercase; margin-top: -10px; opacity: 0.9;
         text-shadow: 0 0 10px var(--neon-blue);
     }}
 
-    /* ---------------- CARDS & COMPONENTS ---------------- */
-    div[data-testid="stContainer"] {{ background: transparent; }}
-
-    .tech-card {{
+    /* ----------------------------------------------------
+       HOVER CAPABILITY CARDS
+    ---------------------------------------------------- */
+    .cap-card-container {{
+        position: relative;
+        height: 250px;
         background: rgba(10, 15, 20, 0.6);
-        backdrop-filter: blur(15px);
         border: 1px solid rgba(0, 243, 255, 0.2);
-        border-left: 3px solid var(--neon-blue);
-        padding: 25px;
-        border-radius: 0px 20px 0px 20px; /* Cyberpunk cut corners */
+        border-radius: 10px;
+        overflow: hidden;
+        transition: 0.3s;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    }}
+    .cap-card-container:hover {{
+        border-color: var(--neon-purple);
+        box-shadow: 0 0 20px var(--neon-purple);
+        transform: translateY(-5px);
+    }}
+    .cap-content-visible {{
+        padding: 20px;
         height: 100%;
-        transition: all 0.4s ease;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-    }}
-    
-    /* Hover Glow Effect */
-    .tech-card:hover {{
-        border-left: 3px solid var(--neon-purple);
-        box-shadow: 0 0 25px rgba(188, 19, 254, 0.2), inset 0 0 10px rgba(188, 19, 254, 0.1);
-        transform: translateY(-5px) scale(1.01);
-    }}
-
-    .tech-header {{
-        color: var(--neon-blue);
-        font-family: 'Orbitron';
-        font-size: 1.3rem;
-        margin-bottom: 15px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding-bottom: 8px;
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
+        justify-content: center;
         align-items: center;
-    }}
-
-    /* ---------------- BUTTONS ---------------- */
-    .stButton button {{
-        background: transparent !important;
-        border: 1px solid var(--neon-blue) !important;
-        color: var(--neon-blue) !important;
-        font-family: 'Share Tech Mono' !important;
-        font-size: 1.2rem !important;
-        padding: 15px 30px !important;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        border-radius: 0px !important;
-        position: relative;
-        overflow: hidden;
-        box-shadow: 0 0 10px rgba(0, 243, 255, 0.1);
-    }}
-    
-    .stButton button::before {{
-        content: '';
-        position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.4), transparent);
         transition: 0.5s;
     }}
-
-    .stButton button:hover {{
-        background: rgba(0, 243, 255, 0.1) !important;
-        box-shadow: 0 0 30px var(--neon-blue), inset 0 0 10px var(--neon-blue);
-        text-shadow: 0 0 5px #fff;
-    }}
-    
-    .stButton button:hover::before {{ left: 100%; }}
-
-    /* Primary Button Redefine */
-    button[kind="primary"] {{
-        background: rgba(0, 243, 255, 0.1) !important;
-        border: 1px solid var(--neon-green) !important;
-        color: var(--neon-green) !important;
-    }}
-    button[kind="primary"]:hover {{
-        box-shadow: 0 0 30px var(--neon-green) !important;
-    }}
-
-    /* ---------------- TERMINAL & LOGS ---------------- */
-    .terminal-box {{
-        background: #000;
-        border: 1px solid #333;
+    .cap-content-hidden {{
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.95);
+        background-image: linear-gradient(rgba(188, 19, 254, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
         padding: 20px;
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 0.9rem;
-        color: var(--neon-green);
-        border-left: 4px solid var(--neon-green);
-        height: 400px;
-        overflow-y: auto;
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-top: 2px solid var(--neon-purple);
     }}
-    .log-line {{ margin-bottom: 5px; border-bottom: 1px solid rgba(0,255,0,0.1); padding-bottom: 2px; }}
-
-    /* ---------------- PIPELINE VIZ ---------------- */
-    .pipeline-container {{
-        display: flex; justify-content: space-between; align-items: center;
-        background: rgba(0, 0, 0, 0.8); padding: 40px;
-        border-radius: 10px; border: 1px solid var(--neon-blue);
-        margin-bottom: 30px; box-shadow: 0 0 20px rgba(0, 243, 255, 0.1);
-        position: relative; overflow: hidden;
+    .cap-card-container:hover .cap-content-hidden {{
+        bottom: 0;
     }}
-    
-    .pipeline-node {{
-        text-align: center; color: #fff;
-        font-family: 'Share Tech Mono'; font-size: 1.1rem;
-        background: rgba(255,255,255,0.05); padding: 15px 25px;
-        border-radius: 5px; border: 1px solid #555;
-        z-index: 2; transition: 0.3s;
+    .cap-icon {{ font-size: 3rem; margin-bottom: 10px; text-shadow: 0 0 15px currentColor; }}
+    .cap-title {{ font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px; }}
+
+    /* ----------------------------------------------------
+       TELEMETRY CSS (FIXED BRACES)
+    ---------------------------------------------------- */
+    .telemetry-box {{
+        background: #050505;
+        border: 1px solid #333;
+        padding: 15px;
+        font-family: 'Share Tech Mono';
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: inset 0 0 20px rgba(0,255,0,0.05);
     }}
+    .telemetry-header {{
+        display: flex; justify-content: space-between;
+        border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px;
+        color: var(--neon-green); font-size: 0.8rem;
+    }}
+    .hex-bg {{
+        position: absolute; top:0; left:0; width:100%; height:100%;
+        color: rgba(0, 255, 0, 0.05); font-size: 0.6rem;
+        z-index: 0; pointer-events: none; word-wrap: break-word;
+    }}
+    .stat-row {{ display: flex; justify-content: space-between; z-index: 2; position: relative; margin-bottom: 5px; font-size: 0.9rem; }}
+    .stat-val {{ color: var(--neon-blue); text-shadow: 0 0 5px var(--neon-blue); }}
     
-    .pipeline-node:hover {{ border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); transform: scale(1.1); background: #000; }}
+    /* THIS IS THE FIXED LINE: */
+    @keyframes blink {{ 0% {{opacity:1;}} 50% {{opacity:0.3;}} 100% {{opacity:1;}} }}
     
-    .pipeline-arrow {{ color: var(--neon-blue); font-size: 2rem; animation: pulse-arrow 1.5s infinite; }}
-    @keyframes pulse-arrow {{ 0% {{ opacity: 0.3; transform: translateX(0); }} 50% {{ opacity: 1; transform: translateX(10px); }} 100% {{ opacity: 0.3; transform: translateX(0); }} }}
+    .live-dot {{ color: var(--neon-red); animation: blink 1s infinite; margin-right: 5px; }}
 
-    /* ---------------- EXPANDERS ---------------- */
-    .stExpander {{ background-color: rgba(0, 10, 20, 0.8) !important; border: 1px solid #333 !important; }}
-    .stExpander:hover {{ border-color: var(--neon-purple) !important; }}
-    .streamlit-expanderHeader {{ font-family: 'Orbitron'; letter-spacing: 1px; color: #eee !important; }}
-
-    /* ---------------- DEV TEAM CARD ---------------- */
-    .dev-container {{
-        position: relative; width: 100%; height: 240px;
+    /* ----------------------------------------------------
+       TEAM HOVER CARDS
+    ---------------------------------------------------- */
+    .dev-wrapper {{
+        position: relative; width: 100%; height: 260px;
         background: rgba(5, 10, 15, 0.8);
-        border: 1px solid #333; border-top: 3px solid var(--neon-blue);
-        padding: 20px; overflow: hidden; transition: 0.4s ease;
+        border: 1px solid rgba(255,255,255,0.1);
+        border-top: 3px solid var(--neon-blue);
+        overflow: hidden; transition: 0.4s;
+        margin-bottom: 20px;
     }}
-    .dev-container:hover {{ border-top: 3px solid var(--neon-purple); box-shadow: 0 10px 30px rgba(0,0,0,0.5); transform: translateY(-5px); }}
-</style>
+    .dev-wrapper:hover {{
+        border-top-color: var(--neon-green);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        transform: translateY(-5px);
+    }}
+    .dev-main {{ padding: 25px; transition: 0.4s; }}
+    .dev-wrapper:hover .dev-main {{ transform: translateY(-50px); opacity: 0.3; filter: blur(2px); }}
+    
+    .dev-overlay {{
+        position: absolute; bottom: -100%; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 100%);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 20px; text-align: center;
+        border-top: 1px solid var(--neon-green);
+    }}
+    .dev-wrapper:hover .dev-overlay {{ bottom: 0; }}
+    
+    .college-tag {{
+        background: var(--neon-blue); color: #000; padding: 5px 10px;
+        font-weight: bold; font-family: 'Orbitron'; font-size: 0.8rem;
+        margin-bottom: 5px; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
+    }}
 
+    /* ----------------------------------------------------
+       GENERAL UI
+    ---------------------------------------------------- */
+    .stButton button {{
+        background: transparent !important; border: 1px solid var(--neon-blue) !important;
+        color: var(--neon-blue) !important; font-family: 'Share Tech Mono' !important;
+        text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+    }}
+    .stButton button:hover {{ background: rgba(0,243,255,0.1) !important; box-shadow: 0 0 15px var(--neon-blue); }}
+    
+    .terminal-box {{
+        background: #000; border: 1px solid #333; padding: 20px;
+        font-family: 'Share Tech Mono', monospace; color: var(--neon-green);
+        height: 400px; overflow-y: auto; border-left: 4px solid var(--neon-green);
+    }}
+    .log-line {{ margin-bottom: 5px; border-bottom: 1px solid rgba(0,255,0,0.1); }}
+
+    /* FAQ Styling */
+    .faq-container {{ border: 1px solid #333; margin-bottom: 10px; background: rgba(255,255,255,0.02); transition:0.3s; }}
+    .faq-container:hover {{ border-color: var(--neon-blue); background: rgba(0,243,255,0.05); }}
+
+</style>
 <div class="scanlines"></div>
 """, unsafe_allow_html=True)
 
 # ==========================================
-# 🧠 5. MODEL BACKEND (UNCHANGED LOGIC)
+# 🧠 5. MODEL BACKEND
 # ==========================================
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -333,15 +316,12 @@ def load_model():
     model = EfficientNetLSTM().to(DEVICE)
     model_path = "efficientnet_b3_lstm_active.pth"
 
-    # AUTO-DOWNLOAD FROM DRIVE
     if not os.path.exists(model_path):
-        file_id = "1IpeVbi0jvwHaXD5qCMtF_peUVR9uJDw0" # Your ID
+        file_id = "1IpeVbi0jvwHaXD5qCMtF_peUVR9uJDw0" 
         url = f'https://drive.google.com/uc?id={file_id}'
         try:
-            # Silent download for UI cleanliness
             gdown.download(url, model_path, quiet=True)
-        except Exception:
-            return None
+        except Exception: return None
 
     try:
         if os.path.exists(model_path):
@@ -349,14 +329,13 @@ def load_model():
             model.eval()
             return model
         return None
-    except Exception:
-        return None
+    except Exception: return None
 
 model = load_model()
 mtcnn = MTCNN(keep_all=False, device=DEVICE, post_process=False)
 
 # ==========================================
-# 📽️ 6. VIDEO PROCESSOR (UNCHANGED LOGIC)
+# 📽️ 6. VIDEO PROCESSOR
 # ==========================================
 def process_video_frames(video_path, status_log_func):
     cap = cv2.VideoCapture(video_path)
@@ -366,7 +345,6 @@ def process_video_frames(video_path, status_log_func):
 
     prev_gray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
     frame_cnt = 0
-    
     status_log_func(">> INITIALIZING ENTROPY SCANNERS...", 0.1)
     
     while cap.isOpened():
@@ -384,9 +362,8 @@ def process_video_frames(video_path, status_log_func):
     top_frames = [x[1] for x in diffs[:20]]
     if len(top_frames) < 1: return None, []
 
-    status_log_func(">> DETECTING FACIAL ROI (REGION OF INTEREST)...", 0.3)
+    status_log_func(">> DETECTING FACIAL ROI...", 0.3)
     processed_faces = []
-
     for f in top_frames:
         h, w = f.shape[:2]
         scale = 640 / w
@@ -413,22 +390,19 @@ def process_video_frames(video_path, status_log_func):
     return final_faces, top_frames
 
 # ==========================================
-# 🧭 7. SIDEBAR (REDESIGNED)
+# 🧭 7. SIDEBAR (CRAZY TELEMETRY)
 # ==========================================
 if "page" not in st.session_state: st.session_state.page = "Dashboard"
 
 with st.sidebar:
     st.markdown("""
     <div style="text-align: center; border-bottom: 2px solid var(--neon-blue); padding-bottom: 20px; margin-bottom: 20px;">
-        <h1 style="color: #fff; margin:0; font-family:'Orbitron'; letter-spacing: 3px; font-size: 2rem; text-shadow: 0 0 15px var(--neon-blue);">OPS CENTER</h1>
-        <p style="color: var(--neon-blue); margin:0; font-size: 0.8rem; letter-spacing: 4px; font-family:'Share Tech Mono';">SYS.VER.3.1.0-ALPHA</p>
+        <h1 style="color: #fff; margin:0; font-family:'Orbitron'; font-size: 2rem; text-shadow: 0 0 15px var(--neon-blue);">OPS CENTER</h1>
+        <p style="color: var(--neon-blue); margin:0; font-size: 0.8rem; letter-spacing: 4px; font-family:'Share Tech Mono';">SYS.VER.4.0.ALPHA</p>
     </div>
     """, unsafe_allow_html=True)
     
-    # Custom Radio Buttons via standard streamlit but styled by CSS
     pages = ["Dashboard", "Analysis Console", "Methodology", "About Us", "Contact"]
-    
-    # Using a placeholder for custom nav visual
     for p in pages:
         if st.button(f"{'💠' if st.session_state.page == p else '🔹'} {p.upper()}", key=p, use_container_width=True):
             st.session_state.page = p
@@ -436,44 +410,59 @@ with st.sidebar:
 
     st.markdown("---")
     
-    # LIVE TELEMETRY WIDGETS
-    st.markdown("""
-    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-        <span style="color: var(--neon-purple); font-size: 1.2rem; margin-right: 10px; animation: pulse-arrow 1s infinite;">⚡</span>
-        <span style="color: #fff; font-family: 'Share Tech Mono'; letter-spacing: 1px;">LIVE TELEMETRY</span>
+    # --- CRAZY TELEMETRY ---
+    random_hex = ' '.join([f"{random.randint(0, 255):02X}" for _ in range(50)])
+    
+    st.markdown(f"""
+    <div class="telemetry-box">
+        <div class="hex-bg">{random_hex} {random_hex} {random_hex}</div>
+        <div class="telemetry-header">
+            <span><span class="live-dot">●</span>LIVE_FEED</span>
+            <span>ID: 8X-99</span>
+        </div>
+        <div class="stat-row">
+            <span>GPU_LOAD</span>
+            <span class="stat-val">{random.randint(30, 95)}%</span>
+        </div>
+        <div class="stat-row">
+            <span>TENSOR_CORES</span>
+            <span class="stat-val">ACTIVE</span>
+        </div>
+        <div class="stat-row">
+            <span>VRAM_USAGE</span>
+            <span class="stat-val">{random.randint(4, 12)}GB</span>
+        </div>
+        <div class="stat-row">
+            <span>LATENCY</span>
+            <span class="stat-val">{random.randint(10, 45)}ms</span>
+        </div>
+        <div style="margin-top:10px; border-top:1px dashed #333; padding-top:5px; font-size:0.7rem; color:#666;">
+            ENCRYPTION: AES-256<br>
+            UPLINK: STABLE
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # Simulated Server Stats
-    c1, c2 = st.columns(2)
-    with c1: 
-        st.metric("GPU TEMP", f"{random.randint(45, 78)}°C")
-    with c2:
-        st.metric("LATENCY", f"{random.randint(12, 45)}ms")
-
-    # Dynamic Mini-Chart
-    st.markdown("<p style='font-size: 0.7rem; color: #888; font-family: Share Tech Mono; margin-top: 10px;'>NEURAL FLUX DENSITY</p>", unsafe_allow_html=True)
+    # Mini Chart
+    st.markdown("<p style='font-size: 0.7rem; color: #888; font-family: Share Tech Mono;'>NEURAL_ACTIVITY_LOG</p>", unsafe_allow_html=True)
     chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['a', 'b', 'c'])
     st.line_chart(chart_data, height=80, color=["#00f3ff", "#bc13fe", "#0aff48"]) 
 
     # Status Badge
-    st.write("")
     if gemini_active:
-        st.markdown('<div style="background: rgba(10,255,72,0.1); border: 1px solid #0aff48; text-align: center; padding: 8px;"><span style="color: #0aff48; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE ONLINE</span></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: rgba(10,255,72,0.1); border: 1px solid #0aff48; text-align: center; padding: 5px;"><span style="color: #0aff48; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE ONLINE</span></div>', unsafe_allow_html=True)
     else:
-        st.markdown('<div style="background: rgba(255,0,60,0.1); border: 1px solid #ff003c; text-align: center; padding: 8px;"><span style="color: #ff003c; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE OFFLINE</span></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: rgba(255,0,60,0.1); border: 1px solid #ff003c; text-align: center; padding: 5px;"><span style="color: #ff003c; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE OFFLINE</span></div>', unsafe_allow_html=True)
 
 # ==========================================
 # 🏠 PAGE 1: DASHBOARD
 # ==========================================
 if st.session_state.page == "Dashboard":
     
-    # Hero Section
     st.markdown('<div style="margin-top: 40px;"></div>', unsafe_allow_html=True)
     st.markdown('<h1 class="glitch-title">AI THENTIC</h1>', unsafe_allow_html=True)
     st.markdown('<p class="tech-subtitle">>> MILITARY-GRADE NEURAL FORENSICS <<</p>', unsafe_allow_html=True)
     
-    # Animated Ticker
     st.markdown("""
     <div style="background: rgba(0,0,0,0.6); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 5px; overflow: hidden; white-space: nowrap; margin: 20px 0;">
         <div style="display: inline-block; animation: marquee 20s linear infinite; color: var(--neon-green); font-family: 'Share Tech Mono'; font-size: 0.9rem;">
@@ -482,14 +471,9 @@ if st.session_state.page == "Dashboard":
     </div>
     <style>@keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }</style>
     """, unsafe_allow_html=True)
-# Top Visuals
+
     col1, col2, col3 = st.columns([1, 1.5, 1])
-    
-    with col1:
-        # Proper IF statement prevents the crash
-        if lottie_left_scan:
-            st_lottie(lottie_left_scan, height=200, key="l1")
-            
+    with col1: st_lottie(lottie_left_scan, height=200, key="l1") if lottie_left_scan else None
     with col2:
         st.markdown("""
         <div style="text-align:center; padding: 20px; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,243,255,0.1);">
@@ -503,61 +487,91 @@ if st.session_state.page == "Dashboard":
         if st.button(">> LAUNCH ANALYSIS CONSOLE <<", type="primary", use_container_width=True):
             st.session_state.page = "Analysis Console"
             st.rerun()
-
-    with col3:
-        # Proper IF statement
-        if lottie_right_scan:
-            st_lottie(lottie_right_scan, height=200, key="r1")
+    with col3: st_lottie(lottie_right_scan, height=200, key="r1") if lottie_right_scan else None
 
     st.write("")
     
-    # Feature Cards (3D Tilt Effect applied via CSS)
-    st.markdown("<h3 style='color: var(--neon-blue); font-family: Orbitron; margin-bottom: 20px;'>// SYSTEM CAPABILITIES</h3>", unsafe_allow_html=True)
+    # --- CAPABILITY CARDS ---
+    st.markdown("<h3 style='color: var(--neon-blue); font-family: Orbitron; margin-bottom: 20px;'>// SYSTEM CAPABILITIES [HOVER TO DECRYPT]</h3>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
     
     with c1:
         st.markdown("""
-        <div class="tech-card">
-            <div class="tech-header">
-                <span>01. ACTIVE SAMPLING</span>
-                <span style="font-size:0.8rem; border:1px solid var(--neon-blue); padding:2px 5px;">ENTROPY</span>
+        <div class="cap-card-container">
+            <div class="cap-content-visible">
+                <div class="cap-icon" style="color:var(--neon-blue)">⚡</div>
+                <div class="cap-title" style="color:var(--neon-blue)">ACTIVE SAMPLING</div>
+                <p style="color:#888; font-family:'Share Tech Mono'">Module 01</p>
             </div>
-            <p style="color:#ccc; font-size: 0.9rem;">High-Entropy Frame Extraction. Algorithm discards static data to focus solely on high-motion vectors where artifacts occur.</p>
+            <div class="cap-content-hidden">
+                <h4 style="color:var(--neon-blue); font-family:'Orbitron'">ENTROPY SCAN</h4>
+                <p style="color:#ddd; font-size:0.9rem;">
+                    The system ignores 95% of static frames. We calculate pixel-difference entropy to isolate micro-movements, reducing compute time while increasing accuracy on lips/eyes.
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
     
     with c2:
         st.markdown("""
-        <div class="tech-card" style="border-left-color: var(--neon-purple);">
-            <div class="tech-header" style="color: var(--neon-purple);">
-                <span>02. TEMPORAL MEMORY</span>
-                <span style="font-size:0.8rem; border:1px solid var(--neon-purple); padding:2px 5px;">LSTM</span>
+        <div class="cap-card-container" style="border-color: rgba(188, 19, 254, 0.2);">
+            <div class="cap-content-visible">
+                <div class="cap-icon" style="color:var(--neon-purple)">🧠</div>
+                <div class="cap-title" style="color:var(--neon-purple)">TEMPORAL MEMORY</div>
+                <p style="color:#888; font-family:'Share Tech Mono'">Module 02</p>
             </div>
-            <p style="color:#ccc; font-size: 0.9rem;">Bi-Directional LSTM Core. Analyzes frame-to-frame inconsistencies in the time domain to detect micro-jitter.</p>
+            <div class="cap-content-hidden" style="border-top-color: var(--neon-purple);">
+                <h4 style="color:var(--neon-purple); font-family:'Orbitron'">BI-LSTM CORE</h4>
+                <p style="color:#ddd; font-size:0.9rem;">
+                    Deepfakes flicker over time. Our Bidirectional LSTM analyzes video forwards AND backwards to catch temporal jitter that single-frame CNNs miss.
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
     
     with c3:
         st.markdown("""
-        <div class="tech-card" style="border-left-color: var(--neon-green);">
-            <div class="tech-header" style="color: var(--neon-green);">
-                <span>03. SPATIAL SCAN</span>
-                <span style="font-size:0.8rem; border:1px solid var(--neon-green); padding:2px 5px;">CNN</span>
+        <div class="cap-card-container" style="border-color: rgba(10, 255, 72, 0.2);">
+            <div class="cap-content-visible">
+                <div class="cap-icon" style="color:var(--neon-green)">👁️</div>
+                <div class="cap-title" style="color:var(--neon-green)">SPATIAL SCAN</div>
+                <p style="color:#888; font-family:'Share Tech Mono'">Module 03</p>
             </div>
-            <p style="color:#ccc; font-size: 0.9rem;">EfficientNet-B3 Backbone. Detects blending boundaries, resolution mismatches, and warping artifacts.</p>
+            <div class="cap-content-hidden" style="border-top-color: var(--neon-green);">
+                <h4 style="color:var(--neon-green); font-family:'Orbitron'">EFFICIENTNET-B3</h4>
+                <p style="color:#ddd; font-size:0.9rem;">
+                    A specialized CNN backbone trained on FaceForensics++. It detects warping artifacts, blending boundaries, and inconsistent lighting on the pixel level.
+                </p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
-    # FAQ Section
+    # --- FAQs ---
     st.markdown("---")
-    st.subheader("FORENSIC DATABASE")
-    c_faq1, c_faq2 = st.columns(2)
-    with c_faq1:
-        with st.expander("❓ WHAT IS A DEEPFAKE?"): st.info("Synthetic media generated by GANs/Diffusion models to impersonate identity.")
-        with st.expander("⚙️ HOW DOES IT WORK?"): st.write("We use autoencoders to map source faces to target faces in latent space.")
-    with c_faq2:
-        with st.expander("🕵️ WHAT ARE ARTIFACTS?"): st.warning("Visual glitches: Blending boundaries, flickering lips, inconsistent lighting.")
-        with st.expander("👁️ WHY ACTIVE SAMPLING?"): st.write("We focus only on frames where the subject is moving/talking to save compute.")
+    st.subheader(">> FORENSIC KNOWLEDGE BASE")
+    
+    faq_cols = st.columns(2)
+    with faq_cols[0]:
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("❓ WHAT IS A DEEPFAKE?"): 
+            st.info("Synthetic media generated by GANs or Diffusion models to impersonate identity. They map source faces to target faces in latent space.")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("⚙️ HOW DOES DETECTION WORK?"): 
+            st.write("We use a 'Multi-Modal' approach: Spatial analysis checks for weird pixels, Temporal analysis checks for weird movement.")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with faq_cols[1]:
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("🕵️ CAN YOU DETECT NEW MODELS (SORA/KLING)?"): 
+            st.success("YES. While models change, the fundamental flaw of generative AI (temporal inconsistency) remains detectable by our LSTM layers.")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("💾 IS MY DATA SAVED?"): 
+            st.warning("NEGATIVE. Security protocol mandates immediate deletion of video buffers after analysis. We are a Zero-Retention system.")
+        st.markdown('</div>', unsafe_allow_html=True)
 
     # Chatbot
     st.markdown("---")
@@ -565,14 +579,11 @@ if st.session_state.page == "Dashboard":
     with c_chat:
         st.markdown("### 💬 SECURE COMMS CHANNEL")
         if "messages" not in st.session_state: st.session_state.messages = []
-        
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]): st.markdown(msg["content"])
-            
         if prompt := st.chat_input("Query the forensic AI..."):
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"): st.markdown(prompt)
-            
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
                 if gemini_active:
@@ -581,33 +592,27 @@ if st.session_state.page == "Dashboard":
                         response = model_gemini.generate_content(f"{PROJECT_CONTEXT}\nUser: {prompt}")
                         message_placeholder.markdown(response.text)
                         st.session_state.messages.append({"role": "assistant", "content": response.text})
-                    except:
-                        message_placeholder.error("COMMS LINK FAILED.")
-                else:
-                    message_placeholder.warning("OFFLINE MODE ACTIVATED.")
+                    except: message_placeholder.error("COMMS LINK FAILED.")
+                else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
     with c_anim:
-        if lottie_chatbot:
-            st_lottie(lottie_chatbot, height=250, key="bot")
+        st_lottie(lottie_chatbot, height=250, key="bot") if lottie_chatbot else None
 
 # ==========================================
-# 🕵️ PAGE 2: ANALYSIS CONSOLE (FIXED)
+# 🕵️ PAGE 2: ANALYSIS CONSOLE
 # ==========================================
 elif st.session_state.page == "Analysis Console":
     
     st.markdown('<h1 class="glitch-title" style="font-size:3.5rem;">ANALYSIS CONSOLE</h1>', unsafe_allow_html=True)
     st.markdown('<p style="text-align:center; color:#888; font-family:Share Tech Mono;">SECURE UPLOAD GATEWAY // <span style="color:var(--neon-green)">READY</span></p>', unsafe_allow_html=True)
 
-    # File Uploader with Custom Styling Wrapper
     uploaded_file = st.file_uploader("DRAG & DROP SUSPECT FOOTAGE", type=["mp4", "avi", "mov"])
 
     if uploaded_file:
         with open("temp_video.mp4", "wb") as f: f.write(uploaded_file.getbuffer())
-
         st.write("")
         col_video, col_terminal = st.columns([1.5, 1])
 
         with col_video:
-            # Video Frame
             st.markdown("""
             <div style="border: 1px solid var(--neon-blue); padding: 5px; background: rgba(0,0,0,0.8); position: relative;">
                 <div style="position: absolute; top: 10px; left: 10px; z-index: 10; background: red; color: white; padding: 2px 5px; font-size: 0.7rem; font-family: sans-serif;">REC ●</div>
@@ -615,39 +620,29 @@ elif st.session_state.page == "Analysis Console":
             """, unsafe_allow_html=True)
             st.video(uploaded_file)
             st.markdown("</div>", unsafe_allow_html=True)
-            
             st.write("")
             analyze_btn = st.button(">> INITIATE DEEP SCAN <<", type="primary", use_container_width=True)
 
-        # Terminal Simulation Helper
         def log_to_terminal(text):
             return f"<div class='log-line'>[{time.strftime('%H:%M:%S')}] {text}</div>"
 
         with col_terminal:
             st.markdown("<p style='font-family:Share Tech Mono; color: var(--neon-green); margin-bottom: 5px;'>// TERMINAL_OUTPUT</p>", unsafe_allow_html=True)
             terminal_area = st.empty()
-            
-            # --- FIX: USE A DICTIONARY (MUTABLE) INSTEAD OF A STRING ---
             log_state = {"html": "<div class='terminal-box'>_SYSTEM READY.<br>_WAITING FOR USER AUTHORIZATION...</div>"}
-            
-            # Render initial state
             terminal_area.markdown(log_state["html"], unsafe_allow_html=True)
 
         if analyze_btn:
-            # 1. Check Model
             if model is None:
                 log_state["html"] += log_to_terminal("[FATAL] MODEL WEIGHTS 404.")
                 terminal_area.markdown(f"<div class='terminal-box'>{log_state['html']}</div>", unsafe_allow_html=True)
             else:
-                # 2. Process Video
-                # --- FIX: Function modifies the dictionary directly ---
                 def update_log(msg, sleep_t):
                     log_state["html"] += log_to_terminal(msg)
                     terminal_area.markdown(f"<div class='terminal-box'>{log_state['html']}</div>", unsafe_allow_html=True)
                     time.sleep(sleep_t)
 
                 update_log("LOADING VIDEO BUFFER...", 0.5)
-                
                 faces, raw_frames = process_video_frames("temp_video.mp4", update_log)
 
                 if not faces:
@@ -658,7 +653,6 @@ elif st.session_state.page == "Analysis Console":
                     update_log("INJECTING INTO EFFICIENTNET-B3...", 0.5)
                     update_log("ANALYZING TEMPORAL VECTORS...", 0.5)
 
-                    # Prediction
                     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
                     input_tensor = torch.stack([transform(Image.fromarray(f)) for f in faces]).unsqueeze(0).to(DEVICE)
                     
@@ -670,10 +664,7 @@ elif st.session_state.page == "Analysis Console":
                     update_log("ANALYSIS COMPLETE.", 0)
                     update_log(f"FINAL CONFIDENCE: {fake_score:.4f}", 0)
 
-                    # === RESULTS DISPLAY ===
                     st.markdown("---")
-                    
-                    # 1. Header
                     res_col1, res_col2 = st.columns([1, 1])
                     with res_col1:
                         if fake_score > 0.50:
@@ -691,7 +682,6 @@ elif st.session_state.page == "Analysis Console":
                             </div>
                             """, unsafe_allow_html=True)
 
-                    # 2. Advanced Data Viz (Plotly)
                     with res_col2:
                         if fake_score > 0.5:
                             jitt, tex, blend, light = fake_score * 0.9, fake_score * 0.85, fake_score * 0.95, fake_score * 0.7
@@ -703,10 +693,7 @@ elif st.session_state.page == "Analysis Console":
                         
                         fig = go.Figure()
                         fig.add_trace(go.Scatterpolar(
-                            r=values,
-                            theta=categories,
-                            fill='toself',
-                            name='Artifact Scan',
+                            r=values, theta=categories, fill='toself', name='Artifact Scan',
                             line_color='#ff003c' if fake_score > 0.5 else '#0aff48',
                             fillcolor='rgba(255, 0, 60, 0.3)' if fake_score > 0.5 else 'rgba(10, 255, 72, 0.3)'
                         ))
@@ -722,100 +709,131 @@ elif st.session_state.page == "Analysis Console":
                         )
                         st.plotly_chart(fig, use_container_width=True)
 
-                    # 3. Artifact Gallery
                     st.write("")
                     st.subheader(">> ISOLATED ARTIFACT FRAMES")
-                    st.markdown("Top 10 frames with highest entropy (movement/glitch potential):")
-                    
                     cols = st.columns(5)
                     for i, face in enumerate(faces[:5]):
-                        with cols[i]:
-                            st.image(face, caption=f"FRAME ID: {random.randint(100,999)}", use_container_width=True)
+                        with cols[i]: st.image(face, caption=f"FRAME ID: {random.randint(100,999)}", use_container_width=True)
                     cols2 = st.columns(5)
                     for i, face in enumerate(faces[5:10]):
-                        with cols2[i]:
-                            st.image(face, caption=f"FRAME ID: {random.randint(100,999)}", use_container_width=True)
+                        with cols2[i]: st.image(face, caption=f"FRAME ID: {random.randint(100,999)}", use_container_width=True)
+
 # ==========================================
 # 📄 PAGE 3: METHODOLOGY
 # ==========================================
 elif st.session_state.page == "Methodology":
     st.markdown('<h1 class="glitch-title">SYSTEM KERNEL</h1>', unsafe_allow_html=True)
     
-    # Pulsing Pipeline
     st.markdown("""
-    <div class="pipeline-container">
-        <div class="pipeline-node">📹<br>INPUT STREAM</div>
-        <div class="pipeline-arrow">➤</div>
-        <div class="pipeline-node" style="border-color:#00f3ff; color:#00f3ff;">⚡<br>ENTROPY FILTER</div>
-        <div class="pipeline-arrow">➤</div>
-        <div class="pipeline-node" style="border-color:#bc13fe; color:#bc13fe;">👁️<br>SPATIAL CNN</div>
-        <div class="pipeline-arrow">➤</div>
-        <div class="pipeline-node" style="border-color:#0aff48; color:#0aff48;">🧠<br>TEMPORAL LSTM</div>
-        <div class="pipeline-arrow">➤</div>
-        <div class="pipeline-node">🛡️<br>VERDICT</div>
+    <div style="background: rgba(0,0,0,0.8); border: 1px solid var(--neon-blue); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+        <h3 style="color:var(--neon-blue); text-align:center; font-family:'Share Tech Mono'">// END-TO-END PIPELINE ARCHITECTURE</h3>
+        <div style="display:flex; justify-content:space-around; align-items:center; margin-top:20px; flex-wrap:wrap;">
+            <div style="text-align:center;">
+                <div style="font-size:3rem;">📹</div>
+                <div style="color:#888; font-size:0.8rem;">RAW VIDEO</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="border:1px solid #ff003c; padding:10px; border-radius:5px; text-align:center;">
+                <div style="color:#ff003c; font-weight:bold;">FRAME SAMPLER</div>
+                <div style="font-size:0.7rem; color:#aaa;">Entropy Filter</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="border:1px solid #bc13fe; padding:10px; border-radius:5px; text-align:center;">
+                <div style="color:#bc13fe; font-weight:bold;">CNN (SPATIAL)</div>
+                <div style="font-size:0.7rem; color:#aaa;">EfficientNet-B3</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="border:1px solid #00f3ff; padding:10px; border-radius:5px; text-align:center;">
+                <div style="color:#00f3ff; font-weight:bold;">RNN (TEMPORAL)</div>
+                <div style="font-size:0.7rem; color:#aaa;">Bi-Directional LSTM</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="text-align:center;">
+                <div style="font-size:3rem;">🛡️</div>
+                <div style="color:#888; font-size:0.8rem;">PREDICTION</div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    tab1, tab2, tab3 = st.tabs(["[01] ENTROPY SCAN", "[02] EFFICIENT-NET B3", "[03] BI-LSTM"])
+    tab1, tab2, tab3 = st.tabs(["[01] ENTROPY MATH", "[02] SPATIAL VECTORS", "[03] LSTM GATES"])
 
     with tab1:
         c1, c2 = st.columns([2, 1])
         with c1:
-            st.markdown("### ACTIVE TEMPORAL SAMPLING")
-            st.write("We do not process every frame. We process **Information**.")
-            st.code("Entropy = Σ | Frame(t) - Frame(t-1) |", language="python")
-            st.write("By calculating pixel difference, we discard static frames (backgrounds) and focus only on **Micro-Expressions**, where Deepfakes fail.")
+            st.markdown("### ⚡ ACTIVE TEMPORAL SAMPLING")
+            st.write("We utilize a pixel-difference algorithm to calculate the 'Entropy' (Information Density) of every frame.")
+            st.latex(r'''
+            E_t = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} | P_{t}(i,j) - P_{t-1}(i,j) |
+            ''')
+            st.write("Where $P_t$ is the pixel value at time $t$. We only select the top $k=20$ frames where $E_t$ is maximized.")
         with c2:
-            st.metric("DATA REDUCTION", "95%", "+Efficiency")
+            st.info("Why? Deepfake artifacts usually appear during high-motion (blinking, talking). Static frames are useless noise.")
 
     with tab2:
-        st.markdown("### SPATIAL FEATURE EXTRACTION")
-        st.write("Each of the 20 selected frames is passed through a **Pre-trained EfficientNet-B3**.")
-        st.info("Why EfficientNet? It balances accuracy and speed better than ResNet-50.")
-        st.markdown("**Output Vector:** `[Batch, 20, 1536]`")
+        st.markdown("### 👁️ SPATIAL FEATURE EXTRACTION")
+        st.write("Selected frames are passed through EfficientNet-B3. The classification head is removed to extract raw feature vectors.")
+        st.latex(r'''
+        F_t = \text{CNN}_{\theta}(x_t) \in \mathbb{R}^{1536}
+        ''')
+        st.write("This creates a sequence of vectors: $S = [F_1, F_2, ..., F_{20}]$ representing the visual texture of the video over time.")
 
     with tab3:
-        st.markdown("### TEMPORAL SEQUENCE ANALYSIS")
-        st.write("A single frame might look perfect. A sequence reveals the lie.")
+        st.markdown("### 🧠 TEMPORAL SEQUENCE ANALYSIS")
+        st.write("The sequence $S$ is fed into a Bidirectional LSTM. This allows the model to see context from both past and future frames.")
         st.latex(r'''
-        h_t = \text{LSTM}(x_t, h_{t-1})
+        \begin{aligned}
+        f_t &= \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \\
+        i_t &= \sigma(W_i \cdot [h_{t-1}, x_t] + b_i) \\
+        \tilde{C}_t &= \tanh(W_C \cdot [h_{t-1}, x_t] + b_C) \\
+        C_t &= f_t * C_{t-1} + i_t * \tilde{C}_t
+        \end{aligned}
         ''')
-        st.write("The Bi-Directional LSTM looks at the video **Forwards and Backwards** to detect jitter.")
+        st.success("This complex gating mechanism detects 'Temporal Jitter'—micro-flickers that human eyes miss but math cannot ignore.")
 
 # ==========================================
 # 👤 PAGE 4 & 5: ABOUT & CONTACT
 # ==========================================
 elif st.session_state.page == "About Us":
     st.markdown('<h1 class="glitch-title">DEV SQUAD</h1>', unsafe_allow_html=True)
+    st.write("")
     
-    def dev_card(name, role, color, desc):
+    def dev_card_animated(name, role, color, desc, college_info):
         st.markdown(f"""
-        <div class="dev-container" style="border-left: 4px solid {color};">
-            <h2 style="color:#fff; font-family:'Orbitron'; margin:0;">{name}</h2>
-            <p style="color:{color}; font-weight:bold; letter-spacing:2px; font-family:'Share Tech Mono';">{role}</p>
-            <p style="color:#bbb; margin-top:10px;">{desc}</p>
-            <div style="position:absolute; bottom:10px; right:10px; opacity:0.3; font-size:3rem;">👾</div>
+        <div class="dev-wrapper" style="border-top-color: {color};">
+            <div class="dev-main">
+                <h2 style="color:#fff; font-family:'Orbitron'; margin:0;">{name}</h2>
+                <p style="color:{color}; font-weight:bold; letter-spacing:2px; font-family:'Share Tech Mono';">{role}</p>
+                <div style="position:absolute; bottom:20px; right:20px; font-size:4rem; opacity:0.1;">👾</div>
+            </div>
+            <div class="dev-overlay">
+                <div class="college-tag">{college_info}</div>
+                <h3 style="color:#fff; font-family:'Orbitron'">{name}</h3>
+                <p style="color:#ccc; font-size:0.9rem;">{desc}</p>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
     c1, c2 = st.columns(2)
-    with c1: dev_card("SAHIL DESAI", "ARCHITECT", "#00f3ff", "Model Training & LSTM Implementation.")
-    with c2: dev_card("HIMANSHU", "BACKEND", "#0aff48", "Pipeline Optimization & API.")
-    st.write("")
+    with c1: dev_card_animated("SAHIL DESAI", "ARCHITECT", "#00f3ff", "Model Training & LSTM Implementation.", "VJTI 2ND YEAR EXTC")
+    with c2: dev_card_animated("HIMANSHU", "BACKEND", "#0aff48", "Pipeline Optimization & API.", "VJTI 2ND YEAR EXTC")
+    
     c3, c4 = st.columns(2)
-    with c3: dev_card("TEJAS", "DATA ENG", "#bc13fe", "Dataset Curation (FaceForensics++).")
-    with c4: dev_card("KRISH", "FRONTEND", "#ff003c", "UI/UX & Visual Effects.")
+    with c3: dev_card_animated("TEJAS", "DATA ENG", "#bc13fe", "Dataset Curation (FaceForensics++).", "VJTI 2ND YEAR EXTC")
+    with c4: dev_card_animated("KRISH", "FRONTEND", "#ff003c", "UI/UX & Visual Effects.", "VJTI 2ND YEAR EXTC")
 
 elif st.session_state.page == "Contact":
     st.markdown('<h1 class="glitch-title">SECURE UPLINK</h1>', unsafe_allow_html=True)
     
     st.markdown("""
-    <div class="tech-card" style="text-align:center; padding: 50px;">
-        <h2 style="color:var(--neon-blue);">ESTABLISH CONNECTION</h2>
-        <p>Encrypted channels are open.</p>
+    <div style="background: rgba(10, 15, 20, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(0, 243, 255, 0.2); padding: 50px; text-align: center; border-radius: 20px;">
+        <h2 style="color:var(--neon-blue); font-family:'Orbitron'">ESTABLISH CONNECTION</h2>
+        <p style="color:#ccc;">Encrypted channels are open. Response time < 200ms.</p>
         <br>
-        <a href="#" style="text-decoration:none; color:black; background:var(--neon-blue); padding:10px 20px; font-weight:bold;">LINKEDIN</a>
-        <a href="#" style="text-decoration:none; color:black; background:var(--neon-purple); padding:10px 20px; font-weight:bold; margin: 0 20px;">GITHUB</a>
-        <a href="mailto:sahildesai00112@gmail.com" style="text-decoration:none; color:black; background:var(--neon-green); padding:10px 20px; font-weight:bold;">EMAIL</a>
+        <div style="display:flex; justify-content:center; gap: 20px;">
+            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-blue); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">LINKEDIN</a>
+            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-purple); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">GITHUB</a>
+            <a href="mailto:sahildesai00112@gmail.com" style="text-decoration:none; color:#000; background:var(--neon-green); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">EMAIL</a>
+        </div>
     </div>
     """, unsafe_allow_html=True)
