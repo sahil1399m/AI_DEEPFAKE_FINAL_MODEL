@@ -7,6 +7,6 @@ pandas
 Pillow
 streamlit-lottie
 facenet-pytorch
-
 google-generativeai
 gdown
+plotly
