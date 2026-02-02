@@ -71,7 +71,7 @@ lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE (COMPACT & PROFESSIONAL)
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE
 # ==========================================
 
 if bg_image_base64:
@@ -137,7 +137,7 @@ st.markdown(f"""
     .glitch-title {{
         font-family: 'Orbitron', sans-serif;
         font-weight: 900; 
-        font-size: 3rem; /* Reduced from 4.5rem */
+        font-size: 3rem; 
         text-align: center;
         color: #fff; text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-blue);
         animation: glitch-skew 3s infinite linear alternate-reverse;
@@ -146,7 +146,7 @@ st.markdown(f"""
     .tech-subtitle {{
         font-family: 'Share Tech Mono', monospace; color: var(--neon-blue);
         text-align: center; 
-        font-size: 0.9rem; /* Reduced */
+        font-size: 0.9rem; 
         letter-spacing: 4px;
         text-transform: uppercase; margin-top: -5px; opacity: 0.9;
         text-shadow: 0 0 10px var(--neon-blue);
@@ -157,7 +157,7 @@ st.markdown(f"""
     ---------------------------------------------------- */
     .cap-card-container {{
         position: relative;
-        height: 200px; /* Reduced height */
+        height: 200px;
         background: rgba(10, 15, 20, 0.6);
         border: 1px solid rgba(0, 243, 255, 0.2);
         border-radius: 8px;
@@ -199,7 +199,7 @@ st.markdown(f"""
         bottom: 0;
     }}
     .cap-icon {{ 
-        font-size: 2.5rem; /* Reduced */
+        font-size: 2.5rem; 
         margin-bottom: 8px; text-shadow: 0 0 15px currentColor; 
     }}
     .cap-title {{ font-family: 'Orbitron'; font-size: 1rem; letter-spacing: 2px; }}
@@ -240,7 +240,7 @@ st.markdown(f"""
        TEAM HOVER CARDS - Reduced Height
     ---------------------------------------------------- */
     .dev-wrapper {{
-        position: relative; width: 100%; height: 220px; /* Reduced */
+        position: relative; width: 100%; height: 220px;
         background: rgba(5, 10, 15, 0.8);
         border: 1px solid rgba(255,255,255,0.1);
         border-top: 3px solid var(--neon-blue);
@@ -287,10 +287,10 @@ st.markdown(f"""
         background: #000; border: 1px solid #333; padding: 15px;
         font-family: 'Share Tech Mono', monospace; color: #ccc;
         height: 350px; overflow-y: auto; border-left: 4px solid var(--neon-green);
-        font-size: 0.85rem; line-height: 1.5;
+        font-size: 0.8rem; line-height: 1.4;
     }}
-    .log-line {{ margin-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; }}
-    .log-time {{ color: #666; margin-right: 10px; min-width: 70px; font-size: 0.8rem; }}
+    .log-line {{ margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; }}
+    .log-time {{ color: #555; margin-right: 10px; min-width: 80px; }}
     .log-msg {{ color: var(--neon-blue); }}
     .log-sys {{ color: var(--neon-purple); font-weight: bold; }}
     .log-warn {{ color: var(--neon-red); }}
@@ -360,7 +360,7 @@ def process_video_frames(video_path, status_log_func):
 
     prev_gray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
     frame_cnt = 0
-    status_log_func(">> INITIALIZING ENTROPY SCANNERS...", "sys")
+    status_log_func("INITIALIZING ENTROPY SCANNERS...", "sys")
     
     while cap.isOpened():
         ret, curr = cap.read()
@@ -377,7 +377,7 @@ def process_video_frames(video_path, status_log_func):
     top_frames = [x[1] for x in diffs[:20]]
     if len(top_frames) < 1: return None, []
 
-    status_log_func(">> DETECTING FACIAL ROI (MTCNN)...", "sys")
+    status_log_func("DETECTING FACIAL ROI (MTCNN)...", "sys")
     processed_faces = []
     for f in top_frames:
         h, w = f.shape[:2]
@@ -489,7 +489,6 @@ if st.session_state.page == "Dashboard":
 
     col1, col2, col3 = st.columns([1, 1.5, 1])
     
-    # ------------------ ERROR FIX START ------------------
     with col1: 
         if lottie_left_scan:
             st_lottie(lottie_left_scan, height=200, key="l1")
@@ -511,7 +510,6 @@ if st.session_state.page == "Dashboard":
     with col3: 
         if lottie_right_scan:
             st_lottie(lottie_right_scan, height=200, key="r1")
-    # ------------------ ERROR FIX END ------------------
 
     st.write("")
     
@@ -619,11 +617,9 @@ if st.session_state.page == "Dashboard":
                     except: message_placeholder.error("COMMS LINK FAILED.")
                 else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
     
-    # ------------------ ERROR FIX START ------------------
     with c_anim:
         if lottie_chatbot:
             st_lottie(lottie_chatbot, height=250, key="bot")
-    # ------------------ ERROR FIX END ------------------
 
 # ==========================================
 # 🕵️ PAGE 2: ANALYSIS CONSOLE (PROFESSIONAL TERMINAL)
@@ -667,7 +663,7 @@ elif st.session_state.page == "Analysis Console":
             return f"<div class='terminal-box'>{log_html}</div>"
 
         def add_log(msg, type="msg"):
-            t = time.strftime('%H:%M:%S.%f')[:-3]
+            t = time.strftime('%H:%M:%S')
             st.session_state.log_history.append({"time": t, "msg": msg, "type": type})
 
         with col_terminal:
