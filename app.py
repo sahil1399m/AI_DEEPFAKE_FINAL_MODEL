@@ -71,7 +71,7 @@ lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE (FIXED SYNTAX)
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE (TEXT REDUCED)
 # ==========================================
 
 if bg_image_base64:
@@ -105,10 +105,10 @@ st.markdown(f"""
         --neon-red: #ff003c; 
     }}
 
-    html, body, [class*="css"] {{ font-family: 'Rajdhani', sans-serif; color: #e0fbfc; }}
+    html, body, [class*="css"] {{ font-family: 'Rajdhani', sans-serif; color: #e0fbfc; font-size: 14px; }}
     
     /* Scrollbar */
-    ::-webkit-scrollbar {{ width: 8px; background: #000; }}
+    ::-webkit-scrollbar {{ width: 6px; background: #000; }}
     ::-webkit-scrollbar-thumb {{ background: var(--neon-blue); border-radius: 2px; }}
 
     /* Scanlines */
@@ -126,7 +126,7 @@ st.markdown(f"""
         border-right: 1px solid rgba(0, 243, 255, 0.1);
     }}
 
-    /* Glitch Title */
+    /* Glitch Title - REDUCED SIZE */
     @keyframes glitch-skew {{
         0% {{ transform: skew(0deg); }}
         20% {{ transform: skew(-2deg); }}
@@ -137,27 +137,31 @@ st.markdown(f"""
     }}
     .glitch-title {{
         font-family: 'Orbitron', sans-serif;
-        font-weight: 900; font-size: 4rem; text-align: center;
+        font-weight: 900; 
+        font-size: 2.8rem; /* Reduced from 4rem */
+        text-align: center;
         color: #fff; text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-blue);
         animation: glitch-skew 3s infinite linear alternate-reverse;
-        margin-bottom: 0px; letter-spacing: 5px;
+        margin-bottom: 0px; letter-spacing: 3px;
     }}
     .tech-subtitle {{
         font-family: 'Share Tech Mono', monospace; color: var(--neon-blue);
-        text-align: center; font-size: 1.1rem; letter-spacing: 6px;
-        text-transform: uppercase; margin-top: -10px; opacity: 0.9;
+        text-align: center; 
+        font-size: 0.9rem; /* Reduced from 1.1rem */
+        letter-spacing: 4px;
+        text-transform: uppercase; margin-top: -5px; opacity: 0.9;
         text-shadow: 0 0 10px var(--neon-blue);
     }}
 
     /* ----------------------------------------------------
-       HOVER CAPABILITY CARDS
+       HOVER CAPABILITY CARDS - REDUCED SIZE
     ---------------------------------------------------- */
     .cap-card-container {{
         position: relative;
-        height: 250px;
+        height: 200px; /* Reduced from 250px */
         background: rgba(10, 15, 20, 0.6);
         border: 1px solid rgba(0, 243, 255, 0.2);
-        border-radius: 10px;
+        border-radius: 8px;
         overflow: hidden;
         transition: 0.3s;
         box-shadow: 0 0 10px rgba(0,0,0,0.5);
@@ -168,7 +172,7 @@ st.markdown(f"""
         transform: translateY(-5px);
     }}
     .cap-content-visible {{
-        padding: 20px;
+        padding: 15px;
         height: 100%;
         display: flex;
         flex-direction: column;
@@ -185,7 +189,7 @@ st.markdown(f"""
         background: rgba(0,0,0,0.95);
         background-image: linear-gradient(rgba(188, 19, 254, 0.1) 1px, transparent 1px);
         background-size: 20px 20px;
-        padding: 20px;
+        padding: 15px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -195,16 +199,23 @@ st.markdown(f"""
     .cap-card-container:hover .cap-content-hidden {{
         bottom: 0;
     }}
-    .cap-icon {{ font-size: 3rem; margin-bottom: 10px; text-shadow: 0 0 15px currentColor; }}
-    .cap-title {{ font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px; }}
+    .cap-icon {{ 
+        font-size: 2.2rem; /* Reduced from 3rem */
+        margin-bottom: 8px; text-shadow: 0 0 15px currentColor; 
+    }}
+    .cap-title {{ 
+        font-family: 'Orbitron'; 
+        font-size: 1rem; /* Reduced from 1.2rem */
+        letter-spacing: 1px; 
+    }}
 
     /* ----------------------------------------------------
-       TELEMETRY CSS (FIXED BRACES)
+       TELEMETRY CSS - REDUCED SIZE
     ---------------------------------------------------- */
     .telemetry-box {{
         background: #050505;
         border: 1px solid #333;
-        padding: 15px;
+        padding: 12px;
         font-family: 'Share Tech Mono';
         position: relative;
         overflow: hidden;
@@ -213,39 +224,41 @@ st.markdown(f"""
     }}
     .telemetry-header {{
         display: flex; justify-content: space-between;
-        border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px;
-        color: var(--neon-green); font-size: 0.8rem;
+        border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 8px;
+        color: var(--neon-green); font-size: 0.75rem;
     }}
     .hex-bg {{
         position: absolute; top:0; left:0; width:100%; height:100%;
-        color: rgba(0, 255, 0, 0.05); font-size: 0.6rem;
+        color: rgba(0, 255, 0, 0.05); font-size: 0.5rem;
         z-index: 0; pointer-events: none; word-wrap: break-word;
     }}
-    .stat-row {{ display: flex; justify-content: space-between; z-index: 2; position: relative; margin-bottom: 5px; font-size: 0.9rem; }}
+    .stat-row {{ 
+        display: flex; justify-content: space-between; z-index: 2; position: relative; 
+        margin-bottom: 4px; font-size: 0.8rem; /* Reduced from 0.9rem */
+    }}
     .stat-val {{ color: var(--neon-blue); text-shadow: 0 0 5px var(--neon-blue); }}
     
-    /* THIS IS THE FIXED LINE: */
     @keyframes blink {{ 0% {{opacity:1;}} 50% {{opacity:0.3;}} 100% {{opacity:1;}} }}
     
     .live-dot {{ color: var(--neon-red); animation: blink 1s infinite; margin-right: 5px; }}
 
     /* ----------------------------------------------------
-       TEAM HOVER CARDS
+       TEAM HOVER CARDS - REDUCED SIZE
     ---------------------------------------------------- */
     .dev-wrapper {{
-        position: relative; width: 100%; height: 260px;
+        position: relative; width: 100%; height: 220px; /* Reduced from 260px */
         background: rgba(5, 10, 15, 0.8);
         border: 1px solid rgba(255,255,255,0.1);
         border-top: 3px solid var(--neon-blue);
         overflow: hidden; transition: 0.4s;
-        margin-bottom: 20px;
+        margin-bottom: 15px;
     }}
     .dev-wrapper:hover {{
         border-top-color: var(--neon-green);
         box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         transform: translateY(-5px);
     }}
-    .dev-main {{ padding: 25px; transition: 0.4s; }}
+    .dev-main {{ padding: 20px; transition: 0.4s; }}
     .dev-wrapper:hover .dev-main {{ transform: translateY(-50px); opacity: 0.3; filter: blur(2px); }}
     
     .dev-overlay {{
@@ -253,14 +266,14 @@ st.markdown(f"""
         background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 100%);
         display: flex; flex-direction: column; justify-content: center; align-items: center;
         transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        padding: 20px; text-align: center;
+        padding: 15px; text-align: center;
         border-top: 1px solid var(--neon-green);
     }}
     .dev-wrapper:hover .dev-overlay {{ bottom: 0; }}
     
     .college-tag {{
-        background: var(--neon-blue); color: #000; padding: 5px 10px;
-        font-weight: bold; font-family: 'Orbitron'; font-size: 0.8rem;
+        background: var(--neon-blue); color: #000; padding: 3px 8px;
+        font-weight: bold; font-family: 'Orbitron'; font-size: 0.7rem;
         margin-bottom: 5px; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
     }}
 
@@ -271,15 +284,18 @@ st.markdown(f"""
         background: transparent !important; border: 1px solid var(--neon-blue) !important;
         color: var(--neon-blue) !important; font-family: 'Share Tech Mono' !important;
         text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
+        font-size: 0.9rem !important; /* Smaller buttons */
+        padding: 10px 20px !important;
     }}
     .stButton button:hover {{ background: rgba(0,243,255,0.1) !important; box-shadow: 0 0 15px var(--neon-blue); }}
     
     .terminal-box {{
-        background: #000; border: 1px solid #333; padding: 20px;
+        background: #000; border: 1px solid #333; padding: 15px;
         font-family: 'Share Tech Mono', monospace; color: var(--neon-green);
-        height: 400px; overflow-y: auto; border-left: 4px solid var(--neon-green);
+        height: 350px; overflow-y: auto; border-left: 4px solid var(--neon-green);
+        font-size: 0.85rem;
     }}
-    .log-line {{ margin-bottom: 5px; border-bottom: 1px solid rgba(0,255,0,0.1); }}
+    .log-line {{ margin-bottom: 4px; border-bottom: 1px solid rgba(0,255,0,0.1); }}
 
     /* FAQ Styling */
     .faq-container {{ border: 1px solid #333; margin-bottom: 10px; background: rgba(255,255,255,0.02); transition:0.3s; }}
@@ -390,15 +406,15 @@ def process_video_frames(video_path, status_log_func):
     return final_faces, top_frames
 
 # ==========================================
-# 🧭 7. SIDEBAR (CRAZY TELEMETRY)
+# 🧭 7. SIDEBAR (CRAZY TELEMETRY - SMALLER)
 # ==========================================
 if "page" not in st.session_state: st.session_state.page = "Dashboard"
 
 with st.sidebar:
     st.markdown("""
-    <div style="text-align: center; border-bottom: 2px solid var(--neon-blue); padding-bottom: 20px; margin-bottom: 20px;">
-        <h1 style="color: #fff; margin:0; font-family:'Orbitron'; font-size: 2rem; text-shadow: 0 0 15px var(--neon-blue);">OPS CENTER</h1>
-        <p style="color: var(--neon-blue); margin:0; font-size: 0.8rem; letter-spacing: 4px; font-family:'Share Tech Mono';">SYS.VER.4.0.ALPHA</p>
+    <div style="text-align: center; border-bottom: 2px solid var(--neon-blue); padding-bottom: 15px; margin-bottom: 15px;">
+        <h1 style="color: #fff; margin:0; font-family:'Orbitron'; font-size: 1.5rem; text-shadow: 0 0 10px var(--neon-blue);">OPS CENTER</h1>
+        <p style="color: var(--neon-blue); margin:0; font-size: 0.7rem; letter-spacing: 3px; font-family:'Share Tech Mono';">SYS.VER.4.0.ALPHA</p>
     </div>
     """, unsafe_allow_html=True)
     
@@ -436,7 +452,7 @@ with st.sidebar:
             <span>LATENCY</span>
             <span class="stat-val">{random.randint(10, 45)}ms</span>
         </div>
-        <div style="margin-top:10px; border-top:1px dashed #333; padding-top:5px; font-size:0.7rem; color:#666;">
+        <div style="margin-top:8px; border-top:1px dashed #333; padding-top:5px; font-size:0.6rem; color:#666;">
             ENCRYPTION: AES-256<br>
             UPLINK: STABLE
         </div>
@@ -444,28 +460,28 @@ with st.sidebar:
     """, unsafe_allow_html=True)
 
     # Mini Chart
-    st.markdown("<p style='font-size: 0.7rem; color: #888; font-family: Share Tech Mono;'>NEURAL_ACTIVITY_LOG</p>", unsafe_allow_html=True)
+    st.markdown("<p style='font-size: 0.6rem; color: #888; font-family: Share Tech Mono;'>NEURAL_ACTIVITY_LOG</p>", unsafe_allow_html=True)
     chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['a', 'b', 'c'])
-    st.line_chart(chart_data, height=80, color=["#00f3ff", "#bc13fe", "#0aff48"]) 
+    st.line_chart(chart_data, height=60, color=["#00f3ff", "#bc13fe", "#0aff48"]) 
 
     # Status Badge
     if gemini_active:
-        st.markdown('<div style="background: rgba(10,255,72,0.1); border: 1px solid #0aff48; text-align: center; padding: 5px;"><span style="color: #0aff48; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE ONLINE</span></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: rgba(10,255,72,0.1); border: 1px solid #0aff48; text-align: center; padding: 4px;"><span style="color: #0aff48; font-family: Share Tech Mono; font-size: 0.7rem;">● AI CORE ONLINE</span></div>', unsafe_allow_html=True)
     else:
-        st.markdown('<div style="background: rgba(255,0,60,0.1); border: 1px solid #ff003c; text-align: center; padding: 5px;"><span style="color: #ff003c; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE OFFLINE</span></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: rgba(255,0,60,0.1); border: 1px solid #ff003c; text-align: center; padding: 4px;"><span style="color: #ff003c; font-family: Share Tech Mono; font-size: 0.7rem;">● AI CORE OFFLINE</span></div>', unsafe_allow_html=True)
 
 # ==========================================
 # 🏠 PAGE 1: DASHBOARD
 # ==========================================
 if st.session_state.page == "Dashboard":
     
-    st.markdown('<div style="margin-top: 40px;"></div>', unsafe_allow_html=True)
+    st.markdown('<div style="margin-top: 30px;"></div>', unsafe_allow_html=True)
     st.markdown('<h1 class="glitch-title">AI THENTIC</h1>', unsafe_allow_html=True)
     st.markdown('<p class="tech-subtitle">>> MILITARY-GRADE NEURAL FORENSICS <<</p>', unsafe_allow_html=True)
     
     st.markdown("""
     <div style="background: rgba(0,0,0,0.6); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 5px; overflow: hidden; white-space: nowrap; margin: 20px 0;">
-        <div style="display: inline-block; animation: marquee 20s linear infinite; color: var(--neon-green); font-family: 'Share Tech Mono'; font-size: 0.9rem;">
+        <div style="display: inline-block; animation: marquee 20s linear infinite; color: var(--neon-green); font-family: 'Share Tech Mono'; font-size: 0.8rem;">
             SYSTEM INITIALIZED... SEARCHING FOR DEEPFAKE ARTIFACTS... LSTM VECTORS LOADED... EFFICIENTNET-B3 STANDING BY... SECURE CONNECTION ESTABLISHED... WAITING FOR INPUT STREAM...
         </div>
     </div>
@@ -474,16 +490,16 @@ if st.session_state.page == "Dashboard":
 
     col1, col2, col3 = st.columns([1, 1.5, 1])
     
-    # ------------------ FIX START ------------------
+    # ------------------ ERROR FIX START ------------------
     with col1: 
         if lottie_left_scan:
             st_lottie(lottie_left_scan, height=200, key="l1")
             
     with col2:
         st.markdown("""
-        <div style="text-align:center; padding: 20px; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,243,255,0.1);">
-            <h3 style="color: #fff; font-family: 'Orbitron';">INTEGRITY VERIFICATION</h3>
-            <p style="color:#aaa; font-family: 'Share Tech Mono'; font-size: 0.9rem; margin-bottom: 20px;">
+        <div style="text-align:center; padding: 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,243,255,0.1);">
+            <h3 style="color: #fff; font-family: 'Orbitron'; font-size: 1.2rem;">INTEGRITY VERIFICATION</h3>
+            <p style="color:#aaa; font-family: 'Share Tech Mono'; font-size: 0.8rem; margin-bottom: 15px;">
                 DEPLOYING BI-DIRECTIONAL LSTM ARRAYS FOR DEEPFAKE ARTIFACT DETECTION.
             </p>
         </div>
@@ -496,12 +512,12 @@ if st.session_state.page == "Dashboard":
     with col3: 
         if lottie_right_scan:
             st_lottie(lottie_right_scan, height=200, key="r1")
-    # ------------------ FIX END ------------------
+    # ------------------ ERROR FIX END ------------------
 
     st.write("")
     
     # --- CAPABILITY CARDS ---
-    st.markdown("<h3 style='color: var(--neon-blue); font-family: Orbitron; margin-bottom: 20px;'>// SYSTEM CAPABILITIES [HOVER TO DECRYPT]</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='color: var(--neon-blue); font-family: Orbitron; margin-bottom: 20px; font-size: 1.2rem;'>// SYSTEM CAPABILITIES [HOVER TO DECRYPT]</h3>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
     
     with c1:
@@ -510,11 +526,11 @@ if st.session_state.page == "Dashboard":
             <div class="cap-content-visible">
                 <div class="cap-icon" style="color:var(--neon-blue)">⚡</div>
                 <div class="cap-title" style="color:var(--neon-blue)">ACTIVE SAMPLING</div>
-                <p style="color:#888; font-family:'Share Tech Mono'">Module 01</p>
+                <p style="color:#888; font-family:'Share Tech Mono'; font-size: 0.8rem;">Module 01</p>
             </div>
             <div class="cap-content-hidden">
-                <h4 style="color:var(--neon-blue); font-family:'Orbitron'">ENTROPY SCAN</h4>
-                <p style="color:#ddd; font-size:0.9rem;">
+                <h4 style="color:var(--neon-blue); font-family:'Orbitron'; font-size: 1rem;">ENTROPY SCAN</h4>
+                <p style="color:#ddd; font-size:0.8rem;">
                     The system ignores 95% of static frames. We calculate pixel-difference entropy to isolate micro-movements, reducing compute time while increasing accuracy on lips/eyes.
                 </p>
             </div>
@@ -527,11 +543,11 @@ if st.session_state.page == "Dashboard":
             <div class="cap-content-visible">
                 <div class="cap-icon" style="color:var(--neon-purple)">🧠</div>
                 <div class="cap-title" style="color:var(--neon-purple)">TEMPORAL MEMORY</div>
-                <p style="color:#888; font-family:'Share Tech Mono'">Module 02</p>
+                <p style="color:#888; font-family:'Share Tech Mono'; font-size: 0.8rem;">Module 02</p>
             </div>
             <div class="cap-content-hidden" style="border-top-color: var(--neon-purple);">
-                <h4 style="color:var(--neon-purple); font-family:'Orbitron'">BI-LSTM CORE</h4>
-                <p style="color:#ddd; font-size:0.9rem;">
+                <h4 style="color:var(--neon-purple); font-family:'Orbitron'; font-size: 1rem;">BI-LSTM CORE</h4>
+                <p style="color:#ddd; font-size:0.8rem;">
                     Deepfakes flicker over time. Our Bidirectional LSTM analyzes video forwards AND backwards to catch temporal jitter that single-frame CNNs miss.
                 </p>
             </div>
@@ -544,11 +560,11 @@ if st.session_state.page == "Dashboard":
             <div class="cap-content-visible">
                 <div class="cap-icon" style="color:var(--neon-green)">👁️</div>
                 <div class="cap-title" style="color:var(--neon-green)">SPATIAL SCAN</div>
-                <p style="color:#888; font-family:'Share Tech Mono'">Module 03</p>
+                <p style="color:#888; font-family:'Share Tech Mono'; font-size: 0.8rem;">Module 03</p>
             </div>
             <div class="cap-content-hidden" style="border-top-color: var(--neon-green);">
-                <h4 style="color:var(--neon-green); font-family:'Orbitron'">EFFICIENTNET-B3</h4>
-                <p style="color:#ddd; font-size:0.9rem;">
+                <h4 style="color:var(--neon-green); font-family:'Orbitron'; font-size: 1rem;">EFFICIENTNET-B3</h4>
+                <p style="color:#ddd; font-size:0.8rem;">
                     A specialized CNN backbone trained on FaceForensics++. It detects warping artifacts, blending boundaries, and inconsistent lighting on the pixel level.
                 </p>
             </div>
@@ -604,19 +620,19 @@ if st.session_state.page == "Dashboard":
                     except: message_placeholder.error("COMMS LINK FAILED.")
                 else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
     
-    # ------------------ FIX START ------------------
+    # ------------------ ERROR FIX START ------------------
     with c_anim:
         if lottie_chatbot:
             st_lottie(lottie_chatbot, height=250, key="bot")
-    # ------------------ FIX END ------------------
+    # ------------------ ERROR FIX END ------------------
 
 # ==========================================
 # 🕵️ PAGE 2: ANALYSIS CONSOLE
 # ==========================================
 elif st.session_state.page == "Analysis Console":
     
-    st.markdown('<h1 class="glitch-title" style="font-size:3.5rem;">ANALYSIS CONSOLE</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align:center; color:#888; font-family:Share Tech Mono;">SECURE UPLOAD GATEWAY // <span style="color:var(--neon-green)">READY</span></p>', unsafe_allow_html=True)
+    st.markdown('<h1 class="glitch-title" style="font-size:3rem;">ANALYSIS CONSOLE</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align:center; color:#888; font-family:Share Tech Mono; font-size: 0.9rem;">SECURE UPLOAD GATEWAY // <span style="color:var(--neon-green)">READY</span></p>', unsafe_allow_html=True)
 
     uploaded_file = st.file_uploader("DRAG & DROP SUSPECT FOOTAGE", type=["mp4", "avi", "mov"])
 
@@ -629,7 +645,7 @@ elif st.session_state.page == "Analysis Console":
             st.markdown("""
             <div style="border: 1px solid var(--neon-blue); padding: 5px; background: rgba(0,0,0,0.8); position: relative;">
                 <div style="position: absolute; top: 10px; left: 10px; z-index: 10; background: red; color: white; padding: 2px 5px; font-size: 0.7rem; font-family: sans-serif;">REC ●</div>
-                <div style="position: absolute; bottom: 10px; right: 10px; z-index: 10; color: var(--neon-blue); font-family: 'Share Tech Mono';">SOURCE: EXT_CAM_01</div>
+                <div style="position: absolute; bottom: 10px; right: 10px; z-index: 10; color: var(--neon-blue); font-family: 'Share Tech Mono'; font-size: 0.7rem;">SOURCE: EXT_CAM_01</div>
             """, unsafe_allow_html=True)
             st.video(uploaded_file)
             st.markdown("</div>", unsafe_allow_html=True)
@@ -640,7 +656,7 @@ elif st.session_state.page == "Analysis Console":
             return f"<div class='log-line'>[{time.strftime('%H:%M:%S')}] {text}</div>"
 
         with col_terminal:
-            st.markdown("<p style='font-family:Share Tech Mono; color: var(--neon-green); margin-bottom: 5px;'>// TERMINAL_OUTPUT</p>", unsafe_allow_html=True)
+            st.markdown("<p style='font-family:Share Tech Mono; color: var(--neon-green); margin-bottom: 5px; font-size: 0.9rem;'>// TERMINAL_OUTPUT</p>", unsafe_allow_html=True)
             terminal_area = st.empty()
             log_state = {"html": "<div class='terminal-box'>_SYSTEM READY.<br>_WAITING FOR USER AUTHORIZATION...</div>"}
             terminal_area.markdown(log_state["html"], unsafe_allow_html=True)
@@ -682,16 +698,16 @@ elif st.session_state.page == "Analysis Console":
                     with res_col1:
                         if fake_score > 0.50:
                             st.markdown(f"""
-                            <div style="border: 2px solid #ff003c; background: rgba(255,0,60,0.1); padding: 30px; text-align: center; box-shadow: 0 0 50px rgba(255,0,60,0.2);">
-                                <h1 style="color: #ff003c; font-size: 3.5rem; margin:0; font-family:'Orbitron'; text-shadow: 0 0 10px red;">⚠️ DEEPFAKE</h1>
-                                <h3 style="color: #fff;">CONFIDENCE: {fake_score*100:.2f}%</h3>
+                            <div style="border: 2px solid #ff003c; background: rgba(255,0,60,0.1); padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(255,0,60,0.2);">
+                                <h1 style="color: #ff003c; font-size: 2.5rem; margin:0; font-family:'Orbitron'; text-shadow: 0 0 10px red;">⚠️ DEEPFAKE</h1>
+                                <h3 style="color: #fff; font-size: 1.2rem;">CONFIDENCE: {fake_score*100:.2f}%</h3>
                             </div>
                             """, unsafe_allow_html=True)
                         else:
                             st.markdown(f"""
-                            <div style="border: 2px solid #0aff48; background: rgba(10,255,72,0.1); padding: 30px; text-align: center; box-shadow: 0 0 50px rgba(10,255,72,0.2);">
-                                <h1 style="color: #0aff48; font-size: 3.5rem; margin:0; font-family:'Orbitron'; text-shadow: 0 0 10px #0aff48;">✅ AUTHENTIC</h1>
-                                <h3 style="color: #fff;">CONFIDENCE: {real_score*100:.2f}%</h3>
+                            <div style="border: 2px solid #0aff48; background: rgba(10,255,72,0.1); padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(10,255,72,0.2);">
+                                <h1 style="color: #0aff48; font-size: 2.5rem; margin:0; font-family:'Orbitron'; text-shadow: 0 0 10px #0aff48;">✅ AUTHENTIC</h1>
+                                <h3 style="color: #fff; font-size: 1.2rem;">CONFIDENCE: {real_score*100:.2f}%</h3>
                             </div>
                             """, unsafe_allow_html=True)
 
@@ -735,34 +751,34 @@ elif st.session_state.page == "Analysis Console":
 # 📄 PAGE 3: METHODOLOGY
 # ==========================================
 elif st.session_state.page == "Methodology":
-    st.markdown('<h1 class="glitch-title">SYSTEM KERNEL</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="glitch-title" style="font-size:3rem;">SYSTEM KERNEL</h1>', unsafe_allow_html=True)
     
     st.markdown("""
     <div style="background: rgba(0,0,0,0.8); border: 1px solid var(--neon-blue); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-        <h3 style="color:var(--neon-blue); text-align:center; font-family:'Share Tech Mono'">// END-TO-END PIPELINE ARCHITECTURE</h3>
+        <h3 style="color:var(--neon-blue); text-align:center; font-family:'Share Tech Mono'; font-size: 1.2rem;">// END-TO-END PIPELINE ARCHITECTURE</h3>
         <div style="display:flex; justify-content:space-around; align-items:center; margin-top:20px; flex-wrap:wrap;">
             <div style="text-align:center;">
-                <div style="font-size:3rem;">📹</div>
+                <div style="font-size:2.5rem;">📹</div>
                 <div style="color:#888; font-size:0.8rem;">RAW VIDEO</div>
             </div>
-            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="color:var(--neon-green); font-size:1.5rem;">➔</div>
             <div style="border:1px solid #ff003c; padding:10px; border-radius:5px; text-align:center;">
-                <div style="color:#ff003c; font-weight:bold;">FRAME SAMPLER</div>
-                <div style="font-size:0.7rem; color:#aaa;">Entropy Filter</div>
+                <div style="color:#ff003c; font-weight:bold; font-size: 0.9rem;">FRAME SAMPLER</div>
+                <div style="font-size:0.6rem; color:#aaa;">Entropy Filter</div>
             </div>
-            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="color:var(--neon-green); font-size:1.5rem;">➔</div>
             <div style="border:1px solid #bc13fe; padding:10px; border-radius:5px; text-align:center;">
-                <div style="color:#bc13fe; font-weight:bold;">CNN (SPATIAL)</div>
-                <div style="font-size:0.7rem; color:#aaa;">EfficientNet-B3</div>
+                <div style="color:#bc13fe; font-weight:bold; font-size: 0.9rem;">CNN (SPATIAL)</div>
+                <div style="font-size:0.6rem; color:#aaa;">EfficientNet-B3</div>
             </div>
-            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="color:var(--neon-green); font-size:1.5rem;">➔</div>
             <div style="border:1px solid #00f3ff; padding:10px; border-radius:5px; text-align:center;">
-                <div style="color:#00f3ff; font-weight:bold;">RNN (TEMPORAL)</div>
-                <div style="font-size:0.7rem; color:#aaa;">Bi-Directional LSTM</div>
+                <div style="color:#00f3ff; font-weight:bold; font-size: 0.9rem;">RNN (TEMPORAL)</div>
+                <div style="font-size:0.6rem; color:#aaa;">Bi-Directional LSTM</div>
             </div>
-            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="color:var(--neon-green); font-size:1.5rem;">➔</div>
             <div style="text-align:center;">
-                <div style="font-size:3rem;">🛡️</div>
+                <div style="font-size:2.5rem;">🛡️</div>
                 <div style="color:#888; font-size:0.8rem;">PREDICTION</div>
             </div>
         </div>
@@ -808,21 +824,21 @@ elif st.session_state.page == "Methodology":
 # 👤 PAGE 4 & 5: ABOUT & CONTACT
 # ==========================================
 elif st.session_state.page == "About Us":
-    st.markdown('<h1 class="glitch-title">DEV SQUAD</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="glitch-title" style="font-size:3rem;">DEV SQUAD</h1>', unsafe_allow_html=True)
     st.write("")
     
     def dev_card_animated(name, role, color, desc, college_info):
         st.markdown(f"""
         <div class="dev-wrapper" style="border-top-color: {color};">
             <div class="dev-main">
-                <h2 style="color:#fff; font-family:'Orbitron'; margin:0;">{name}</h2>
-                <p style="color:{color}; font-weight:bold; letter-spacing:2px; font-family:'Share Tech Mono';">{role}</p>
-                <div style="position:absolute; bottom:20px; right:20px; font-size:4rem; opacity:0.1;">👾</div>
+                <h2 style="color:#fff; font-family:'Orbitron'; margin:0; font-size: 1.3rem;">{name}</h2>
+                <p style="color:{color}; font-weight:bold; letter-spacing:2px; font-family:'Share Tech Mono'; font-size: 0.8rem;">{role}</p>
+                <div style="position:absolute; bottom:20px; right:20px; font-size:3rem; opacity:0.1;">👾</div>
             </div>
             <div class="dev-overlay">
                 <div class="college-tag">{college_info}</div>
-                <h3 style="color:#fff; font-family:'Orbitron'">{name}</h3>
-                <p style="color:#ccc; font-size:0.9rem;">{desc}</p>
+                <h3 style="color:#fff; font-family:'Orbitron'; font-size: 1.1rem;">{name}</h3>
+                <p style="color:#ccc; font-size:0.8rem;">{desc}</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -836,17 +852,17 @@ elif st.session_state.page == "About Us":
     with c4: dev_card_animated("KRISH", "FRONTEND", "#ff003c", "UI/UX & Visual Effects.", "VJTI 2ND YEAR EXTC")
 
 elif st.session_state.page == "Contact":
-    st.markdown('<h1 class="glitch-title">SECURE UPLINK</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="glitch-title" style="font-size:3rem;">SECURE UPLINK</h1>', unsafe_allow_html=True)
     
     st.markdown("""
-    <div style="background: rgba(10, 15, 20, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(0, 243, 255, 0.2); padding: 50px; text-align: center; border-radius: 20px;">
-        <h2 style="color:var(--neon-blue); font-family:'Orbitron'">ESTABLISH CONNECTION</h2>
-        <p style="color:#ccc;">Encrypted channels are open. Response time < 200ms.</p>
+    <div style="background: rgba(10, 15, 20, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(0, 243, 255, 0.2); padding: 40px; text-align: center; border-radius: 15px;">
+        <h2 style="color:var(--neon-blue); font-family:'Orbitron'; font-size: 1.5rem;">ESTABLISH CONNECTION</h2>
+        <p style="color:#ccc; font-size: 0.9rem;">Encrypted channels are open. Response time < 200ms.</p>
         <br>
         <div style="display:flex; justify-content:center; gap: 20px;">
-            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-blue); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">LINKEDIN</a>
-            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-purple); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">GITHUB</a>
-            <a href="mailto:sahildesai00112@gmail.com" style="text-decoration:none; color:#000; background:var(--neon-green); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">EMAIL</a>
+            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-blue); padding:10px 25px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s; font-size: 0.9rem;">LINKEDIN</a>
+            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-purple); padding:10px 25px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s; font-size: 0.9rem;">GITHUB</a>
+            <a href="mailto:sahildesai00112@gmail.com" style="text-decoration:none; color:#000; background:var(--neon-green); padding:10px 25px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s; font-size: 0.9rem;">EMAIL</a>
         </div>
     </div>
     """, unsafe_allow_html=True)
