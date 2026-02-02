@@ -71,11 +71,10 @@ lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE (TEXT REDUCED)
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE (COMPACT & PROFESSIONAL)
 # ==========================================
 
 if bg_image_base64:
-    # Note: We use double braces {{ }} for CSS, single { } for f-string variables
     background_style = f"""
     [data-testid="stAppViewContainer"] {{
         background: radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%), url("data:image/jpg;base64,{bg_image_base64}");
@@ -93,7 +92,6 @@ else:
     }
     """
 
-# ⚠️ CRITICAL FIX: All CSS braces inside f-string are doubled {{ }}
 st.markdown(f"""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
@@ -105,6 +103,7 @@ st.markdown(f"""
         --neon-red: #ff003c; 
     }}
 
+    /* Global Font Reduction */
     html, body, [class*="css"] {{ font-family: 'Rajdhani', sans-serif; color: #e0fbfc; font-size: 14px; }}
     
     /* Scrollbar */
@@ -126,7 +125,7 @@ st.markdown(f"""
         border-right: 1px solid rgba(0, 243, 255, 0.1);
     }}
 
-    /* Glitch Title - REDUCED SIZE */
+    /* Glitch Title - Significantly Smaller */
     @keyframes glitch-skew {{
         0% {{ transform: skew(0deg); }}
         20% {{ transform: skew(-2deg); }}
@@ -138,7 +137,7 @@ st.markdown(f"""
     .glitch-title {{
         font-family: 'Orbitron', sans-serif;
         font-weight: 900; 
-        font-size: 2.8rem; /* Reduced from 4rem */
+        font-size: 3rem; /* Reduced from 4.5rem */
         text-align: center;
         color: #fff; text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-blue);
         animation: glitch-skew 3s infinite linear alternate-reverse;
@@ -147,18 +146,18 @@ st.markdown(f"""
     .tech-subtitle {{
         font-family: 'Share Tech Mono', monospace; color: var(--neon-blue);
         text-align: center; 
-        font-size: 0.9rem; /* Reduced from 1.1rem */
+        font-size: 0.9rem; /* Reduced */
         letter-spacing: 4px;
         text-transform: uppercase; margin-top: -5px; opacity: 0.9;
         text-shadow: 0 0 10px var(--neon-blue);
     }}
 
     /* ----------------------------------------------------
-       HOVER CAPABILITY CARDS - REDUCED SIZE
+       HOVER CAPABILITY CARDS - Compact
     ---------------------------------------------------- */
     .cap-card-container {{
         position: relative;
-        height: 200px; /* Reduced from 250px */
+        height: 200px; /* Reduced height */
         background: rgba(10, 15, 20, 0.6);
         border: 1px solid rgba(0, 243, 255, 0.2);
         border-radius: 8px;
@@ -200,17 +199,13 @@ st.markdown(f"""
         bottom: 0;
     }}
     .cap-icon {{ 
-        font-size: 2.2rem; /* Reduced from 3rem */
+        font-size: 2.5rem; /* Reduced */
         margin-bottom: 8px; text-shadow: 0 0 15px currentColor; 
     }}
-    .cap-title {{ 
-        font-family: 'Orbitron'; 
-        font-size: 1rem; /* Reduced from 1.2rem */
-        letter-spacing: 1px; 
-    }}
+    .cap-title {{ font-family: 'Orbitron'; font-size: 1rem; letter-spacing: 2px; }}
 
     /* ----------------------------------------------------
-       TELEMETRY CSS - REDUCED SIZE
+       TELEMETRY CSS - Compact
     ---------------------------------------------------- */
     .telemetry-box {{
         background: #050505;
@@ -234,19 +229,18 @@ st.markdown(f"""
     }}
     .stat-row {{ 
         display: flex; justify-content: space-between; z-index: 2; position: relative; 
-        margin-bottom: 4px; font-size: 0.8rem; /* Reduced from 0.9rem */
+        margin-bottom: 4px; font-size: 0.8rem; 
     }}
     .stat-val {{ color: var(--neon-blue); text-shadow: 0 0 5px var(--neon-blue); }}
     
     @keyframes blink {{ 0% {{opacity:1;}} 50% {{opacity:0.3;}} 100% {{opacity:1;}} }}
-    
     .live-dot {{ color: var(--neon-red); animation: blink 1s infinite; margin-right: 5px; }}
 
     /* ----------------------------------------------------
-       TEAM HOVER CARDS - REDUCED SIZE
+       TEAM HOVER CARDS - Reduced Height
     ---------------------------------------------------- */
     .dev-wrapper {{
-        position: relative; width: 100%; height: 220px; /* Reduced from 260px */
+        position: relative; width: 100%; height: 220px; /* Reduced */
         background: rgba(5, 10, 15, 0.8);
         border: 1px solid rgba(255,255,255,0.1);
         border-top: 3px solid var(--neon-blue);
@@ -278,24 +272,29 @@ st.markdown(f"""
     }}
 
     /* ----------------------------------------------------
-       GENERAL UI
+       GENERAL UI - Compact
     ---------------------------------------------------- */
     .stButton button {{
         background: transparent !important; border: 1px solid var(--neon-blue) !important;
         color: var(--neon-blue) !important; font-family: 'Share Tech Mono' !important;
         text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
-        font-size: 0.9rem !important; /* Smaller buttons */
+        font-size: 0.9rem !important;
         padding: 10px 20px !important;
     }}
     .stButton button:hover {{ background: rgba(0,243,255,0.1) !important; box-shadow: 0 0 15px var(--neon-blue); }}
     
     .terminal-box {{
         background: #000; border: 1px solid #333; padding: 15px;
-        font-family: 'Share Tech Mono', monospace; color: var(--neon-green);
+        font-family: 'Share Tech Mono', monospace; color: #ccc;
         height: 350px; overflow-y: auto; border-left: 4px solid var(--neon-green);
-        font-size: 0.85rem;
+        font-size: 0.8rem; line-height: 1.4;
     }}
-    .log-line {{ margin-bottom: 4px; border-bottom: 1px solid rgba(0,255,0,0.1); }}
+    .log-line {{ margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; }}
+    .log-time {{ color: #555; margin-right: 10px; min-width: 80px; }}
+    .log-msg {{ color: var(--neon-blue); }}
+    .log-sys {{ color: var(--neon-purple); font-weight: bold; }}
+    .log-warn {{ color: var(--neon-red); }}
+    .log-ok {{ color: var(--neon-green); }}
 
     /* FAQ Styling */
     .faq-container {{ border: 1px solid #333; margin-bottom: 10px; background: rgba(255,255,255,0.02); transition:0.3s; }}
@@ -361,7 +360,7 @@ def process_video_frames(video_path, status_log_func):
 
     prev_gray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
     frame_cnt = 0
-    status_log_func(">> INITIALIZING ENTROPY SCANNERS...", 0.1)
+    status_log_func("INITIALIZING ENTROPY SCANNERS...", "sys")
     
     while cap.isOpened():
         ret, curr = cap.read()
@@ -378,7 +377,7 @@ def process_video_frames(video_path, status_log_func):
     top_frames = [x[1] for x in diffs[:20]]
     if len(top_frames) < 1: return None, []
 
-    status_log_func(">> DETECTING FACIAL ROI...", 0.3)
+    status_log_func("DETECTING FACIAL ROI (MTCNN)...", "sys")
     processed_faces = []
     for f in top_frames:
         h, w = f.shape[:2]
@@ -406,14 +405,14 @@ def process_video_frames(video_path, status_log_func):
     return final_faces, top_frames
 
 # ==========================================
-# 🧭 7. SIDEBAR (CRAZY TELEMETRY - SMALLER)
+# 🧭 7. SIDEBAR (COMPACT)
 # ==========================================
 if "page" not in st.session_state: st.session_state.page = "Dashboard"
 
 with st.sidebar:
     st.markdown("""
     <div style="text-align: center; border-bottom: 2px solid var(--neon-blue); padding-bottom: 15px; margin-bottom: 15px;">
-        <h1 style="color: #fff; margin:0; font-family:'Orbitron'; font-size: 1.5rem; text-shadow: 0 0 10px var(--neon-blue);">OPS CENTER</h1>
+        <h1 style="color: #fff; margin:0; font-family:'Orbitron'; font-size: 1.8rem; text-shadow: 0 0 10px var(--neon-blue);">OPS CENTER</h1>
         <p style="color: var(--neon-blue); margin:0; font-size: 0.7rem; letter-spacing: 3px; font-family:'Share Tech Mono';">SYS.VER.4.0.ALPHA</p>
     </div>
     """, unsafe_allow_html=True)
@@ -627,7 +626,7 @@ if st.session_state.page == "Dashboard":
     # ------------------ ERROR FIX END ------------------
 
 # ==========================================
-# 🕵️ PAGE 2: ANALYSIS CONSOLE
+# 🕵️ PAGE 2: ANALYSIS CONSOLE (PROFESSIONAL TERMINAL)
 # ==========================================
 elif st.session_state.page == "Analysis Console":
     
@@ -652,35 +651,67 @@ elif st.session_state.page == "Analysis Console":
             st.write("")
             analyze_btn = st.button(">> INITIATE DEEP SCAN <<", type="primary", use_container_width=True)
 
-        def log_to_terminal(text):
-            return f"<div class='log-line'>[{time.strftime('%H:%M:%S')}] {text}</div>"
+        # === PROFESSIONAL LOGGING SYSTEM ===
+        if "log_history" not in st.session_state:
+            st.session_state.log_history = []
+
+        def render_logs():
+            log_html = ""
+            for entry in st.session_state.log_history:
+                log_html += f"""
+                <div class='log-line'>
+                    <span class='log-time'>[{entry['time']}]</span>
+                    <span class='log-{entry['type']}'>{entry['msg']}</span>
+                </div>
+                """
+            return f"<div class='terminal-box'>{log_html}</div>"
+
+        def add_log(msg, type="msg"):
+            t = time.strftime('%H:%M:%S.%f')[:-3]
+            st.session_state.log_history.append({"time": t, "msg": msg, "type": type})
 
         with col_terminal:
             st.markdown("<p style='font-family:Share Tech Mono; color: var(--neon-green); margin-bottom: 5px; font-size: 0.9rem;'>// TERMINAL_OUTPUT</p>", unsafe_allow_html=True)
             terminal_area = st.empty()
-            log_state = {"html": "<div class='terminal-box'>_SYSTEM READY.<br>_WAITING FOR USER AUTHORIZATION...</div>"}
-            terminal_area.markdown(log_state["html"], unsafe_allow_html=True)
+            
+            # Initial State
+            if not st.session_state.log_history:
+                add_log("SYSTEM INITIALIZED.", "ok")
+                add_log("WAITING FOR USER AUTHORIZATION...", "msg")
+            
+            terminal_area.markdown(render_logs(), unsafe_allow_html=True)
 
         if analyze_btn:
+            # Clear previous logs for new run
+            st.session_state.log_history = [] 
+            add_log("AUTHORIZATION ACCEPTED. STARTING SEQUENCE.", "ok")
+            terminal_area.markdown(render_logs(), unsafe_allow_html=True)
+            
             if model is None:
-                log_state["html"] += log_to_terminal("[FATAL] MODEL WEIGHTS 404.")
-                terminal_area.markdown(f"<div class='terminal-box'>{log_state['html']}</div>", unsafe_allow_html=True)
+                add_log("FATAL ERROR: MODEL WEIGHTS NOT FOUND (404).", "warn")
+                terminal_area.markdown(render_logs(), unsafe_allow_html=True)
             else:
-                def update_log(msg, sleep_t):
-                    log_state["html"] += log_to_terminal(msg)
-                    terminal_area.markdown(f"<div class='terminal-box'>{log_state['html']}</div>", unsafe_allow_html=True)
+                # Helper for real-time updates
+                def log_update(msg, type="msg", sleep_t=0.2):
+                    add_log(msg, type)
+                    terminal_area.markdown(render_logs(), unsafe_allow_html=True)
                     time.sleep(sleep_t)
 
-                update_log("LOADING VIDEO BUFFER...", 0.5)
-                faces, raw_frames = process_video_frames("temp_video.mp4", update_log)
+                log_update("MOUNTING VIDEO BUFFER...", "sys", 0.5)
+                log_update(f"FILE: {uploaded_file.name} | SIZE: {uploaded_file.size / 1024:.2f} KB", "msg", 0.2)
+                
+                # Pass log function to processor
+                faces, raw_frames = process_video_frames("temp_video.mp4", log_update)
 
                 if not faces:
-                    update_log("[ERR] NO FACES DETECTED. ABORTING.", 0)
+                    log_update("ERROR: NO FACES DETECTED IN STREAM.", "warn", 0)
                 else:
-                    update_log(f"EXTRACTED {len(faces)} REGIONS OF INTEREST.", 0.5)
-                    update_log("NORMALIZING TENSORS...", 0.3)
-                    update_log("INJECTING INTO EFFICIENTNET-B3...", 0.5)
-                    update_log("ANALYZING TEMPORAL VECTORS...", 0.5)
+                    log_update(f"ROI EXTRACTION COMPLETE: {len(faces)} FRAMES.", "ok", 0.3)
+                    log_update("ALLOCATING TENSORS TO GPU...", "sys", 0.4)
+                    log_update("NORMALIZING PIXEL VALUES [0.485, 0.456, 0.406]...", "msg", 0.3)
+                    log_update("INJECTING INTO EFFICIENTNET-B3 BACKBONE...", "sys", 0.5)
+                    log_update("EXTRACTING TEMPORAL VECTORS...", "msg", 0.3)
+                    log_update("RUNNING BI-DIRECTIONAL LSTM...", "sys", 0.5)
 
                     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
                     input_tensor = torch.stack([transform(Image.fromarray(f)) for f in faces]).unsqueeze(0).to(DEVICE)
@@ -690,8 +721,8 @@ elif st.session_state.page == "Analysis Console":
                         probs = torch.nn.functional.softmax(output, dim=1)
                         real_score, fake_score = probs[0][0].item(), probs[0][1].item()
                     
-                    update_log("ANALYSIS COMPLETE.", 0)
-                    update_log(f"FINAL CONFIDENCE: {fake_score:.4f}", 0)
+                    log_update("INFERENCE COMPLETE.", "ok", 0)
+                    log_update(f"CONFIDENCE SCORE CALCULATED: {fake_score:.4f}", "msg", 0)
 
                     st.markdown("---")
                     res_col1, res_col2 = st.columns([1, 1])
