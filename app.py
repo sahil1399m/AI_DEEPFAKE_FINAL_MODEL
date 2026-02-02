@@ -71,7 +71,7 @@ lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE (COMPACT & PROFESSIONAL)
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE
 # ==========================================
 
 if bg_image_base64:
@@ -103,10 +103,8 @@ st.markdown(f"""
         --neon-red: #ff003c; 
     }}
 
-    /* Global Font Reduction */
     html, body, [class*="css"] {{ font-family: 'Rajdhani', sans-serif; color: #e0fbfc; font-size: 14px; }}
     
-    /* Scrollbar */
     ::-webkit-scrollbar {{ width: 6px; background: #000; }}
     ::-webkit-scrollbar-thumb {{ background: var(--neon-blue); border-radius: 2px; }}
 
@@ -125,165 +123,89 @@ st.markdown(f"""
         border-right: 1px solid rgba(0, 243, 255, 0.1);
     }}
 
-    /* Glitch Title */
-    @keyframes glitch-skew {{
-        0% {{ transform: skew(0deg); }}
-        20% {{ transform: skew(-2deg); }}
-        40% {{ transform: skew(2deg); }}
-        60% {{ transform: skew(-1deg); }}
-        80% {{ transform: skew(1deg); }}
-        100% {{ transform: skew(0deg); }}
-    }}
+    /* Typography */
     .glitch-title {{
         font-family: 'Orbitron', sans-serif;
         font-weight: 900; 
         font-size: 3rem; 
         text-align: center;
         color: #fff; text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-blue);
-        animation: glitch-skew 3s infinite linear alternate-reverse;
         margin-bottom: 0px; letter-spacing: 3px;
     }}
     .tech-subtitle {{
         font-family: 'Share Tech Mono', monospace; color: var(--neon-blue);
-        text-align: center; 
-        font-size: 0.9rem; 
-        letter-spacing: 4px;
+        text-align: center; font-size: 0.9rem; letter-spacing: 4px;
         text-transform: uppercase; margin-top: -5px; opacity: 0.9;
         text-shadow: 0 0 10px var(--neon-blue);
     }}
 
-    /* ----------------------------------------------------
-       HOVER CAPABILITY CARDS
-    ---------------------------------------------------- */
+    /* Card Styling */
     .cap-card-container {{
-        position: relative;
-        height: 200px;
-        background: rgba(10, 15, 20, 0.6);
-        border: 1px solid rgba(0, 243, 255, 0.2);
-        border-radius: 8px;
-        overflow: hidden;
-        transition: 0.3s;
-        box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        position: relative; height: 200px; background: rgba(10, 15, 20, 0.6);
+        border: 1px solid rgba(0, 243, 255, 0.2); border-radius: 8px; overflow: hidden;
+        transition: 0.3s; box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }}
     .cap-card-container:hover {{
-        border-color: var(--neon-purple);
-        box-shadow: 0 0 20px var(--neon-purple);
-        transform: translateY(-5px);
+        border-color: var(--neon-purple); box-shadow: 0 0 20px var(--neon-purple); transform: translateY(-5px);
     }}
     .cap-content-visible {{
-        padding: 15px;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        transition: 0.5s;
+        padding: 15px; height: 100%; display: flex; flex-direction: column;
+        justify-content: center; align-items: center; transition: 0.5s;
     }}
     .cap-content-hidden {{
-        position: absolute;
-        bottom: -100%;
-        left: 0;
-        width: 100%;
-        height: 100%;
+        position: absolute; bottom: -100%; left: 0; width: 100%; height: 100%;
         background: rgba(0,0,0,0.95);
         background-image: linear-gradient(rgba(188, 19, 254, 0.1) 1px, transparent 1px);
-        background-size: 20px 20px;
-        padding: 15px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background-size: 20px 20px; padding: 15px; display: flex;
+        flex-direction: column; justify-content: center; transition: 0.5s;
         border-top: 2px solid var(--neon-purple);
     }}
-    .cap-card-container:hover .cap-content-hidden {{
-        bottom: 0;
-    }}
-    .cap-icon {{ 
-        font-size: 2.5rem; 
-        margin-bottom: 8px; text-shadow: 0 0 15px currentColor; 
-    }}
+    .cap-card-container:hover .cap-content-hidden {{ bottom: 0; }}
+    .cap-icon {{ font-size: 2.5rem; margin-bottom: 8px; text-shadow: 0 0 15px currentColor; }}
     .cap-title {{ font-family: 'Orbitron'; font-size: 1rem; letter-spacing: 2px; }}
 
-    /* ----------------------------------------------------
-       TELEMETRY CSS
-    ---------------------------------------------------- */
+    /* Telemetry */
     .telemetry-box {{
-        background: #050505;
-        border: 1px solid #333;
-        padding: 12px;
-        font-family: 'Share Tech Mono';
-        position: relative;
-        overflow: hidden;
-        margin-bottom: 20px;
-        box-shadow: inset 0 0 20px rgba(0,255,0,0.05);
+        background: #050505; border: 1px solid #333; padding: 12px;
+        font-family: 'Share Tech Mono'; position: relative; overflow: hidden;
+        margin-bottom: 20px; box-shadow: inset 0 0 20px rgba(0,255,0,0.05);
     }}
     .telemetry-header {{
-        display: flex; justify-content: space-between;
-        border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 8px;
-        color: var(--neon-green); font-size: 0.75rem;
+        display: flex; justify-content: space-between; border-bottom: 1px solid #333;
+        padding-bottom: 5px; margin-bottom: 8px; color: var(--neon-green); font-size: 0.75rem;
     }}
-    .hex-bg {{
-        position: absolute; top:0; left:0; width:100%; height:100%;
-        color: rgba(0, 255, 0, 0.05); font-size: 0.5rem;
-        z-index: 0; pointer-events: none; word-wrap: break-word;
-    }}
-    .stat-row {{ 
-        display: flex; justify-content: space-between; z-index: 2; position: relative; 
-        margin-bottom: 4px; font-size: 0.8rem; 
-    }}
+    .stat-row {{ display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 0.8rem; z-index:2; position:relative; }}
     .stat-val {{ color: var(--neon-blue); text-shadow: 0 0 5px var(--neon-blue); }}
-    
-    @keyframes blink {{ 0% {{opacity:1;}} 50% {{opacity:0.3;}} 100% {{opacity:1;}} }}
-    .live-dot {{ color: var(--neon-red); animation: blink 1s infinite; margin-right: 5px; }}
+    .hex-bg {{ position: absolute; top:0; left:0; width:100%; height:100%; color: rgba(0, 255, 0, 0.05); font-size: 0.5rem; z-index: 0; word-wrap: break-word; pointer-events: none; }}
 
-    /* ----------------------------------------------------
-       TEAM HOVER CARDS
-    ---------------------------------------------------- */
+    /* Dev Team */
     .dev-wrapper {{
-        position: relative; width: 100%; height: 220px;
-        background: rgba(5, 10, 15, 0.8);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-top: 3px solid var(--neon-blue);
-        overflow: hidden; transition: 0.4s;
-        margin-bottom: 15px;
+        position: relative; width: 100%; height: 220px; background: rgba(5, 10, 15, 0.8);
+        border: 1px solid rgba(255,255,255,0.1); border-top: 3px solid var(--neon-blue);
+        overflow: hidden; transition: 0.4s; margin-bottom: 15px;
     }}
-    .dev-wrapper:hover {{
-        border-top-color: var(--neon-green);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        transform: translateY(-5px);
-    }}
+    .dev-wrapper:hover {{ border-top-color: var(--neon-green); transform: translateY(-5px); }}
     .dev-main {{ padding: 20px; transition: 0.4s; }}
     .dev-wrapper:hover .dev-main {{ transform: translateY(-50px); opacity: 0.3; filter: blur(2px); }}
-    
     .dev-overlay {{
         position: absolute; bottom: -100%; left: 0; width: 100%; height: 100%;
         background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 100%);
         display: flex; flex-direction: column; justify-content: center; align-items: center;
-        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        padding: 15px; text-align: center;
-        border-top: 1px solid var(--neon-green);
+        transition: 0.4s; padding: 15px; text-align: center; border-top: 1px solid var(--neon-green);
     }}
     .dev-wrapper:hover .dev-overlay {{ bottom: 0; }}
-    
-    .college-tag {{
-        background: var(--neon-blue); color: #000; padding: 3px 8px;
-        font-weight: bold; font-family: 'Orbitron'; font-size: 0.7rem;
-        margin-bottom: 5px; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
-    }}
+    .college-tag {{ background: var(--neon-blue); color: #000; padding: 3px 8px; font-weight: bold; font-family: 'Orbitron'; font-size: 0.7rem; margin-bottom: 5px; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); }}
 
-    /* ----------------------------------------------------
-       GENERAL UI
-    ---------------------------------------------------- */
+    /* Buttons */
     .stButton button {{
         background: transparent !important; border: 1px solid var(--neon-blue) !important;
         color: var(--neon-blue) !important; font-family: 'Share Tech Mono' !important;
         text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
-        font-size: 0.9rem !important;
-        padding: 10px 20px !important;
+        font-size: 0.9rem !important; padding: 10px 20px !important;
     }}
     .stButton button:hover {{ background: rgba(0,243,255,0.1) !important; box-shadow: 0 0 15px var(--neon-blue); }}
-    
-    /* TERMINAL CSS FIX */
+
+    /* TERMINAL FIXES */
     .terminal-box {{
         background: #000; 
         border: 1px solid #333; 
@@ -295,8 +217,7 @@ st.markdown(f"""
         border-left: 4px solid var(--neon-green);
         font-size: 0.85rem; 
         line-height: 1.5;
-        display: flex;
-        flex-direction: column-reverse; /* Keeps new logs at bottom/top depending on pref, usually column is better for scrolling */
+        white-space: normal; /* Prevents raw string issue */
     }}
     .log-line {{ 
         margin-bottom: 3px; 
@@ -308,7 +229,7 @@ st.markdown(f"""
     .log-time {{ 
         color: #666; 
         margin-right: 10px; 
-        min-width: 70px; 
+        min-width: 80px; 
         font-size: 0.8rem; 
         font-family: 'Consolas', monospace;
     }}
@@ -317,7 +238,6 @@ st.markdown(f"""
     .log-warn {{ color: var(--neon-red); }}
     .log-ok {{ color: var(--neon-green); }}
 
-    /* FAQ Styling */
     .faq-container {{ border: 1px solid #333; margin-bottom: 10px; background: rgba(255,255,255,0.02); transition:0.3s; }}
     .faq-container:hover {{ border-color: var(--neon-blue); background: rgba(0,243,255,0.05); }}
 
@@ -426,7 +346,7 @@ def process_video_frames(video_path, status_log_func):
     return final_faces, top_frames
 
 # ==========================================
-# 🧭 7. SIDEBAR (COMPACT)
+# 🧭 7. SIDEBAR
 # ==========================================
 if "page" not in st.session_state: st.session_state.page = "Dashboard"
 
@@ -643,7 +563,7 @@ if st.session_state.page == "Dashboard":
             st_lottie(lottie_chatbot, height=250, key="bot")
 
 # ==========================================
-# 🕵️ PAGE 2: ANALYSIS CONSOLE (PROFESSIONAL TERMINAL)
+# 🕵️ PAGE 2: ANALYSIS CONSOLE (FIXED LOGGING)
 # ==========================================
 elif st.session_state.page == "Analysis Console":
     
@@ -668,22 +588,17 @@ elif st.session_state.page == "Analysis Console":
             st.write("")
             analyze_btn = st.button(">> INITIATE DEEP SCAN <<", type="primary", use_container_width=True)
 
-        # === PROFESSIONAL LOGGING SYSTEM ===
+        # === FIXED PROFESSIONAL LOGGING SYSTEM ===
         if "log_history" not in st.session_state:
             st.session_state.log_history = []
 
         def render_logs():
-            log_html = ""
+            # CRITICAL FIX: No indentation inside the HTML string to avoid code block triggering
+            html_lines = []
             for entry in st.session_state.log_history:
-                log_html += f"""
-                <div class='log-line'>
-                    <span class='log-time'>[{entry['time']}]</span>
-                    <span class='log-{entry['type']}'>{entry['msg']}</span>
-                </div>
-                """
-            # Using flex-direction: column-reverse on parent allows sticking to bottom usually, 
-            # but standard rendering works fine if we just append.
-            return f"<div class='terminal-box'>{log_html}</div>"
+                line = f"<div class='log-line'><span class='log-time'>[{entry['time']}]</span> <span class='log-{entry['type']}'>{entry['msg']}</span></div>"
+                html_lines.append(line)
+            return f"<div class='terminal-box'>{''.join(html_lines)}</div>"
 
         def add_log(msg, type="msg"):
             t = time.strftime('%H:%M:%S')
@@ -698,6 +613,7 @@ elif st.session_state.page == "Analysis Console":
                 add_log("SYSTEM INITIALIZED.", "ok")
                 add_log("WAITING FOR USER AUTHORIZATION...", "msg")
             
+            # CRITICAL FIX: Ensure unsafe_allow_html is True
             terminal_area.markdown(render_logs(), unsafe_allow_html=True)
 
         if analyze_btn:
