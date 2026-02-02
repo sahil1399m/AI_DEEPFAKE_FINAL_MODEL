@@ -473,7 +473,12 @@ if st.session_state.page == "Dashboard":
     """, unsafe_allow_html=True)
 
     col1, col2, col3 = st.columns([1, 1.5, 1])
-    with col1: st_lottie(lottie_left_scan, height=200, key="l1") if lottie_left_scan else None
+    
+    # ------------------ FIX START ------------------
+    with col1: 
+        if lottie_left_scan:
+            st_lottie(lottie_left_scan, height=200, key="l1")
+            
     with col2:
         st.markdown("""
         <div style="text-align:center; padding: 20px; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,243,255,0.1);">
@@ -487,7 +492,11 @@ if st.session_state.page == "Dashboard":
         if st.button(">> LAUNCH ANALYSIS CONSOLE <<", type="primary", use_container_width=True):
             st.session_state.page = "Analysis Console"
             st.rerun()
-    with col3: st_lottie(lottie_right_scan, height=200, key="r1") if lottie_right_scan else None
+
+    with col3: 
+        if lottie_right_scan:
+            st_lottie(lottie_right_scan, height=200, key="r1")
+    # ------------------ FIX END ------------------
 
     st.write("")
     
@@ -594,8 +603,12 @@ if st.session_state.page == "Dashboard":
                         st.session_state.messages.append({"role": "assistant", "content": response.text})
                     except: message_placeholder.error("COMMS LINK FAILED.")
                 else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
+    
+    # ------------------ FIX START ------------------
     with c_anim:
-        st_lottie(lottie_chatbot, height=250, key="bot") if lottie_chatbot else None
+        if lottie_chatbot:
+            st_lottie(lottie_chatbot, height=250, key="bot")
+    # ------------------ FIX END ------------------
 
 # ==========================================
 # 🕵️ PAGE 2: ANALYSIS CONSOLE
