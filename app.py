@@ -71,7 +71,7 @@ lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE (COMPACT & PROFESSIONAL)
 # ==========================================
 
 if bg_image_base64:
@@ -125,7 +125,7 @@ st.markdown(f"""
         border-right: 1px solid rgba(0, 243, 255, 0.1);
     }}
 
-    /* Glitch Title - Significantly Smaller */
+    /* Glitch Title */
     @keyframes glitch-skew {{
         0% {{ transform: skew(0deg); }}
         20% {{ transform: skew(-2deg); }}
@@ -153,7 +153,7 @@ st.markdown(f"""
     }}
 
     /* ----------------------------------------------------
-       HOVER CAPABILITY CARDS - Compact
+       HOVER CAPABILITY CARDS
     ---------------------------------------------------- */
     .cap-card-container {{
         position: relative;
@@ -205,7 +205,7 @@ st.markdown(f"""
     .cap-title {{ font-family: 'Orbitron'; font-size: 1rem; letter-spacing: 2px; }}
 
     /* ----------------------------------------------------
-       TELEMETRY CSS - Compact
+       TELEMETRY CSS
     ---------------------------------------------------- */
     .telemetry-box {{
         background: #050505;
@@ -237,7 +237,7 @@ st.markdown(f"""
     .live-dot {{ color: var(--neon-red); animation: blink 1s infinite; margin-right: 5px; }}
 
     /* ----------------------------------------------------
-       TEAM HOVER CARDS - Reduced Height
+       TEAM HOVER CARDS
     ---------------------------------------------------- */
     .dev-wrapper {{
         position: relative; width: 100%; height: 220px;
@@ -272,7 +272,7 @@ st.markdown(f"""
     }}
 
     /* ----------------------------------------------------
-       GENERAL UI - Compact
+       GENERAL UI
     ---------------------------------------------------- */
     .stButton button {{
         background: transparent !important; border: 1px solid var(--neon-blue) !important;
@@ -283,14 +283,35 @@ st.markdown(f"""
     }}
     .stButton button:hover {{ background: rgba(0,243,255,0.1) !important; box-shadow: 0 0 15px var(--neon-blue); }}
     
+    /* TERMINAL CSS FIX */
     .terminal-box {{
-        background: #000; border: 1px solid #333; padding: 15px;
-        font-family: 'Share Tech Mono', monospace; color: #ccc;
-        height: 350px; overflow-y: auto; border-left: 4px solid var(--neon-green);
-        font-size: 0.8rem; line-height: 1.4;
+        background: #000; 
+        border: 1px solid #333; 
+        padding: 15px;
+        font-family: 'Share Tech Mono', monospace; 
+        color: #ccc;
+        height: 350px; 
+        overflow-y: auto; 
+        border-left: 4px solid var(--neon-green);
+        font-size: 0.85rem; 
+        line-height: 1.5;
+        display: flex;
+        flex-direction: column-reverse; /* Keeps new logs at bottom/top depending on pref, usually column is better for scrolling */
     }}
-    .log-line {{ margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; }}
-    .log-time {{ color: #555; margin-right: 10px; min-width: 80px; }}
+    .log-line {{ 
+        margin-bottom: 3px; 
+        border-bottom: 1px solid rgba(255,255,255,0.05); 
+        display: flex; 
+        align-items: center; 
+        width: 100%;
+    }}
+    .log-time {{ 
+        color: #666; 
+        margin-right: 10px; 
+        min-width: 70px; 
+        font-size: 0.8rem; 
+        font-family: 'Consolas', monospace;
+    }}
     .log-msg {{ color: var(--neon-blue); }}
     .log-sys {{ color: var(--neon-purple); font-weight: bold; }}
     .log-warn {{ color: var(--neon-red); }}
@@ -660,6 +681,8 @@ elif st.session_state.page == "Analysis Console":
                     <span class='log-{entry['type']}'>{entry['msg']}</span>
                 </div>
                 """
+            # Using flex-direction: column-reverse on parent allows sticking to bottom usually, 
+            # but standard rendering works fine if we just append.
             return f"<div class='terminal-box'>{log_html}</div>"
 
         def add_log(msg, type="msg"):
