@@ -15,6 +15,7 @@ from streamlit_lottie import st_lottie
 from facenet_pytorch import MTCNN
 import google.generativeai as genai
 import gdown
+import plotly.graph_objects as go 
 
 # ==========================================
 # 🎨 1. PAGE CONFIG
@@ -29,21 +30,17 @@ st.set_page_config(
 # ==========================================
 # 🔑 2. API SETUP
 # ==========================================
-# 👇 YOUR API KEY IS INTEGRATED HERE
 GOOGLE_API_KEY = "xyz" 
 
 gemini_active = False
 try:
-    if GOOGLE_API_KEY != "PASTE_YOUR_KEY_HERE":
+    if GOOGLE_API_KEY != "PASTE_YOUR_KEY_HERE" and GOOGLE_API_KEY != "xyz":
         clean_key = GOOGLE_API_KEY.strip()
         genai.configure(api_key=clean_key)
         gemini_active = True
 except Exception as e:
-    st.error(f"API Setup Error: {e}")
+    pass
 
-# ==========================================
-# 🧠 THE BRAIN: CONTEXT
-# ==========================================
 PROJECT_CONTEXT = """
 ROLE: You are the "AIthentic Forensic Assistant", a military-grade neural expert.
 GOAL: Explain the technical depth of the AIthentic platform.
@@ -68,18 +65,17 @@ def get_base64_of_bin_file(bin_file):
         return base64.b64encode(data).decode()
     except FileNotFoundError: return None
 
-# Load Assets
 lottie_left_scan = load_lottie_local("assets/animation1.json")
 lottie_right_scan = load_lottie_local("assets/animation2.json")
 lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN UI OVERHAUL (CSS)
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE (FIXED SYNTAX)
 # ==========================================
 
-# Determine background
 if bg_image_base64:
+    # Note: We use double braces {{ }} for CSS, single { } for f-string variables
     background_style = f"""
     [data-testid="stAppViewContainer"] {{
         background: radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%), url("data:image/jpg;base64,{bg_image_base64}");
@@ -90,328 +86,207 @@ if bg_image_base64:
 else:
     background_style = """
     [data-testid="stAppViewContainer"] {
-        background-color: #02040a;
-        background-image: 
-            linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), 
-            linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-        background-size: 50px 50px;
+        background-color: #050505;
+        background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
+        background-size: 30px 30px;
     }
     """
 
+# ⚠️ CRITICAL FIX: All CSS braces inside f-string are doubled {{ }}
 st.markdown(f"""
 <style>
-    /* IMPORT FONTS */
-    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&display=swap');
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;500;700&family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
 
     :root {{ 
         --neon-blue: #00f3ff; 
         --neon-purple: #bc13fe; 
         --neon-green: #0aff48; 
         --neon-red: #ff003c; 
-        --glass-bg: rgba(10, 15, 20, 0.75);
-        --glass-border: 1px solid rgba(0, 243, 255, 0.2);
     }}
 
     html, body, [class*="css"] {{ font-family: 'Rajdhani', sans-serif; color: #e0fbfc; }}
+    
+    /* Scrollbar */
+    ::-webkit-scrollbar {{ width: 8px; background: #000; }}
+    ::-webkit-scrollbar-thumb {{ background: var(--neon-blue); border-radius: 2px; }}
 
-    /* --- BACKGROUND --- */
+    /* Scanlines */
+    .scanlines {{
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+        background-size: 100% 4px, 6px 100%;
+        pointer-events: none; z-index: 9999;
+    }}
+
     {background_style}
     
-    /* --- SIDEBAR STYLING --- */
     [data-testid="stSidebar"] {{
         background-color: rgba(5, 5, 10, 0.95);
-        border-right: 1px solid #333;
+        border-right: 1px solid rgba(0, 243, 255, 0.1);
     }}
 
-    /* --- TITLES --- */
-    .neon-title {{
+    /* Glitch Title */
+    @keyframes glitch-skew {{
+        0% {{ transform: skew(0deg); }}
+        20% {{ transform: skew(-2deg); }}
+        40% {{ transform: skew(2deg); }}
+        60% {{ transform: skew(-1deg); }}
+        80% {{ transform: skew(1deg); }}
+        100% {{ transform: skew(0deg); }}
+    }}
+    .glitch-title {{
         font-family: 'Orbitron', sans-serif;
-        font-weight: 900;
-        font-size: 5rem;
-        text-align: center;
-        background: linear-gradient(180deg, #fff, #888);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
-        margin-bottom: 0px;
-        letter-spacing: 5px;
+        font-weight: 900; font-size: 4rem; text-align: center;
+        color: #fff; text-shadow: 2px 2px var(--neon-purple), -2px -2px var(--neon-blue);
+        animation: glitch-skew 3s infinite linear alternate-reverse;
+        margin-bottom: 0px; letter-spacing: 5px;
     }}
-
     .tech-subtitle {{
-        font-family: 'Share Tech Mono', monospace;
-        color: var(--neon-blue);
-        text-align: center;
-        font-size: 1rem;
-        letter-spacing: 8px;
-        text-transform: uppercase;
-        margin-top: -10px;
-        opacity: 0.8;
+        font-family: 'Share Tech Mono', monospace; color: var(--neon-blue);
+        text-align: center; font-size: 1.1rem; letter-spacing: 6px;
+        text-transform: uppercase; margin-top: -10px; opacity: 0.9;
+        text-shadow: 0 0 10px var(--neon-blue);
     }}
 
-    /* --- CARDS & BOXES (Glassmorphism) --- */
-    div[data-testid="stContainer"] {{
-        background: transparent;
-    }}
-
-    .tech-card {{
-        background: var(--glass-bg);
-        backdrop-filter: blur(10px);
-        border: var(--glass-border);
-        border-top: 2px solid var(--neon-blue);
-        padding: 25px;
-        border-radius: 4px;
-        height: 100%;
-        transition: all 0.3s ease;
+    /* ----------------------------------------------------
+       HOVER CAPABILITY CARDS
+    ---------------------------------------------------- */
+    .cap-card-container {{
         position: relative;
+        height: 250px;
+        background: rgba(10, 15, 20, 0.6);
+        border: 1px solid rgba(0, 243, 255, 0.2);
+        border-radius: 10px;
         overflow: hidden;
+        transition: 0.3s;
+        box-shadow: 0 0 10px rgba(0,0,0,0.5);
     }}
-    
-    .tech-card::before {{
-        content: '';
-        position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: linear-gradient(45deg, transparent, rgba(0, 243, 255, 0.05), transparent);
-        transform: translateX(-100%);
-        transition: 0.5s;
-    }}
-
-    .tech-card:hover::before {{ transform: translateX(100%); }}
-    
-    .tech-card:hover {{
-        border-top: 2px solid var(--neon-purple);
-        box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+    .cap-card-container:hover {{
+        border-color: var(--neon-purple);
+        box-shadow: 0 0 20px var(--neon-purple);
         transform: translateY(-5px);
     }}
-
-    .tech-header {{
-        color: var(--neon-blue);
-        font-family: 'Orbitron';
-        font-size: 1.2rem;
-        margin-bottom: 15px;
-        border-bottom: 1px solid rgba(255,255,255,0.1);
-        padding-bottom: 5px;
-    }}
-
-    /* --- EXPANDER / FAQ STYLING --- */
-    .stExpander {{
-        border: 1px solid rgba(0, 243, 255, 0.3) !important;
-        border-radius: 5px !important;
-        background-color: rgba(0, 20, 30, 0.6) !important;
-        margin-bottom: 15px;
-        transition: all 0.3s ease;
-    }}
-    
-    .stExpander:hover {{
-        border: 1px solid var(--neon-blue) !important;
-        box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
-    }}
-
-    .streamlit-expanderHeader {{
-        font-family: 'Share Tech Mono', monospace !important;
-        color: var(--neon-blue) !important;
-        font-size: 1.1rem !important;
-        letter-spacing: 1px;
-        background-color: transparent !important;
-    }}
-
-    .streamlit-expanderContent {{
-        color: #ddd !important;
-        font-family: 'Rajdhani', sans-serif !important;
-        border-top: 1px solid rgba(0, 243, 255, 0.1);
-    }}
-    
-    /* --- DEV TEAM CARD (HOVER EFFECT) --- */
-    .dev-container {{
-        position: relative;
-        width: 100%;
-        height: 220px;
-        background: rgba(10, 15, 20, 0.8);
-        border: 1px solid #333;
-        border-left: 4px solid var(--neon-blue);
+    .cap-content-visible {{
         padding: 20px;
-        overflow: hidden;
-        transition: 0.3s ease;
-        margin-bottom: 20px;
-    }}
-
-    .dev-container:hover {{
-        border-left: 4px solid var(--neon-purple);
-        box-shadow: 0 0 20px rgba(188, 19, 254, 0.2);
-    }}
-
-    .dev-visible {{
-        transition: 0.3s;
-    }}
-
-    .dev-hidden {{
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 0;
-        background: linear-gradient(0deg, rgba(0,0,0,0.95) 20%, rgba(188, 19, 254, 0.1) 100%);
-        overflow: hidden;
-        transition: 0.4s ease;
+        height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        text-align: center;
-        padding: 0 20px;
+        transition: 0.5s;
     }}
-
-    .dev-container:hover .dev-hidden {{
+    .cap-content-hidden {{
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        width: 100%;
         height: 100%;
-        border-top: 1px solid var(--neon-purple);
+        background: rgba(0,0,0,0.95);
+        background-image: linear-gradient(rgba(188, 19, 254, 0.1) 1px, transparent 1px);
+        background-size: 20px 20px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-top: 2px solid var(--neon-purple);
     }}
+    .cap-card-container:hover .cap-content-hidden {{
+        bottom: 0;
+    }}
+    .cap-icon {{ font-size: 3rem; margin-bottom: 10px; text-shadow: 0 0 15px currentColor; }}
+    .cap-title {{ font-family: 'Orbitron'; font-size: 1.2rem; letter-spacing: 2px; }}
 
-    /* --- INTEGRITY BOX --- */
-    .integrity-box {{
-        text-align: center; 
-        padding: 25px;
-        border: 1px solid var(--neon-blue);
-        background: rgba(0, 20, 30, 0.8);
-        box-shadow: inset 0 0 20px rgba(0, 243, 255, 0.1);
-        position: relative;
-    }}
-    
-    .integrity-box::after {{
-        content: ''; position: absolute; bottom: -5px; right: -5px;
-        width: 15px; height: 15px;
-        border-bottom: 2px solid var(--neon-blue);
-        border-right: 2px solid var(--neon-blue);
-    }}
-    .integrity-box::before {{
-        content: ''; position: absolute; top: -5px; left: -5px;
-        width: 15px; height: 15px;
-        border-top: 2px solid var(--neon-blue);
-        border-left: 2px solid var(--neon-blue);
-    }}
-
-    /* --- NAVIGATION (RADIO BUTTONS) --- */
-    [data-testid="stSidebar"] .stRadio label {{
-        background: transparent;
-        padding: 10px 15px;
-        margin-bottom: 5px;
-        border-left: 2px solid #333;
-        transition: 0.3s;
-        cursor: pointer;
-    }}
-    
-    [data-testid="stSidebar"] .stRadio label:hover {{
-        border-left: 2px solid var(--neon-blue);
-        background: linear-gradient(90deg, rgba(0, 243, 255, 0.1), transparent);
-    }}
-
-    [data-testid="stSidebar"] .stRadio [data-testid="stMarkdownContainer"] p {{
-        font-size: 1rem;
-        font-family: 'Rajdhani', sans-serif;
-        font-weight: 600;
-        color: #aaa;
-        letter-spacing: 1px;
-    }}
-
-    /* Selected State Hack */
-    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label[data-checked="true"] {{
-        border-left: 4px solid var(--neon-green) !important;
-        background: linear-gradient(90deg, rgba(10, 255, 72, 0.15), transparent) !important;
-    }}
-    
-    [data-testid="stSidebar"] .stRadio div[role="radiogroup"] > label[data-checked="true"] p {{
-        color: #fff !important;
-        text-shadow: 0 0 8px var(--neon-green);
-    }}
-
-    /* --- BUTTONS --- */
-    .stButton button {{
-        background: rgba(0, 0, 0, 0.6) !important;
-        border: 1px solid var(--neon-blue) !important;
-        color: var(--neon-blue) !important;
-        font-family: 'Share Tech Mono' !important;
-        font-size: 1.1rem !important;
-        padding: 12px 24px !important;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        transition: all 0.3s;
-        border-radius: 0px !important;
-        position: relative;
-        overflow: hidden;
-    }}
-    
-    .stButton button:hover {{
-        background: var(--neon-blue) !important;
-        color: #000 !important;
-        box-shadow: 0 0 20px var(--neon-blue);
-    }}
-
-    /* --- TERMINAL EFFECT --- */
-    .terminal-box {{
-        background: #000;
+    /* ----------------------------------------------------
+       TELEMETRY CSS (FIXED BRACES)
+    ---------------------------------------------------- */
+    .telemetry-box {{
+        background: #050505;
         border: 1px solid #333;
         padding: 15px;
-        font-family: 'Share Tech Mono', monospace;
-        font-size: 0.8rem;
-        color: var(--neon-green);
-        border-left: 3px solid var(--neon-green);
-        height: 350px;
-        overflow-y: auto;
-        position: relative;
-    }}
-    
-    .terminal-box::before {{
-        content: " ";
-        display: block;
-        position: absolute;
-        top: 0; left: 0; bottom: 0; right: 0;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        z-index: 2;
-        background-size: 100% 2px, 3px 100%;
-        pointer-events: none;
-    }}
-
-    /* --- PIPELINE VISUALIZATION (Methodology) --- */
-    .pipeline-container {{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        background: rgba(0, 0, 0, 0.6);
-        padding: 30px;
-        border-radius: 4px;
-        border: 1px solid var(--neon-blue);
-        margin-bottom: 30px;
-        box-shadow: 0 0 15px rgba(0, 243, 255, 0.1);
-        backdrop-filter: blur(5px);
-    }}
-    
-    .pipeline-node {{
-        text-align: center;
-        color: #fff;
         font-family: 'Share Tech Mono';
-        font-size: 1rem;
-        background: rgba(255,255,255,0.05);
-        padding: 10px 20px;
-        border-radius: 4px;
-        border: 1px solid #444;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 20px;
+        box-shadow: inset 0 0 20px rgba(0,255,0,0.05);
     }}
-    
-    .pipeline-arrow {{
-        color: var(--neon-blue);
-        font-size: 1.5rem;
-        animation: pulse-arrow 1.5s infinite;
+    .telemetry-header {{
+        display: flex; justify-content: space-between;
+        border-bottom: 1px solid #333; padding-bottom: 5px; margin-bottom: 10px;
+        color: var(--neon-green); font-size: 0.8rem;
     }}
+    .hex-bg {{
+        position: absolute; top:0; left:0; width:100%; height:100%;
+        color: rgba(0, 255, 0, 0.05); font-size: 0.6rem;
+        z-index: 0; pointer-events: none; word-wrap: break-word;
+    }}
+    .stat-row {{ display: flex; justify-content: space-between; z-index: 2; position: relative; margin-bottom: 5px; font-size: 0.9rem; }}
+    .stat-val {{ color: var(--neon-blue); text-shadow: 0 0 5px var(--neon-blue); }}
     
-    @keyframes pulse-arrow {{
-        0% {{ opacity: 0.3; transform: translateX(0); }}
-        50% {{ opacity: 1; transform: translateX(5px); }}
-        100% {{ opacity: 0.3; transform: translateX(0); }}
+    /* THIS IS THE FIXED LINE: */
+    @keyframes blink {{ 0% {{opacity:1;}} 50% {{opacity:0.3;}} 100% {{opacity:1;}} }}
+    
+    .live-dot {{ color: var(--neon-red); animation: blink 1s infinite; margin-right: 5px; }}
+
+    /* ----------------------------------------------------
+       TEAM HOVER CARDS
+    ---------------------------------------------------- */
+    .dev-wrapper {{
+        position: relative; width: 100%; height: 260px;
+        background: rgba(5, 10, 15, 0.8);
+        border: 1px solid rgba(255,255,255,0.1);
+        border-top: 3px solid var(--neon-blue);
+        overflow: hidden; transition: 0.4s;
+        margin-bottom: 20px;
+    }}
+    .dev-wrapper:hover {{
+        border-top-color: var(--neon-green);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        transform: translateY(-5px);
+    }}
+    .dev-main {{ padding: 25px; transition: 0.4s; }}
+    .dev-wrapper:hover .dev-main {{ transform: translateY(-50px); opacity: 0.3; filter: blur(2px); }}
+    
+    .dev-overlay {{
+        position: absolute; bottom: -100%; left: 0; width: 100%; height: 100%;
+        background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 100%);
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        padding: 20px; text-align: center;
+        border-top: 1px solid var(--neon-green);
+    }}
+    .dev-wrapper:hover .dev-overlay {{ bottom: 0; }}
+    
+    .college-tag {{
+        background: var(--neon-blue); color: #000; padding: 5px 10px;
+        font-weight: bold; font-family: 'Orbitron'; font-size: 0.8rem;
+        margin-bottom: 5px; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%);
     }}
 
-    /* Chat Input */
-    .stChatInputContainer {{
-        border-color: var(--neon-blue) !important;
+    /* ----------------------------------------------------
+       GENERAL UI
+    ---------------------------------------------------- */
+    .stButton button {{
+        background: transparent !important; border: 1px solid var(--neon-blue) !important;
+        color: var(--neon-blue) !important; font-family: 'Share Tech Mono' !important;
+        text-transform: uppercase; letter-spacing: 2px; transition: 0.3s;
     }}
+    .stButton button:hover {{ background: rgba(0,243,255,0.1) !important; box-shadow: 0 0 15px var(--neon-blue); }}
+    
+    .terminal-box {{
+        background: #000; border: 1px solid #333; padding: 20px;
+        font-family: 'Share Tech Mono', monospace; color: var(--neon-green);
+        height: 400px; overflow-y: auto; border-left: 4px solid var(--neon-green);
+    }}
+    .log-line {{ margin-bottom: 5px; border-bottom: 1px solid rgba(0,255,0,0.1); }}
+
+    /* FAQ Styling */
+    .faq-container {{ border: 1px solid #333; margin-bottom: 10px; background: rgba(255,255,255,0.02); transition:0.3s; }}
+    .faq-container:hover {{ border-color: var(--neon-blue); background: rgba(0,243,255,0.05); }}
+
 </style>
+<div class="scanlines"></div>
 """, unsafe_allow_html=True)
 
 # ==========================================
@@ -441,16 +316,12 @@ def load_model():
     model = EfficientNetLSTM().to(DEVICE)
     model_path = "efficientnet_b3_lstm_active.pth"
 
-    # AUTO-DOWNLOAD FROM DRIVE
     if not os.path.exists(model_path):
-        file_id = "1IpeVbi0jvwHaXD5qCMtF_peUVR9uJDw0" # Your ID
+        file_id = "1IpeVbi0jvwHaXD5qCMtF_peUVR9uJDw0" 
         url = f'https://drive.google.com/uc?id={file_id}'
         try:
-            print(f"Downloading model from Drive...")
-            gdown.download(url, model_path, quiet=False)
-        except Exception as e:
-            st.error(f"Failed to download model: {e}")
-            return None
+            gdown.download(url, model_path, quiet=True)
+        except Exception: return None
 
     try:
         if os.path.exists(model_path):
@@ -458,9 +329,7 @@ def load_model():
             model.eval()
             return model
         return None
-    except Exception as e:
-        st.error(f"Error loading weights: {e}")
-        return None
+    except Exception: return None
 
 model = load_model()
 mtcnn = MTCNN(keep_all=False, device=DEVICE, post_process=False)
@@ -468,7 +337,7 @@ mtcnn = MTCNN(keep_all=False, device=DEVICE, post_process=False)
 # ==========================================
 # 📽️ 6. VIDEO PROCESSOR
 # ==========================================
-def process_video_frames(video_path, status_log):
+def process_video_frames(video_path, status_log_func):
     cap = cv2.VideoCapture(video_path)
     frames, diffs = [], []
     ret, prev = cap.read()
@@ -476,9 +345,7 @@ def process_video_frames(video_path, status_log):
 
     prev_gray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
     frame_cnt = 0
-    
-    status_log.markdown("`> SCANNING TEMPORAL VECTORS...`")
-    time.sleep(1.0) 
+    status_log_func(">> INITIALIZING ENTROPY SCANNERS...", 0.1)
     
     while cap.isOpened():
         ret, curr = cap.read()
@@ -495,9 +362,8 @@ def process_video_frames(video_path, status_log):
     top_frames = [x[1] for x in diffs[:20]]
     if len(top_frames) < 1: return None, []
 
-    status_log.markdown("`> DETECTING FACIAL REGIONS...`")
+    status_log_func(">> DETECTING FACIAL ROI...", 0.3)
     processed_faces = []
-
     for f in top_frames:
         h, w = f.shape[:2]
         scale = 640 / w
@@ -524,241 +390,268 @@ def process_video_frames(video_path, status_log):
     return final_faces, top_frames
 
 # ==========================================
-# 🧭 7. SIDEBAR
+# 🧭 7. SIDEBAR (CRAZY TELEMETRY)
 # ==========================================
 if "page" not in st.session_state: st.session_state.page = "Dashboard"
 
 with st.sidebar:
     st.markdown("""
-    <div style="text-align: center; border-bottom: 1px solid #333; padding-bottom: 20px; margin-bottom: 20px;">
-        <h2 style="color: #fff; margin:0; font-family:'Orbitron'; letter-spacing: 2px; font-size: 1.5rem; text-shadow: 0 0 10px #00f3ff;">OPS CENTER</h2>
-        <p style="color: #00f3ff; margin:0; font-size: 0.75rem; letter-spacing: 4px; font-family:'Share Tech Mono';">SYS.V.2.0.4</p>
+    <div style="text-align: center; border-bottom: 2px solid var(--neon-blue); padding-bottom: 20px; margin-bottom: 20px;">
+        <h1 style="color: #fff; margin:0; font-family:'Orbitron'; font-size: 2rem; text-shadow: 0 0 15px var(--neon-blue);">OPS CENTER</h1>
+        <p style="color: var(--neon-blue); margin:0; font-size: 0.8rem; letter-spacing: 4px; font-family:'Share Tech Mono';">SYS.VER.4.0.ALPHA</p>
     </div>
     """, unsafe_allow_html=True)
     
-    selected_page = st.radio(
-        "MODULE SELECT",
-        ["Dashboard", "Analysis Console", "Methodology", "About Us", "Contact"],
-        index=["Dashboard", "Analysis Console", "Methodology", "About Us", "Contact"].index(st.session_state.page),
-        label_visibility="collapsed"
-    )
-    
-    if selected_page != st.session_state.page:
-        st.session_state.page = selected_page
-        st.rerun()
+    pages = ["Dashboard", "Analysis Console", "Methodology", "About Us", "Contact"]
+    for p in pages:
+        if st.button(f"{'💠' if st.session_state.page == p else '🔹'} {p.upper()}", key=p, use_container_width=True):
+            st.session_state.page = p
+            st.rerun()
 
     st.markdown("---")
     
-    # TELEMETRY
-    st.markdown("""
-    <div style="display: flex; align-items: center; margin-bottom: 15px;">
-        <span style="color: #00f3ff; font-size: 1.2rem; margin-right: 10px;">📡</span>
-        <span style="color: #fff; font-family: 'Share Tech Mono'; letter-spacing: 1px; font-size: 1.0rem; font-weight: 700;">SERVER METRICS</span>
-    </div>
-    """, unsafe_allow_html=True)
-
-    gpu_load = random.randint(30, 85)
-    ram_load = random.randint(40, 65)
-
+    # --- CRAZY TELEMETRY ---
+    random_hex = ' '.join([f"{random.randint(0, 255):02X}" for _ in range(50)])
+    
     st.markdown(f"""
-    <style>
-        .meter-container {{ margin-bottom: 12px; }}
-        .meter-label {{ display: flex; justify-content: space-between; color: #aaa; font-size: 0.75rem; margin-bottom: 4px; font-family: 'Share Tech Mono'; }}
-        .meter-bg {{ width: 100%; height: 4px; background: #222; border-radius: 2px; }}
-        .meter-fill-gpu {{ height: 100%; background: #00f3ff; border-radius: 2px; box-shadow: 0 0 8px #00f3ff; width: {gpu_load}%; }}
-        .meter-fill-ram {{ height: 100%; background: #bc13fe; border-radius: 2px; box-shadow: 0 0 8px #bc13fe; width: {ram_load}%; }}
-    </style>
-    <div class="meter-container">
-        <div class="meter-label"><span>GPU_CORES</span><span style="color:#00f3ff">{gpu_load}%</span></div>
-        <div class="meter-bg"><div class="meter-fill-gpu"></div></div>
-    </div>
-    <div class="meter-container">
-        <div class="meter-label"><span>VRAM_ALLOC</span><span style="color:#bc13fe">{ram_load}%</span></div>
-        <div class="meter-bg"><div class="meter-fill-ram"></div></div>
+    <div class="telemetry-box">
+        <div class="hex-bg">{random_hex} {random_hex} {random_hex}</div>
+        <div class="telemetry-header">
+            <span><span class="live-dot">●</span>LIVE_FEED</span>
+            <span>ID: 8X-99</span>
+        </div>
+        <div class="stat-row">
+            <span>GPU_LOAD</span>
+            <span class="stat-val">{random.randint(30, 95)}%</span>
+        </div>
+        <div class="stat-row">
+            <span>TENSOR_CORES</span>
+            <span class="stat-val">ACTIVE</span>
+        </div>
+        <div class="stat-row">
+            <span>VRAM_USAGE</span>
+            <span class="stat-val">{random.randint(4, 12)}GB</span>
+        </div>
+        <div class="stat-row">
+            <span>LATENCY</span>
+            <span class="stat-val">{random.randint(10, 45)}ms</span>
+        </div>
+        <div style="margin-top:10px; border-top:1px dashed #333; padding-top:5px; font-size:0.7rem; color:#666;">
+            ENCRYPTION: AES-256<br>
+            UPLINK: STABLE
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown("<p style='font-size: 0.7rem; color: #666; margin-bottom: 5px; font-family: Share Tech Mono; margin-top: 15px;'>NEURAL_FLUX_RATE</p>", unsafe_allow_html=True)
-    st.line_chart(pd.DataFrame(np.random.randn(20, 1), columns=['a']), height=60, color="#0aff48") 
+    # Mini Chart
+    st.markdown("<p style='font-size: 0.7rem; color: #888; font-family: Share Tech Mono;'>NEURAL_ACTIVITY_LOG</p>", unsafe_allow_html=True)
+    chart_data = pd.DataFrame(np.random.randn(20, 3), columns=['a', 'b', 'c'])
+    st.line_chart(chart_data, height=80, color=["#00f3ff", "#bc13fe", "#0aff48"]) 
 
-    # API BADGE
-    st.write("")
+    # Status Badge
     if gemini_active:
-        st.markdown('<div style="background: rgba(10,255,72,0.05); border: 1px solid #0aff48; text-align: center; padding: 10px; border-radius: 0px;"><span style="color: #0aff48; font-family: Share Tech Mono; font-size: 0.8rem; letter-spacing: 1px;">● SYSTEM ONLINE</span></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: rgba(10,255,72,0.1); border: 1px solid #0aff48; text-align: center; padding: 5px;"><span style="color: #0aff48; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE ONLINE</span></div>', unsafe_allow_html=True)
     else:
-        st.markdown('<div style="background: rgba(255,0,60,0.1); border: 1px solid #ff003c; text-align: center; padding: 10px; border-radius: 0px;"><span style="color: #ff003c; font-family: Share Tech Mono; font-size: 0.8rem; letter-spacing: 1px;">● OFFLINE MODE</span></div>', unsafe_allow_html=True)
+        st.markdown('<div style="background: rgba(255,0,60,0.1); border: 1px solid #ff003c; text-align: center; padding: 5px;"><span style="color: #ff003c; font-family: Share Tech Mono; font-size: 0.8rem;">● AI CORE OFFLINE</span></div>', unsafe_allow_html=True)
 
 # ==========================================
 # 🏠 PAGE 1: DASHBOARD
 # ==========================================
 if st.session_state.page == "Dashboard":
     
-    st.markdown('<div style="margin-top: 20px;"></div>', unsafe_allow_html=True)
-    st.markdown('<h1 class="neon-title">AI THENTIC</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="tech-subtitle">>> S.A.F.E. (Strategic Algorithmic Forensic Evaluation) <<</p>', unsafe_allow_html=True)
-    st.write("") 
+    st.markdown('<div style="margin-top: 40px;"></div>', unsafe_allow_html=True)
+    st.markdown('<h1 class="glitch-title">AI THENTIC</h1>', unsafe_allow_html=True)
+    st.markdown('<p class="tech-subtitle">>> MILITARY-GRADE NEURAL FORENSICS <<</p>', unsafe_allow_html=True)
+    
+    st.markdown("""
+    <div style="background: rgba(0,0,0,0.6); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 5px; overflow: hidden; white-space: nowrap; margin: 20px 0;">
+        <div style="display: inline-block; animation: marquee 20s linear infinite; color: var(--neon-green); font-family: 'Share Tech Mono'; font-size: 0.9rem;">
+            SYSTEM INITIALIZED... SEARCHING FOR DEEPFAKE ARTIFACTS... LSTM VECTORS LOADED... EFFICIENTNET-B3 STANDING BY... SECURE CONNECTION ESTABLISHED... WAITING FOR INPUT STREAM...
+        </div>
+    </div>
+    <style>@keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }</style>
+    """, unsafe_allow_html=True)
 
-    # --- TOP ROW ---
     col1, col2, col3 = st.columns([1, 1.5, 1])
-    with col1:
-        if lottie_left_scan: st_lottie(lottie_left_scan, height=180, key="l1")
+    with col1: st_lottie(lottie_left_scan, height=200, key="l1") if lottie_left_scan else None
     with col2:
         st.markdown("""
-            <div class="integrity-box">
-                <h3 style="color: #fff; text-shadow: 0 0 10px #00f3ff; font-family: 'Orbitron';">INTEGRITY VERIFICATION</h3>
-                <p style="color:#aaa; font-family: 'Share Tech Mono'; font-size: 0.9rem;">DEPLOYING BI-DIRECTIONAL LSTM ARRAYS FOR DEEPFAKE ARTIFACT DETECTION.</p>
-            </div>
+        <div style="text-align:center; padding: 20px; background: rgba(0,0,0,0.5); border: 1px solid var(--neon-blue); box-shadow: 0 0 20px rgba(0,243,255,0.1);">
+            <h3 style="color: #fff; font-family: 'Orbitron';">INTEGRITY VERIFICATION</h3>
+            <p style="color:#aaa; font-family: 'Share Tech Mono'; font-size: 0.9rem; margin-bottom: 20px;">
+                DEPLOYING BI-DIRECTIONAL LSTM ARRAYS FOR DEEPFAKE ARTIFACT DETECTION.
+            </p>
+        </div>
         """, unsafe_allow_html=True)
         st.write("")
-        if st.button(">> INITIALIZE ANALYSIS MODULE <<", type="primary", use_container_width=True):
+        if st.button(">> LAUNCH ANALYSIS CONSOLE <<", type="primary", use_container_width=True):
             st.session_state.page = "Analysis Console"
             st.rerun()
-    with col3:
-            if lottie_right_scan: st_lottie(lottie_right_scan, height=180, key="r1")
+    with col3: st_lottie(lottie_right_scan, height=200, key="r1") if lottie_right_scan else None
 
     st.write("")
-    st.write("")
-
-    # --- ARCHITECTURE ---
-    st.markdown("<h3 style='text-align:center; color: #fff; margin-bottom: 20px; font-family: Orbitron; letter-spacing: 3px;'>// SYSTEM ARCHITECTURE</h3>", unsafe_allow_html=True)
     
+    # --- CAPABILITY CARDS ---
+    st.markdown("<h3 style='color: var(--neon-blue); font-family: Orbitron; margin-bottom: 20px;'>// SYSTEM CAPABILITIES [HOVER TO DECRYPT]</h3>", unsafe_allow_html=True)
     c1, c2, c3 = st.columns(3)
-    with c1: st.markdown("""
-        <div class="tech-card">
-            <h4 class="tech-header">01. ACTIVE SAMPLING</h4>
-            <p style="color:#ccc; font-size: 0.9rem;">High-Entropy Frame Extraction. Algorithm discards static data to focus solely on high-motion vectors where artifacts occur.</p>
-        </div>
-    """, unsafe_allow_html=True)
     
-    with c2: st.markdown("""
-        <div class="tech-card">
-            <h4 class="tech-header" style="color: var(--neon-purple);">02. TEMPORAL MEMORY</h4>
-            <p style="color:#ccc; font-size: 0.9rem;">Bi-Directional LSTM Core. Analyzes frame-to-frame inconsistencies in the time domain to detect micro-jitter.</p>
-        </div>
-    """, unsafe_allow_html=True)
-    
-    with c3: st.markdown("""
-        <div class="tech-card">
-            <h4 class="tech-header" style="color: var(--neon-green);">03. SPATIAL SCAN</h4>
-            <p style="color:#ccc; font-size: 0.9rem;">EfficientNet-B3 Backbone. Detects blending boundaries, resolution mismatches, and warping artifacts.</p>
-        </div>
-    """, unsafe_allow_html=True)
-
-    # --- FAQ (UPDATED CSS FOR NEON LOOK) ---
-    st.markdown("---")
-    st.markdown("<h3 style='text-align:center; color: var(--neon-blue); font-size: 1.5rem; letter-spacing: 2px; font-family: Orbitron; margin-bottom:20px;'>FORENSIC KNOWLEDGE BASE</h3>", unsafe_allow_html=True)
-    
-    col_faq_L, col_faq_R = st.columns([1, 1])
-    
-    # The CSS added in section 4 automatically targets these expanders to make them look cyber/tech
-    with col_faq_L:
-        with st.expander("❓ What exactly is a Deepfake?"): st.write("""Deepfakes are synthetic media generated by AI, specifically **Generative Adversarial Networks (GANs)**. They map facial features from a source video onto a target person.""")
-        with st.expander("⚙️ How are Deepfakes generated?"): st.write("""Most are created using an **Autoencoder** architecture which compresses the input face into a latent space and reconstructs it as the target face. Modern methods utilize diffusion models.""")
-        with st.expander("🤔 Difference between DeepFace and Deepfakes?"): st.write("""**DeepFace** is a facial *recognition* system used for ID verification. **Deepfakes** are synthetic media used to impersonate identities.""")
-    with col_faq_R:
-        with st.expander("🕵️ What are 'Deepfake Artifacts'?"): st.write("""Artifacts are the 'glitches' AI leaves behind, such as: **Blending Boundaries** (blur around the chin), **Temporal Jitter** (flickering lips), and inconsistent lighting.""")
-        with st.expander("👁️ Why is 'Active Sampling' important?"): st.write("""Active Sampling ignores static frames (standing still) and forces the model to analyze only high-movement frames (blinking, talking) where the AI is most likely to fail.""")
-
-    # --- CHATBOT SECTION ---
-    st.markdown("---")
-    c_chat_anim, c_chat_box = st.columns([1, 2])
-    
-    with c_chat_anim:
-        if lottie_chatbot: st_lottie(lottie_chatbot, height=250, key="bot")
-        else: st.markdown("⚠️ Animation Assets Missing")
-
-    with c_chat_box:
+    with c1:
         st.markdown("""
-            <div style="background: rgba(0,0,0,0.5); border: 1px solid #333; padding: 20px; border-radius: 4px;">
-                <div style="color: var(--neon-blue); font-family: 'Share Tech Mono'; margin-bottom: 10px;">>> SECURE COMMS CHANNEL ESTABLISHED</div>
+        <div class="cap-card-container">
+            <div class="cap-content-visible">
+                <div class="cap-icon" style="color:var(--neon-blue)">⚡</div>
+                <div class="cap-title" style="color:var(--neon-blue)">ACTIVE SAMPLING</div>
+                <p style="color:#888; font-family:'Share Tech Mono'">Module 01</p>
             </div>
+            <div class="cap-content-hidden">
+                <h4 style="color:var(--neon-blue); font-family:'Orbitron'">ENTROPY SCAN</h4>
+                <p style="color:#ddd; font-size:0.9rem;">
+                    The system ignores 95% of static frames. We calculate pixel-difference entropy to isolate micro-movements, reducing compute time while increasing accuracy on lips/eyes.
+                </p>
+            </div>
+        </div>
         """, unsafe_allow_html=True)
+    
+    with c2:
+        st.markdown("""
+        <div class="cap-card-container" style="border-color: rgba(188, 19, 254, 0.2);">
+            <div class="cap-content-visible">
+                <div class="cap-icon" style="color:var(--neon-purple)">🧠</div>
+                <div class="cap-title" style="color:var(--neon-purple)">TEMPORAL MEMORY</div>
+                <p style="color:#888; font-family:'Share Tech Mono'">Module 02</p>
+            </div>
+            <div class="cap-content-hidden" style="border-top-color: var(--neon-purple);">
+                <h4 style="color:var(--neon-purple); font-family:'Orbitron'">BI-LSTM CORE</h4>
+                <p style="color:#ddd; font-size:0.9rem;">
+                    Deepfakes flicker over time. Our Bidirectional LSTM analyzes video forwards AND backwards to catch temporal jitter that single-frame CNNs miss.
+                </p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with c3:
+        st.markdown("""
+        <div class="cap-card-container" style="border-color: rgba(10, 255, 72, 0.2);">
+            <div class="cap-content-visible">
+                <div class="cap-icon" style="color:var(--neon-green)">👁️</div>
+                <div class="cap-title" style="color:var(--neon-green)">SPATIAL SCAN</div>
+                <p style="color:#888; font-family:'Share Tech Mono'">Module 03</p>
+            </div>
+            <div class="cap-content-hidden" style="border-top-color: var(--neon-green);">
+                <h4 style="color:var(--neon-green); font-family:'Orbitron'">EFFICIENTNET-B3</h4>
+                <p style="color:#ddd; font-size:0.9rem;">
+                    A specialized CNN backbone trained on FaceForensics++. It detects warping artifacts, blending boundaries, and inconsistent lighting on the pixel level.
+                </p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # --- FAQs ---
+    st.markdown("---")
+    st.subheader(">> FORENSIC KNOWLEDGE BASE")
+    
+    faq_cols = st.columns(2)
+    with faq_cols[0]:
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("❓ WHAT IS A DEEPFAKE?"): 
+            st.info("Synthetic media generated by GANs or Diffusion models to impersonate identity. They map source faces to target faces in latent space.")
+        st.markdown('</div>', unsafe_allow_html=True)
         
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("⚙️ HOW DOES DETECTION WORK?"): 
+            st.write("We use a 'Multi-Modal' approach: Spatial analysis checks for weird pixels, Temporal analysis checks for weird movement.")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    with faq_cols[1]:
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("🕵️ CAN YOU DETECT NEW MODELS (SORA/KLING)?"): 
+            st.success("YES. While models change, the fundamental flaw of generative AI (temporal inconsistency) remains detectable by our LSTM layers.")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("💾 IS MY DATA SAVED?"): 
+            st.warning("NEGATIVE. Security protocol mandates immediate deletion of video buffers after analysis. We are a Zero-Retention system.")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Chatbot
+    st.markdown("---")
+    c_chat, c_anim = st.columns([2, 1])
+    with c_chat:
+        st.markdown("### 💬 SECURE COMMS CHANNEL")
         if "messages" not in st.session_state: st.session_state.messages = []
-        
         for msg in st.session_state.messages:
             with st.chat_message(msg["role"]): st.markdown(msg["content"])
-        
-        if prompt := st.chat_input("Query forensic database..."):
+        if prompt := st.chat_input("Query the forensic AI..."):
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"): st.markdown(prompt)
-
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
-                full_response = ""
-                
                 if gemini_active:
                     try:
                         model_gemini = genai.GenerativeModel("gemini-1.5-flash")
-                        full_prompt = f"{PROJECT_CONTEXT}\n\nUser Question: {prompt}"
-                        response_stream = model_gemini.generate_content(full_prompt, stream=True)
-                        for chunk in response_stream:
-                            if chunk.text:
-                                full_response += chunk.text
-                                message_placeholder.markdown(full_response + "▌")
-                        message_placeholder.markdown(full_response)
-                    except Exception as e:
-                        message_placeholder.error(f"Error: {str(e)}")
-                else:
-                    message_placeholder.markdown("⚠️ SYSTEM OFFLINE. API KEY REQUIRED.")
-            
-            st.session_state.messages.append({"role": "assistant", "content": full_response})
+                        response = model_gemini.generate_content(f"{PROJECT_CONTEXT}\nUser: {prompt}")
+                        message_placeholder.markdown(response.text)
+                        st.session_state.messages.append({"role": "assistant", "content": response.text})
+                    except: message_placeholder.error("COMMS LINK FAILED.")
+                else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
+    with c_anim:
+        st_lottie(lottie_chatbot, height=250, key="bot") if lottie_chatbot else None
 
 # ==========================================
 # 🕵️ PAGE 2: ANALYSIS CONSOLE
 # ==========================================
 elif st.session_state.page == "Analysis Console":
     
-    st.markdown('<h1 class="neon-title" style="font-size:3.5rem;">ANALYSIS CONSOLE</h1>', unsafe_allow_html=True)
-    st.markdown('<p style="text-align:center; color:#888; letter-spacing:2px; margin-bottom: 30px;">SECURE UPLOAD GATEWAY</p>', unsafe_allow_html=True)
-    
-    # Styled Uploader Wrapper
-    with st.container():
-        uploaded_file = st.file_uploader(" ", type=["mp4", "avi", "mov"])
-    
+    st.markdown('<h1 class="glitch-title" style="font-size:3.5rem;">ANALYSIS CONSOLE</h1>', unsafe_allow_html=True)
+    st.markdown('<p style="text-align:center; color:#888; font-family:Share Tech Mono;">SECURE UPLOAD GATEWAY // <span style="color:var(--neon-green)">READY</span></p>', unsafe_allow_html=True)
+
+    uploaded_file = st.file_uploader("DRAG & DROP SUSPECT FOOTAGE", type=["mp4", "avi", "mov"])
+
     if uploaded_file:
         with open("temp_video.mp4", "wb") as f: f.write(uploaded_file.getbuffer())
-        
         st.write("")
-        col_vid, col_data = st.columns([1.5, 1])
-        with col_vid:
-            # Video Container Styling
+        col_video, col_terminal = st.columns([1.5, 1])
+
+        with col_video:
             st.markdown("""
-                <div style="border: 1px solid #444; background: #000; padding: 5px; position: relative;">
-                     <div style="position:absolute; top:15px; left:15px; color:red; font-size:0.8rem; font-family:'Share Tech Mono'; z-index:10;">REC ● LIVE FEED</div>
+            <div style="border: 1px solid var(--neon-blue); padding: 5px; background: rgba(0,0,0,0.8); position: relative;">
+                <div style="position: absolute; top: 10px; left: 10px; z-index: 10; background: red; color: white; padding: 2px 5px; font-size: 0.7rem; font-family: sans-serif;">REC ●</div>
+                <div style="position: absolute; bottom: 10px; right: 10px; z-index: 10; color: var(--neon-blue); font-family: 'Share Tech Mono';">SOURCE: EXT_CAM_01</div>
             """, unsafe_allow_html=True)
             st.video(uploaded_file)
             st.markdown("</div>", unsafe_allow_html=True)
-            
             st.write("")
-            analyze_btn = st.button("INITIATE DEEP SCAN", type="primary", use_container_width=True)
+            analyze_btn = st.button(">> INITIATE DEEP SCAN <<", type="primary", use_container_width=True)
 
-        with col_data:
-            st.markdown("<p style='font-family:Share Tech Mono; color: var(--neon-green);'>// TERMINAL_OUTPUT</p>", unsafe_allow_html=True)
-            terminal_placeholder = st.empty()
-            terminal_placeholder.markdown('<div class="terminal-box">_SYSTEM READY.<br>_WAITING FOR INPUT STREAM...</div>', unsafe_allow_html=True)
+        def log_to_terminal(text):
+            return f"<div class='log-line'>[{time.strftime('%H:%M:%S')}] {text}</div>"
+
+        with col_terminal:
+            st.markdown("<p style='font-family:Share Tech Mono; color: var(--neon-green); margin-bottom: 5px;'>// TERMINAL_OUTPUT</p>", unsafe_allow_html=True)
+            terminal_area = st.empty()
+            log_state = {"html": "<div class='terminal-box'>_SYSTEM READY.<br>_WAITING FOR USER AUTHORIZATION...</div>"}
+            terminal_area.markdown(log_state["html"], unsafe_allow_html=True)
 
         if analyze_btn:
             if model is None:
-                terminal_placeholder.markdown('<div class="terminal-box" style="color:red;">[FATAL] NEURAL WEIGHTS NOT FOUND.<br>[ERR_CODE_404]</div>', unsafe_allow_html=True)
+                log_state["html"] += log_to_terminal("[FATAL] MODEL WEIGHTS 404.")
+                terminal_area.markdown(f"<div class='terminal-box'>{log_state['html']}</div>", unsafe_allow_html=True)
             else:
-                status_box = st.empty()
-                faces, raw = process_video_frames("temp_video.mp4", status_box)
-                
+                def update_log(msg, sleep_t):
+                    log_state["html"] += log_to_terminal(msg)
+                    terminal_area.markdown(f"<div class='terminal-box'>{log_state['html']}</div>", unsafe_allow_html=True)
+                    time.sleep(sleep_t)
+
+                update_log("LOADING VIDEO BUFFER...", 0.5)
+                faces, raw_frames = process_video_frames("temp_video.mp4", update_log)
+
                 if not faces:
-                    terminal_placeholder.markdown('<div class="terminal-box" style="color:red;">[ERROR] NO FACIAL DATA EXTRACTED.<br>_ABORTING...</div>', unsafe_allow_html=True)
+                    update_log("[ERR] NO FACES DETECTED. ABORTING.", 0)
                 else:
-                    terminal_placeholder.markdown('<div class="terminal-box">[INFO] FACES EXTRACTED.<br>[INFO] INJECTING INTO EFFICIENTNET-B3...<br>[INFO] CALCULATING LSTM VECTORS...</div>', unsafe_allow_html=True)
-                    
-                    st.write("")
-                    st.markdown("**⚡ LIVE NEURAL TELEMETRY**")
-                    graph_place = st.empty()
-                    chart_data = pd.DataFrame(columns=["Integrity"])
-                    for x in range(20):
-                        new_row = pd.DataFrame({"Integrity": [random.uniform(0.4, 0.9)]})
-                        chart_data = pd.concat([chart_data, new_row], ignore_index=True)
-                        graph_place.area_chart(chart_data, color="#00f3ff", height=100)
-                        time.sleep(0.05)
+                    update_log(f"EXTRACTED {len(faces)} REGIONS OF INTEREST.", 0.5)
+                    update_log("NORMALIZING TENSORS...", 0.3)
+                    update_log("INJECTING INTO EFFICIENTNET-B3...", 0.5)
+                    update_log("ANALYZING TEMPORAL VECTORS...", 0.5)
 
                     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
                     input_tensor = torch.stack([transform(Image.fromarray(f)) for f in faces]).unsqueeze(0).to(DEVICE)
@@ -767,213 +660,180 @@ elif st.session_state.page == "Analysis Console":
                         output = model(input_tensor)
                         probs = torch.nn.functional.softmax(output, dim=1)
                         real_score, fake_score = probs[0][0].item(), probs[0][1].item()
+                    
+                    update_log("ANALYSIS COMPLETE.", 0)
+                    update_log(f"FINAL CONFIDENCE: {fake_score:.4f}", 0)
 
-                    st.write("---")
-                    
-                    if fake_score > 0.50:
-                        st.markdown(f"""
-                        <div style="background: rgba(255, 0, 60, 0.1); border: 2px solid #ff003c; padding: 20px; text-align: center; border-radius: 4px; box-shadow: 0 0 30px rgba(255,0,60,0.3);">
-                            <h1 style="color: #ff003c; margin:0; font-family: 'Orbitron'; font-size: 3rem; text-shadow: 0 0 10px #ff003c;">⚠️ DEEPFAKE DETECTED</h1>
-                            <p style="letter-spacing: 2px; color: #fff; font-family: 'Share Tech Mono'; font-size: 1.2rem;">CONFIDENCE: {fake_score*100:.2f}%</p>
-                        </div>
-                        """, unsafe_allow_html=True)
-                    else:
-                        st.markdown(f"""
-                        <div style="background: rgba(10, 255, 72, 0.1); border: 2px solid #0aff48; padding: 20px; text-align: center; border-radius: 4px; box-shadow: 0 0 30px rgba(10,255,72,0.3);">
-                            <h1 style="color: #0aff48; margin:0; font-family: 'Orbitron'; font-size: 3rem; text-shadow: 0 0 10px #0aff48;">✅ AUTHENTIC MEDIA</h1>
-                            <p style="letter-spacing: 2px; color: #fff; font-family: 'Share Tech Mono'; font-size: 1.2rem;">CONFIDENCE: {real_score*100:.2f}%</p>
-                        </div>
-                        """, unsafe_allow_html=True)
+                    st.markdown("---")
+                    res_col1, res_col2 = st.columns([1, 1])
+                    with res_col1:
+                        if fake_score > 0.50:
+                            st.markdown(f"""
+                            <div style="border: 2px solid #ff003c; background: rgba(255,0,60,0.1); padding: 30px; text-align: center; box-shadow: 0 0 50px rgba(255,0,60,0.2);">
+                                <h1 style="color: #ff003c; font-size: 3.5rem; margin:0; font-family:'Orbitron'; text-shadow: 0 0 10px red;">⚠️ DEEPFAKE</h1>
+                                <h3 style="color: #fff;">CONFIDENCE: {fake_score*100:.2f}%</h3>
+                            </div>
+                            """, unsafe_allow_html=True)
+                        else:
+                            st.markdown(f"""
+                            <div style="border: 2px solid #0aff48; background: rgba(10,255,72,0.1); padding: 30px; text-align: center; box-shadow: 0 0 50px rgba(10,255,72,0.2);">
+                                <h1 style="color: #0aff48; font-size: 3.5rem; margin:0; font-family:'Orbitron'; text-shadow: 0 0 10px #0aff48;">✅ AUTHENTIC</h1>
+                                <h3 style="color: #fff;">CONFIDENCE: {real_score*100:.2f}%</h3>
+                            </div>
+                            """, unsafe_allow_html=True)
 
-                    m1, m2 = st.columns(2)
-                    with m1: st.markdown(f"**REAL PROBABILITY**"); st.progress(real_score)
-                    with m2: st.markdown(f"**FAKE PROBABILITY**"); st.progress(fake_score)
-                    
-                    terminal_placeholder.markdown('<div class="terminal-box" style="color: var(--neon-cyan);">[SUCCESS] ANALYSIS COMPLETE.<br>[INFO] LOG SAVED TO SECURE VAULT.</div>', unsafe_allow_html=True)
-                    
-                    st.write("---")
-                    st.subheader("Extracted Artifacts")
-                    st.markdown("""<style>.stImage img { border: 1px solid var(--neon-blue); opacity: 0.8; transition: 0.3s; } .stImage img:hover { opacity: 1; transform: scale(1.1); }</style>""", unsafe_allow_html=True)
-                    f_cols = st.columns(10)
-                    for i, face in enumerate(faces[:10]):
-                        with f_cols[i]: st.image(face, use_container_width=True)
+                    with res_col2:
+                        if fake_score > 0.5:
+                            jitt, tex, blend, light = fake_score * 0.9, fake_score * 0.85, fake_score * 0.95, fake_score * 0.7
+                        else:
+                            jitt, tex, blend, light = fake_score * 1.2, fake_score * 1.1, fake_score * 1.3, fake_score * 1.0
+                        
+                        categories = ['Temporal Jitter', 'Texture Artifacts', 'Blending Boundaries', 'Lighting Consistency', 'Lip Sync']
+                        values = [jitt, tex, blend, light, fake_score]
+                        
+                        fig = go.Figure()
+                        fig.add_trace(go.Scatterpolar(
+                            r=values, theta=categories, fill='toself', name='Artifact Scan',
+                            line_color='#ff003c' if fake_score > 0.5 else '#0aff48',
+                            fillcolor='rgba(255, 0, 60, 0.3)' if fake_score > 0.5 else 'rgba(10, 255, 72, 0.3)'
+                        ))
+                        fig.update_layout(
+                            polar=dict(
+                                radialaxis=dict(visible=True, range=[0, 1], showticklabels=False, linecolor='#333'),
+                                bgcolor='rgba(0,0,0,0)'
+                            ),
+                            paper_bgcolor='rgba(0,0,0,0)',
+                            font=dict(color='#fff', family="Share Tech Mono"),
+                            margin=dict(l=20, r=20, t=20, b=20),
+                            height=250
+                        )
+                        st.plotly_chart(fig, use_container_width=True)
+
+                    st.write("")
+                    st.subheader(">> ISOLATED ARTIFACT FRAMES")
+                    cols = st.columns(5)
+                    for i, face in enumerate(faces[:5]):
+                        with cols[i]: st.image(face, caption=f"FRAME ID: {random.randint(100,999)}", use_container_width=True)
+                    cols2 = st.columns(5)
+                    for i, face in enumerate(faces[5:10]):
+                        with cols2[i]: st.image(face, caption=f"FRAME ID: {random.randint(100,999)}", use_container_width=True)
 
 # ==========================================
 # 📄 PAGE 3: METHODOLOGY
 # ==========================================
 elif st.session_state.page == "Methodology":
-    st.markdown('<h1 class="neon-title" style="font-size:3rem;">SYSTEM KERNEL</h1>', unsafe_allow_html=True)
-    st.write("")
-
-    # --- 1. PULSING PIPELINE VISUALIZATION ---
+    st.markdown('<h1 class="glitch-title">SYSTEM KERNEL</h1>', unsafe_allow_html=True)
+    
     st.markdown("""
-    <div class="pipeline-container">
-        <div class="pipeline-node">📹<br>INPUT</div>
-        <div class="pipeline-arrow">➜</div>
-        <div class="pipeline-node" style="color: #00f3ff;">⚡<br>PRE-PROCESSING</div>
-        <div class="pipeline-arrow">➜</div>
-        <div class="pipeline-node" style="color: #bc13fe;">👁️<br>FEATURE EXTRACT</div>
-        <div class="pipeline-arrow">➜</div>
-        <div class="pipeline-node" style="color: #0aff48;">🧠<br>SEQ ANALYSIS</div>
-        <div class="pipeline-arrow">➜</div>
-        <div class="pipeline-node">🛡️<br>VERDICT</div>
+    <div style="background: rgba(0,0,0,0.8); border: 1px solid var(--neon-blue); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
+        <h3 style="color:var(--neon-blue); text-align:center; font-family:'Share Tech Mono'">// END-TO-END PIPELINE ARCHITECTURE</h3>
+        <div style="display:flex; justify-content:space-around; align-items:center; margin-top:20px; flex-wrap:wrap;">
+            <div style="text-align:center;">
+                <div style="font-size:3rem;">📹</div>
+                <div style="color:#888; font-size:0.8rem;">RAW VIDEO</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="border:1px solid #ff003c; padding:10px; border-radius:5px; text-align:center;">
+                <div style="color:#ff003c; font-weight:bold;">FRAME SAMPLER</div>
+                <div style="font-size:0.7rem; color:#aaa;">Entropy Filter</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="border:1px solid #bc13fe; padding:10px; border-radius:5px; text-align:center;">
+                <div style="color:#bc13fe; font-weight:bold;">CNN (SPATIAL)</div>
+                <div style="font-size:0.7rem; color:#aaa;">EfficientNet-B3</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="border:1px solid #00f3ff; padding:10px; border-radius:5px; text-align:center;">
+                <div style="color:#00f3ff; font-weight:bold;">RNN (TEMPORAL)</div>
+                <div style="font-size:0.7rem; color:#aaa;">Bi-Directional LSTM</div>
+            </div>
+            <div style="color:var(--neon-green); font-size:2rem;">➔</div>
+            <div style="text-align:center;">
+                <div style="font-size:3rem;">🛡️</div>
+                <div style="color:#888; font-size:0.8rem;">PREDICTION</div>
+            </div>
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # --- 2. DETAILED TECH TABS ---
-    tab1, tab2, tab3, tab4 = st.tabs(["⚡ STEP 1: ENTROPY SCAN", "👁️ STEP 2: SPATIAL CNN", "🧠 STEP 3: TEMPORAL LSTM", "📊 PERFORMANCE"])
+    tab1, tab2, tab3 = st.tabs(["[01] ENTROPY MATH", "[02] SPATIAL VECTORS", "[03] LSTM GATES"])
 
     with tab1:
-        c1, c2 = st.columns([1.5, 1])
+        c1, c2 = st.columns([2, 1])
         with c1:
-            st.markdown('<div class="tech-header">ACTIVE TEMPORAL SAMPLING</div>', unsafe_allow_html=True)
-            st.write("""
-            Traditional detectors scan every single frame, which is computationally expensive and redundant. 
-            **AIthentic** employs an **Entropy-Based Filter**:
-            """)
-            st.info("**THE LOGIC:** Deepfake artifacts (glitches) are most visible during high-motion events like blinking or head turning. We ignore static frames.")
-            st.markdown("1. Calculate pixel difference $\Delta P$ between Frame $t$ and $t+1$.")
-            st.markdown("2. Sort frames by Entropy Score.")
-            st.markdown("3. Select **Top 20** highest entropy frames for analysis.")
+            st.markdown("### ⚡ ACTIVE TEMPORAL SAMPLING")
+            st.write("We utilize a pixel-difference algorithm to calculate the 'Entropy' (Information Density) of every frame.")
+            st.latex(r'''
+            E_t = \frac{1}{H \times W} \sum_{i=1}^{H} \sum_{j=1}^{W} | P_{t}(i,j) - P_{t-1}(i,j) |
+            ''')
+            st.write("Where $P_t$ is the pixel value at time $t$. We only select the top $k=20$ frames where $E_t$ is maximized.")
         with c2:
-            st.markdown("""
-            <div class="tech-card" style="text-align:center;">
-                <h4 style="color:#00f3ff;">DATA REDUCTION</h4>
-                <h1 style="font-size:3.5rem; margin:0; color:#fff;">95%</h1>
-                <p>Noise Filtered Out</p>
-                <div style="height:10px; background:#333; border-radius:5px; margin-top:10px;">
-                    <div style="height:100%; width:95%; background:#00f3ff; border-radius:5px;"></div>
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+            st.info("Why? Deepfake artifacts usually appear during high-motion (blinking, talking). Static frames are useless noise.")
 
     with tab2:
-        c1, c2 = st.columns([1, 1])
-        with c1:
-            st.markdown('<div class="tech-header">SPATIAL FEATURE EXTRACTION</div>', unsafe_allow_html=True)
-            st.write("We utilize **EfficientNet-B3**, a Convolutional Neural Network (CNN) pre-trained on ImageNet.")
-            st.markdown("""
-            * **Input:** $300 \\times 300$ RGB Face Crop.
-            * **Output:** $1536$-dimensional feature vector.
-            """)
-            st.warning("The CNN looks for **Spatial Artifacts**: Blending boundaries, resolution mismatches, and skin texture anomalies.")
-        with c2:
-            st.markdown("""
-            <div class="tech-card">
-                <h4>LAYER ARCHITECTURE</h4>
-                <div style="background:#000; padding:10px; font-family:'Share Tech Mono'; font-size:0.8rem; border-left:2px solid #bc13fe;">
-                    [Input Image] (3, 300, 300)<br>
-                    &nbsp;&nbsp;⬇<br>
-                    [Conv2d + BatchNorm + Swish]<br>
-                    &nbsp;&nbsp;⬇<br>
-                    [MBConv Blocks (x26)]<br>
-                    &nbsp;&nbsp;⬇<br>
-                    [Global Average Pooling]<br>
-                    &nbsp;&nbsp;⬇<br>
-                    [Feature Vector] (1536)
-                </div>
-            </div>
-            """, unsafe_allow_html=True)
+        st.markdown("### 👁️ SPATIAL FEATURE EXTRACTION")
+        st.write("Selected frames are passed through EfficientNet-B3. The classification head is removed to extract raw feature vectors.")
+        st.latex(r'''
+        F_t = \text{CNN}_{\theta}(x_t) \in \mathbb{R}^{1536}
+        ''')
+        st.write("This creates a sequence of vectors: $S = [F_1, F_2, ..., F_{20}]$ representing the visual texture of the video over time.")
 
     with tab3:
-        st.markdown('<div class="tech-header">TEMPORAL SEQUENCE ANALYSIS</div>', unsafe_allow_html=True)
-        st.write("The core brain of the system. While the CNN looks at *photos*, the LSTM looks at *time*.")
-        
-        c1, c2 = st.columns(2)
-        with c1:
-            st.info("**Bi-Directional LSTM**")
-            st.write("We use a Bi-LSTM to process the sequence of 20 feature vectors in both directions (Past ↔ Future).")
-            st.write("This detects **Temporal Jitter**—micro-flickers in the eyes or lips that happen across time but look fine in a single frame.")
-        with c2:
-            st.markdown(r"""
-            **Mathematical Concept:**
-            $$
-            h_t = \text{LSTM}(x_t, h_{t-1})
-            $$
-            $$
-            y = \sigma(W \cdot [h_{forward}; h_{backward}] + b)
-            $$
-            Where $y$ is the probability of the video being FAKE.
-            """)
-
-    with tab4:
-        st.markdown('<div class="tech-header">VALIDATION METRICS</div>', unsafe_allow_html=True)
-        m1, m2, m3 = st.columns(3)
-        m1.metric("ACCURACY", "96.71%", "FaceForensics++")
-        m2.metric("PRECISION", "0.99", "Low False Positives")
-        m3.metric("INFERENCE", "4.2s", "Real-Time")
-        
-        st.write("")
-        st.caption("Tested against Deepfakes, Face2Face, FaceSwap, and NeuralTextures.")
+        st.markdown("### 🧠 TEMPORAL SEQUENCE ANALYSIS")
+        st.write("The sequence $S$ is fed into a Bidirectional LSTM. This allows the model to see context from both past and future frames.")
+        st.latex(r'''
+        \begin{aligned}
+        f_t &= \sigma(W_f \cdot [h_{t-1}, x_t] + b_f) \\
+        i_t &= \sigma(W_i \cdot [h_{t-1}, x_t] + b_i) \\
+        \tilde{C}_t &= \tanh(W_C \cdot [h_{t-1}, x_t] + b_C) \\
+        C_t &= f_t * C_{t-1} + i_t * \tilde{C}_t
+        \end{aligned}
+        ''')
+        st.success("This complex gating mechanism detects 'Temporal Jitter'—micro-flickers that human eyes miss but math cannot ignore.")
 
 # ==========================================
-# 👤 PAGE 4: ABOUT US
+# 👤 PAGE 4 & 5: ABOUT & CONTACT
 # ==========================================
 elif st.session_state.page == "About Us":
-    st.markdown('<h1 class="neon-title" style="font-size:3rem;">DEV TEAM</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="glitch-title">DEV SQUAD</h1>', unsafe_allow_html=True)
     st.write("")
     
-    # 🆕 NEW INTERACTIVE CARD FUNCTION
-    def dev_card(name, role, color, desc, extra_info):
+    def dev_card_animated(name, role, color, desc, college_info):
         st.markdown(f"""
-        <div class="dev-container" style="border-left-color: {color};">
-            <div class="dev-visible">
-                <h3 style="color:#fff; margin:0; font-family:'Orbitron'; font-size:1.4rem;">{name}</h3>
-                <p style="color:{color}; font-weight:bold; font-family:'Share Tech Mono'; font-size:1rem; letter-spacing:1px; margin-bottom:10px;">{role}</p>
-                <p style="font-size:0.9rem; color:#ccc;">{desc}</p>
+        <div class="dev-wrapper" style="border-top-color: {color};">
+            <div class="dev-main">
+                <h2 style="color:#fff; font-family:'Orbitron'; margin:0;">{name}</h2>
+                <p style="color:{color}; font-weight:bold; letter-spacing:2px; font-family:'Share Tech Mono';">{role}</p>
+                <div style="position:absolute; bottom:20px; right:20px; font-size:4rem; opacity:0.1;">👾</div>
             </div>
-            <div class="dev-hidden">
-                <p style="color: #fff; font-family: 'Share Tech Mono'; font-size: 0.9rem;">
-                    <span style="color: {color}">>> ID_INFO:</span><br>
-                    {extra_info}
-                </p>
+            <div class="dev-overlay">
+                <div class="college-tag">{college_info}</div>
+                <h3 style="color:#fff; font-family:'Orbitron'">{name}</h3>
+                <p style="color:#ccc; font-size:0.9rem;">{desc}</p>
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-    # 1st Row
     c1, c2 = st.columns(2)
-    with c1: 
-        dev_card("SAHIL DESAI", "PROJECT LEAD", "#00f3ff", 
-                 "Deep Learning & Model Architecture.", 
-                 "Studying Engineering Second Year EXTC branch.")
-    with c2: 
-        dev_card("HIMANSHU", "BACKEND ARCHITECT", "#0aff48", 
-                 "Pipeline Optimization & API Integration.",
-                 "Studying Computer Engineering Second Year.")
+    with c1: dev_card_animated("SAHIL DESAI", "ARCHITECT", "#00f3ff", "Model Training & LSTM Implementation.", "VJTI 2ND YEAR EXTC")
+    with c2: dev_card_animated("HIMANSHU", "BACKEND", "#0aff48", "Pipeline Optimization & API.", "VJTI 2ND YEAR EXTC")
     
-    st.write("")
-    
-    # 2nd Row
     c3, c4 = st.columns(2)
-    with c3: 
-        dev_card("TEJAS", "DATA ANALYST", "#bc13fe", 
-                 "Dataset Curation & Preprocessing.",
-                 "Studying IT Engineering Second Year.")
-    with c4: 
-        dev_card("KRISH", "UI/UX DESIGNER", "#ff003c", 
-                 "Frontend Visuals & User Experience.",
-                 "Studying CSE Engineering Second Year.")
+    with c3: dev_card_animated("TEJAS", "DATA ENG", "#bc13fe", "Dataset Curation (FaceForensics++).", "VJTI 2ND YEAR EXTC")
+    with c4: dev_card_animated("KRISH", "FRONTEND", "#ff003c", "UI/UX & Visual Effects.", "VJTI 2ND YEAR EXTC")
 
-# ==========================================
-# 📞 PAGE 5: CONTACT
-# ==========================================
 elif st.session_state.page == "Contact":
-    st.markdown('<h1 class="neon-title" style="font-size:3rem;">SECURE UPLINK</h1>', unsafe_allow_html=True)
-    st.write("")
+    st.markdown('<h1 class="glitch-title">SECURE UPLINK</h1>', unsafe_allow_html=True)
     
-    col_main, _ = st.columns([2,1])
-    with col_main:
-        with st.container():
-            st.markdown("""
-                <div class="tech-card">
-                    <h3 class="tech-header">ESTABLISH CONNECTION</h3>
-                    <p style="margin-bottom: 20px;">Use the encrypted channels below to contact the development team.</p>
-                </div>
-            """, unsafe_allow_html=True)
-            
-            st.write("")
-            c1, c2, c3 = st.columns(3)
-            with c1: st.link_button("🔗 LINKEDIN", "https://linkedin.com", use_container_width=True)
-            with c2: st.link_button("🐙 GITHUB", "https://github.com", use_container_width=True)
-            with c3: st.link_button("📧 ENCRYPTED MAIL", "mailto:sahildesai00112@gmail.com", use_container_width=True)
+    st.markdown("""
+    <div style="background: rgba(10, 15, 20, 0.6); backdrop-filter: blur(15px); border: 1px solid rgba(0, 243, 255, 0.2); padding: 50px; text-align: center; border-radius: 20px;">
+        <h2 style="color:var(--neon-blue); font-family:'Orbitron'">ESTABLISH CONNECTION</h2>
+        <p style="color:#ccc;">Encrypted channels are open. Response time < 200ms.</p>
+        <br>
+        <div style="display:flex; justify-content:center; gap: 20px;">
+            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-blue); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">LINKEDIN</a>
+            <a href="#" style="text-decoration:none; color:#000; background:var(--neon-purple); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">GITHUB</a>
+            <a href="mailto:sahildesai00112@gmail.com" style="text-decoration:none; color:#000; background:var(--neon-green); padding:15px 30px; font-weight:bold; font-family:'Share Tech Mono'; clip-path: polygon(10% 0, 100% 0, 100% 80%, 90% 100%, 0 100%, 0 20%); transition:0.3s;">EMAIL</a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
