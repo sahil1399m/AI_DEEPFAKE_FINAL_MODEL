@@ -287,10 +287,10 @@ st.markdown(f"""
         background: #000; border: 1px solid #333; padding: 15px;
         font-family: 'Share Tech Mono', monospace; color: #ccc;
         height: 350px; overflow-y: auto; border-left: 4px solid var(--neon-green);
-        font-size: 0.8rem; line-height: 1.4;
+        font-size: 0.85rem; line-height: 1.5;
     }}
-    .log-line {{ margin-bottom: 2px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; }}
-    .log-time {{ color: #555; margin-right: 10px; min-width: 80px; }}
+    .log-line {{ margin-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; }}
+    .log-time {{ color: #666; margin-right: 10px; min-width: 70px; font-size: 0.8rem; }}
     .log-msg {{ color: var(--neon-blue); }}
     .log-sys {{ color: var(--neon-purple); font-weight: bold; }}
     .log-warn {{ color: var(--neon-red); }}
@@ -360,7 +360,7 @@ def process_video_frames(video_path, status_log_func):
 
     prev_gray = cv2.cvtColor(prev, cv2.COLOR_BGR2GRAY)
     frame_cnt = 0
-    status_log_func("INITIALIZING ENTROPY SCANNERS...", "sys")
+    status_log_func(">> INITIALIZING ENTROPY SCANNERS...", "sys")
     
     while cap.isOpened():
         ret, curr = cap.read()
@@ -377,7 +377,7 @@ def process_video_frames(video_path, status_log_func):
     top_frames = [x[1] for x in diffs[:20]]
     if len(top_frames) < 1: return None, []
 
-    status_log_func("DETECTING FACIAL ROI (MTCNN)...", "sys")
+    status_log_func(">> DETECTING FACIAL ROI (MTCNN)...", "sys")
     processed_faces = []
     for f in top_frames:
         h, w = f.shape[:2]
@@ -697,21 +697,23 @@ elif st.session_state.page == "Analysis Console":
                     terminal_area.markdown(render_logs(), unsafe_allow_html=True)
                     time.sleep(sleep_t)
 
-                log_update("MOUNTING VIDEO BUFFER...", "sys", 0.5)
-                log_update(f"FILE: {uploaded_file.name} | SIZE: {uploaded_file.size / 1024:.2f} KB", "msg", 0.2)
+                log_update(">> INITIALIZING ANALYSIS PROTOCOL...", "sys", 0.5)
+                log_update(f">> MOUNTING INPUT STREAM: {uploaded_file.name}", "msg", 0.3)
+                log_update(">> LOADING NEURAL WEIGHTS (EfficientNet_B3_LSTM)...", "sys", 0.5)
+                log_update(">> SCANNING FRAMES FOR ENTROPY...", "msg", 0.5)
                 
                 # Pass log function to processor
                 faces, raw_frames = process_video_frames("temp_video.mp4", log_update)
 
                 if not faces:
-                    log_update("ERROR: NO FACES DETECTED IN STREAM.", "warn", 0)
+                    log_update(">> ERROR: NO FACES DETECTED IN STREAM.", "warn", 0)
                 else:
-                    log_update(f"ROI EXTRACTION COMPLETE: {len(faces)} FRAMES.", "ok", 0.3)
-                    log_update("ALLOCATING TENSORS TO GPU...", "sys", 0.4)
-                    log_update("NORMALIZING PIXEL VALUES [0.485, 0.456, 0.406]...", "msg", 0.3)
-                    log_update("INJECTING INTO EFFICIENTNET-B3 BACKBONE...", "sys", 0.5)
-                    log_update("EXTRACTING TEMPORAL VECTORS...", "msg", 0.3)
-                    log_update("RUNNING BI-DIRECTIONAL LSTM...", "sys", 0.5)
+                    log_update(f">> EXTRACTED {len(faces)} REGIONS OF INTEREST (ROI)...", "ok", 0.3)
+                    log_update(">> ALLOCATING TENSORS TO GPU...", "sys", 0.4)
+                    log_update(">> NORMALIZING TENSORS [C, H, W]...", "msg", 0.3)
+                    log_update(">> INJECTING INTO EFFICIENTNET-B3 BACKBONE...", "sys", 0.5)
+                    log_update(">> EXTRACTING TEMPORAL VECTORS...", "msg", 0.3)
+                    log_update(">> INFERENCE IN PROGRESS...", "sys", 0.5)
 
                     transform = transforms.Compose([transforms.ToTensor(), transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
                     input_tensor = torch.stack([transform(Image.fromarray(f)) for f in faces]).unsqueeze(0).to(DEVICE)
@@ -721,8 +723,8 @@ elif st.session_state.page == "Analysis Console":
                         probs = torch.nn.functional.softmax(output, dim=1)
                         real_score, fake_score = probs[0][0].item(), probs[0][1].item()
                     
-                    log_update("INFERENCE COMPLETE.", "ok", 0)
-                    log_update(f"CONFIDENCE SCORE CALCULATED: {fake_score:.4f}", "msg", 0)
+                    log_update(">> COMPLETED.", "ok", 0)
+                    log_update(f">> FINAL CONFIDENCE SCORE: {fake_score:.4f}", "msg", 0)
 
                     st.markdown("---")
                     res_col1, res_col2 = st.columns([1, 1])
