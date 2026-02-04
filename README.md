@@ -1,48 +1,34 @@
-# 🛡️ AIthentic: Enterprise Deepfake Forensic Platform
+# 👁️ AIthentic: Military-Grade Neural Forensics
 
-![Python](https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python)
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)
 ![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-red?style=for-the-badge&logo=pytorch)
-![Streamlit](https://img.shields.io/badge/Streamlit-Interactive%20UI-ff4b4b?style=for-the-badge&logo=streamlit)
-![Google Gemini](https://img.shields.io/badge/Google%20Gemini-AI%20Assistant-8E75B2?style=for-the-badge&logo=google)
+![Streamlit](https://img.shields.io/badge/Streamlit-Cyberpunk%20UI-ff4b4b?style=for-the-badge&logo=streamlit)
+![Google Gemini](https://img.shields.io/badge/AI-Gemini%20Assistant-8E75B2?style=for-the-badge&logo=google)
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**AIthentic** is a state-of-the-art Neural Forensic Platform designed to detect deepfake media manipulation using **Active Temporal Sampling** and **Recurrent Neural Networks**. Unlike traditional frame-by-frame classifiers, AIthentic focuses on high-entropy motion frames where deepfake artifacts (blending, jitter) are most likely to occur.
+> **"Truth in the age of Synthetic Media."**
 
----
-
-## 🚀 Key Features
-
-### 1. Active Temporal Sampling
-Instead of analyzing every frame (which is slow and redundant), AIthentic scans the video's **Temporal Vector Field** to identify the top 20 frames with the highest motion entropy. This targets the analysis specifically on moments where the subject is talking, blinking, or turning—the exact moments where Deepfake models fail.
-
-### 2. Hybrid Neural Architecture
-* **Spatial Analysis (EfficientNet-B3):** Extracts high-fidelity texture features from individual frames to spot skin-blending artifacts.
-* **Temporal Analysis (Bi-Directional LSTM):** Tracks feature consistency across time to detect "temporal jitter" (flickering) that is invisible to the naked eye.
-
-### 3. AI Forensic Assistant
-Integrated with **Google Gemini 1.5 Flash**, the platform includes a context-aware chatbot that explains forensic concepts, details the detection methodology, and guides users through the analysis process in real-time.
+**AIthentic** is an enterprise-grade forensic platform designed to expose Deepfakes. Unlike standard detectors that look at static images, AIthentic analyzes the **temporal heartbeat** of a video—catching the micro-flickers, jitters, and texture anomalies that generative AI cannot yet hide.
 
 ---
 
-## 🛠️ System Architecture
+## 🧠 How It Works (The "Secret Sauce")
 
-| Component | Technology | Purpose |
-| :--- | :--- | :--- |
-| **Frontend** | Streamlit | Responsive, neon-styled forensic dashboard. |
-| **Face Detection** | MTCNN | Extracting faces from high-motion frames. |
-| **Feature Extraction** | EfficientNet-B3 | analyzing texture and compression artifacts. |
-| **Sequence Modeling** | Bi-LSTM | Detecting temporal inconsistencies (glitches over time). |
-| **GenAI Integration** | Google Gemini API | Interactive forensic assistant. |
+Most detectors fail because they analyze random frames. We don't. We use **Active Entropy Sampling**.
 
----
+We scan the video for high-motion moments (blinking, talking, head turning). If a Deepfake is going to glitch, it will glitch there. We extract those specific frames and feed them into a hybrid brain:
 
-## 📂 Project Structure
+1.  **The Eye (Spatial):** `EfficientNet-B3` looks at individual pixels for skin warping and blending artifacts.
+2.  **The Memory (Temporal):** `Bi-Directional LSTM` looks at time. It watches the video forward and backward to see if the face moves naturally or "jitters."
 
-```text
-AI-DEEPFAKE-FINAL-MODEL/
-├── assets/                  # UI assets (Lottie animations, backgrounds)
-├── Codebooks/               # Research & Training Notebooks (.ipynb)
-├── model_weights/           # Trained PyTorch models (ignored by git)
-├── .gitignore               # Security & cleanup settings
-├── app.py                   # Main Application Entry Point
-├── requirements.txt         # Project Dependencies
-└── README.md                # Documentation
+### 📡 System Pipeline
+
+```mermaid
+graph TD
+    A[📹 Input Video] -->|Pixel Difference Algo| B[⚡ Active Entropy Sampling]
+    B -->|Extract Top 20 High-Motion Frames| C[🖼️ ROI Face Extraction]
+    C -->|Texture Analysis| D[👁️ EfficientNet-B3 CNN]
+    D -->|Feature Vector Sequence| E[🧠 Bi-Directional LSTM]
+    E -->|Temporal Analysis| F{🛡️ FINAL VERDICT}
+    F -->|Real| G[✅ AUTHENTIC]
+    F -->|Fake| H[⚠️ DEEPFAKE DETECTED]
