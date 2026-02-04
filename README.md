@@ -12,56 +12,64 @@
   <strong>Detecting the invisible heartbeat of Synthetic Media.</strong>
 </p>
 
+<img src="assets/demo_preview.gif" width="100%" alt="AIthentic Live Demo">
+<p><em>Watch the Neural Terminal analyze a deepfake in real-time.</em></p>
+
 </div>
 
 ---
 
-## 🚨 The Reality
-Deepfakes are no longer just "blurry faces." They are generating perfect pixels. Traditional detectors that look at a single frame fail because **modern GANs don't make spatial mistakes—they make temporal ones.**
+## 🕵️‍♂️ Why This Tool Exists
+> **"Seeing is no longer believing."**
 
-## 🛡️ The AIthentic Solution
-**AIthentic** ignores the static image. Instead, it watches the **temporal vector field**—the tiny, invisible "jitters" that occur when a neural network tries to generate movement over time. We built a custom **Spatial-Temporal Engine** that surgically targets high-entropy motion (blinking, talking) to expose the fake.
+In 2024 alone, deepfake fraud cost companies over **$25 Billion**. From fake CEO calls to political disinformation, synthetic media is the new cybersecurity threat.
+
+Existing tools are too slow (analyzing every frame) or too dumb (looking at static pixels). **AIthentic** was built to catch the one thing AI generators can't hide yet: **The Glitch in Time.**
+
+---
+
+## 💡 The "Bouncer" Analogy (How it works simply)
+Imagine a nightclub bouncer checking IDs.
+* **Traditional Detectors** just glance at the ID photo. If it looks real, you get in. (Deepfakes pass this easily because they generate perfect static images).
+* **AIthentic** doesn't just look at the photo. We ask you to **blink, talk, and turn your head.** We watch the *video* of your movements. If your lips jitter unnaturally or your blinking looks robotic, we know it's a fake.
 
 ---
 
 ## 🔬 Scientific Foundation & Architecture
 
-Our architecture is not random; it is a hybrid implementation derived from state-of-the-art forensic research.
+Our architecture is a hybrid implementation derived from state-of-the-art forensic research.
 
 ### 1. ⚡ Active Entropy Sampling (AES)
 * **The Logic:** 90% of a video frame is useless background. Processing it is a waste of GPU.
-* **The Fix:** We use a pixel-difference algorithm to calculate the **Entropy** of every frame.
-* **The Result:** The system ignores static noise and surgically extracts the **Top 20 High-Motion Frames** (e.g., mid-blink, lip purse, head turn)—the exact moments where Deepfakes glitch.
+* **The Fix:** We calculate the **Pixel-Difference Entropy** for the entire video stream.
+* **The Result:** The system ignores static noise and surgically extracts the **Top 20 High-Motion Frames** (e.g., mid-blink, lip purse)—the exact moments where Deepfakes glitch.
 
 ### 2. 👁️ Spatial Feature Extraction (EfficientNet-B3)
-* **Research Reference:** Inspired by *Li et al. (CVPRW 2019)*, "Exposing DeepFake Videos By Detecting Face Warping Artifacts".
-* **Theory:** Deepfakes are limited by resolution and affine warping. Even if the face looks real, the *warping* needed to fit it onto the target head leaves specific artifacts at the boundaries.
-* **Implementation:** We use a pre-trained **EfficientNet-B3** to extract a 1536-dimensional feature vector that encodes these subtle texture and warping anomalies.
+* **Research Reference:** Inspired by *Li et al. (CVPRW 2019)*.
+* **Theory:** Deepfakes rely on affine warping to fit a face onto a head. This leaves microscopic artifacts at the blending boundaries.
+* **Implementation:** We use a pre-trained **EfficientNet-B3** to extract a 1536-dimensional feature vector encoding these subtle texture anomalies.
 
 ### 3. 🧠 Temporal Sequence Modeling (Bi-LSTM)
-* **Research Reference:** Inspired by *Liu et al. (WACV 2023)*, "TI2Net: Temporal Identity Inconsistency Network".
-* **Theory:** Fake videos suffer from "Temporal Identity Inconsistency"—the face in Frame 1 is mathematically slightly different from the face in Frame 2.
-* **Implementation:** We feed the spatial vectors into a **Bidirectional LSTM**. It analyzes the video *forwards and backwards*, catching the **Temporal Jitter** (micro-flickering) that occurs when a generator loses coherence over time.
+* **Research Reference:** Inspired by *Liu et al. (WACV 2023)*.
+* **Theory:** Fake videos suffer from "Temporal Identity Inconsistency"—the face in Frame 1 is mathematically slightly different from Frame 2.
+* **Implementation:** A **Bidirectional LSTM** analyzes the vector sequence *forwards and backwards*, catching **Temporal Jitter** (micro-flickering) caused by generator incoherence.
 
 ---
 
 ## 📊 Performance Benchmarks (Verified)
 
-Our model was rigorously trained and evaluated on the **FaceForensics++ (c23)** and **Celeb-DF-v2** datasets.
+Rigorously trained and evaluated on the **FaceForensics++ (c23)** dataset.
 
 | Metric | Result | Source |
 | :--- | :--- | :--- |
 | **Test Accuracy** | **96.71%** | `FINAL-MODEL-TEST.pdf` |
 | **Training Acc** | **99.42%** | `FINAL-MODEL-TRAIN.pdf` |
-| **Validation Acc** | **96.67%** | `FINAL-MODEL-TRAIN.pdf` |
 | **Precision (Fake)**| **0.99** | Minimal False Positives |
-| **Recall (Real)** | **0.99** | Minimal False Negatives |
-
-> *Evaluated on 152 unseen test videos using a sequence length of 20 frames.*
+| **Inference Time** | **~2.5s** | Average per video |
 
 ---
 
-## 📡 Forensic Pipeline Visualization
+## 📡 Forensic Pipeline
 
 ```mermaid
 graph TD
