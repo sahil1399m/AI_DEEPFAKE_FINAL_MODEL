@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)
 ![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-red?style=for-the-badge&logo=pytorch)
 ![Streamlit](https://img.shields.io/badge/Streamlit-Cyberpunk%20UI-ff4b4b?style=for-the-badge&logo=streamlit)
-![Accuracy](https://img.shields.io/badge/Accuracy-90%25-success?style=for-the-badge&logo=google-analytics)
+![Accuracy](https://img.shields.io/badge/Test%20Accuracy-96.71%25-success?style=for-the-badge&logo=google-analytics)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
 <p align="center">
@@ -24,38 +24,40 @@ Deepfakes are no longer just "blurry faces." They are generating perfect pixels.
 
 ---
 
-## 🧠 Core Architecture (The "Secret Sauce")
+## 🔬 Scientific Foundation & Architecture
 
-Our system pipeline is divided into three military-grade processing stages.
+Our architecture is not random; it is a hybrid implementation derived from state-of-the-art forensic research.
 
 ### 1. ⚡ Active Entropy Sampling (AES)
 * **The Logic:** 90% of a video frame is useless background. Processing it is a waste of GPU.
 * **The Fix:** We use a pixel-difference algorithm to calculate the **Entropy** of every frame.
-* **The Result:** The system ignores the noise and extracts only the **Top 20 High-Motion Frames** (e.g., mid-blink, lip purse, head turn)—the exact moments where Deepfakes glitch.
+* **The Result:** The system ignores static noise and surgically extracts the **Top 20 High-Motion Frames** (e.g., mid-blink, lip purse, head turn)—the exact moments where Deepfakes glitch.
 
 ### 2. 👁️ Spatial Feature Extraction (EfficientNet-B3)
-* We utilize a pre-trained **EfficientNet-B3** as our visual backbone.
-* It converts raw pixels into dense **1536-dimensional feature vectors**.
-* **Target:** It spots skin smoothing, resolution mismatches (FaceForensics++ c23 artifacts), and blending boundaries.
+* **Research Reference:** Inspired by *Li et al. (CVPRW 2019)*, "Exposing DeepFake Videos By Detecting Face Warping Artifacts".
+* **Theory:** Deepfakes are limited by resolution and affine warping. Even if the face looks real, the *warping* needed to fit it onto the target head leaves specific artifacts at the boundaries.
+* **Implementation:** We use a pre-trained **EfficientNet-B3** to extract a 1536-dimensional feature vector that encodes these subtle texture and warping anomalies.
 
 ### 3. 🧠 Temporal Sequence Modeling (Bi-LSTM)
-* The extracted vectors are fed into a **Bidirectional LSTM** (Long Short-Term Memory) network.
-* **Why Bidirectional?** It analyzes the video *forwards* and *backwards* simultaneously to understand context.
-* **Target:** **Temporal Jitter**—micro-flickering in the eyes or lips that happens when a Generator loses temporal coherence.
+* **Research Reference:** Inspired by *Liu et al. (WACV 2023)*, "TI2Net: Temporal Identity Inconsistency Network".
+* **Theory:** Fake videos suffer from "Temporal Identity Inconsistency"—the face in Frame 1 is mathematically slightly different from the face in Frame 2.
+* **Implementation:** We feed the spatial vectors into a **Bidirectional LSTM**. It analyzes the video *forwards and backwards*, catching the **Temporal Jitter** (micro-flickering) that occurs when a generator loses coherence over time.
 
 ---
 
-## 📊 Performance Benchmarks
+## 📊 Performance Benchmarks (Verified)
 
-We don't just guess; we prove it. The model was rigorously trained and evaluated on the **FaceForensics++** dataset (Deepfakes, Face2Face, FaceSwap).
+Our model was rigorously trained and evaluated on the **FaceForensics++ (c23)** and **Celeb-DF-v2** datasets.
 
-| Metric | Result | Notes |
+| Metric | Result | Source |
 | :--- | :--- | :--- |
-| **Test Accuracy** | **90.00%** | Evaluated on unseen `Real` vs `Fake` footage. |
-| **Training Acc** | **98.5%** | After 25 epochs of extended fine-tuning. |
-| **Inference Time** | **~2.5s** | Average processing time per video using Active Sampling. |
+| **Test Accuracy** | **96.71%** | `FINAL-MODEL-TEST.pdf` |
+| **Training Acc** | **99.42%** | `FINAL-MODEL-TRAIN.pdf` |
+| **Validation Acc** | **96.67%** | `FINAL-MODEL-TRAIN.pdf` |
+| **Precision (Fake)**| **0.99** | Minimal False Positives |
+| **Recall (Real)** | **0.99** | Minimal False Negatives |
 
-> *Data derived from internal testing on the FaceForensics++ (c23 compression) subset.*
+> *Evaluated on 152 unseen test videos using a sequence length of 20 frames.*
 
 ---
 
