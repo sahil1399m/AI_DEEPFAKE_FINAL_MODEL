@@ -58,7 +58,7 @@ Our architecture is a hybrid implementation derived from state-of-the-art forens
 
 ## 📊 Performance Benchmarks (Verified)
 
-Rigorously trained and evaluated on the **FaceForensics++ (c23)** dataset.
+Rigorously trained and evaluated on the **FaceForensics++ (c23) and celeb-** dataset.
 
 | Metric | Result | Source |
 | :--- | :--- | :--- |
