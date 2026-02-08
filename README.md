@@ -1,5 +1,5 @@
 # CoC Inheritance 2025
-# AIthentic: Military-Grade Neural Forensics
+# 🛡️ AIthentic: Military-Grade Neural Forensics
 By **Team CodePagloos**
 
 ## Table of Contents
@@ -15,7 +15,7 @@ By **Team CodePagloos**
 * [👨‍🏫 Mentors](#-mentors)
 
 ## 📝 Description
-AIthentic is an enterprise-grade forensic platform designed to expose Deepfake media by analyzing temporal inconsistencies invisible to the human eye. Unlike traditional detectors that analyze static frames, our system uses **Active Entropy Sampling** to target high-motion segments and employs a **Hybrid Spatial-Temporal Network (EfficientNet-B3 + Bi-LSTM)** to detect micro-flickers and warping artifacts. The platform achieves **96.71% accuracy** and features a cyber-forensic dashboard with a live neural terminal and an integrated AI assistant.
+**AIthentic** is an enterprise-grade forensic platform designed to expose Deepfake media by analyzing temporal inconsistencies invisible to the human eye. Unlike traditional detectors that analyze static frames, our system uses **Active Entropy Sampling** to target high-motion segments and employs a **Hybrid Spatial-Temporal Network (EfficientNet-B3 + Bi-LSTM)** to detect micro-flickers and warping artifacts. The platform achieves **96.71% accuracy** and features a cyber-forensic dashboard with a live neural terminal and an integrated AI assistant.
 
 ## 🔗 Links
 * [GitHub Repository]([INSERT_YOUR_GITHUB_REPO_LINK])
@@ -24,28 +24,50 @@ AIthentic is an enterprise-grade forensic platform designed to expose Deepfake m
 * [Hosted Website]([INSERT_YOUR_STREAMLIT_SHARE_LINK])
 
 ## 🤖 Tech-Stack
-* **Language:** Python 3.10+
-* **Deep Learning:** PyTorch, Torchvision
-* **Model Architectures:** EfficientNet-B3 (Spatial Feature Extraction), Bi-Directional LSTM (Temporal Sequence Modeling), MTCNN (Face Detection)
-* **Computer Vision:** OpenCV, PIL, Active Entropy Algorithms
-* **Frontend/UI:** Streamlit, Custom CSS (Cyberpunk/SOC Theme), Plotly (Telemetry)
-* **GenAI:** Google Gemini 1.5 Flash API (Forensic Assistant)
-* **Data Handling:** NumPy, Pandas
+* **Language:** `Python 3.10+`
+* **Deep Learning:** `PyTorch`, `Torchvision`
+* **Model Architectures:** `EfficientNet-B3` (Spatial), `Bi-Directional LSTM` (Temporal), `MTCNN` (Face Detect)
+* **Computer Vision:** `OpenCV`, `PIL`, `Active Entropy Algos`
+* **Frontend/UI:** `Streamlit`, `Custom CSS` (Cyberpunk/SOC Theme), `Plotly` (Telemetry)
+* **GenAI:** `Google Gemini 1.5 Flash API` (Forensic Assistant)
+* **Data Handling:** `NumPy`, `Pandas`
 
 ## 🏗️ System Architecture
 
-### 📡 Data Pipeline Flow
-> **📹 INPUT STREAM**
-> ↓
-> **⚡ Active Entropy Sampling** (Filters 90% Static Frames)
-> ↓
-> **👤 MTCNN Face Detection** (Crops & Aligns Faces)
-> ↓
-> **👁️ EfficientNet-B3** (Extracts Spatial Features / 1536-dim vectors)
-> ↓
-> **🧠 Bi-Directional LSTM** (Analyzes Temporal Jitter Forward/Backward)
-> ↓
-> **🛡️ CONFIDENCE SCORE** (Verdict: REAL vs FAKE)
+### 📡 Data Pipeline Visualization
+```text
+╔═════════════════════════════════════════════════════════════════════╗
+║                       📹  INPUT VIDEO STREAM                        ║
+╚═════════════════════════════════════════════════════════════════════╝
+                                   │
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  ⚡ ACTIVE ENTROPY SAMPLING (Preprocessing Layer)                   │
+│  • Calculates Pixel-Difference Entropy                              │
+│  • Discards 90% Static Frames -> Keeps Top 20 High-Motion Frames    │
+└─────────────────────────────────────────────────────────────────────┘
+                                   │
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│  👤 FACE EXTRACTION ENGINE                                          │
+│  • MTCNN (Multi-Task Cascaded CNN)                                  │
+│  • Cropping, Alignment & Normalization (224x224px)                  │
+└─────────────────────────────────────────────────────────────────────┘
+                                   │
+                                   ▼
+┌──────────────────────────────┐       ┌──────────────────────────────┐
+│  👁️ SPATIAL ANALYSIS         │       │  🧠 TEMPORAL ANALYSIS        │
+│  (EfficientNet-B3)           │       │  (Bi-Directional LSTM)       │
+│                              │       │                              │
+│  Extracts 1536-dim vectors   │ ────▶ │  Analyzes Sequence Fwd/Bwd   │
+│  Detects: Blending/Warping   │       │  Detects: Temporal Jitter    │
+└──────────────────────────────┘       └──────────────────────────────┘
+                                                  │
+                                                  ▼
+                                   ╔══════════════════════════════════╗
+                                   ║    🛡️ FINAL VERDICT: SCORE       ║
+                                   ║    (Real < 0.5 < Fake)           ║
+                                   ╚══════════════════════════════════╝
 
 ### Machine Learning Pipeline
 1.  **Input Processing:** Video stream is scanned for high-entropy motion using pixel-difference algorithms.
