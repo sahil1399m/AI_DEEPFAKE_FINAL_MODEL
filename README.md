@@ -1,87 +1,77 @@
-# 👁️ AIthentic: Military-Grade Neural Forensics
+# CoC Inheritance 2025
+# AIthentic: Military-Grade Neural Forensics
+By ** Team CodePagloos**
 
-<div align="center">
+## Table of Contents
+* [📝 Description](#-description)
+* [🔗 Links](#-links)
+* [🤖 Tech-Stack](#-tech-stack)
+* [🏗️ System Architecture](#-system-architecture)
+* [📈 Progress](#-progress)
+* [🔮 Future Scope](#-future-scope)
+* [💸 Applications](#-applications)
+* [🛠 Project Setup](#-project-setup)
+* [👨‍💻 Team Members](#-team-members)
+* [👨‍🏫 Mentors](#-mentors)
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)
-![PyTorch](https://img.shields.io/badge/PyTorch-Deep%20Learning-red?style=for-the-badge&logo=pytorch)
-![Streamlit](https://img.shields.io/badge/Streamlit-Cyberpunk%20UI-ff4b4b?style=for-the-badge&logo=streamlit)
-![Accuracy](https://img.shields.io/badge/Test%20Accuracy-96.71%25-success?style=for-the-badge&logo=google-analytics)
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+## 📝 Description
+AIthentic is an enterprise-grade forensic platform designed to expose Deepfake media by analyzing temporal inconsistencies invisible to the human eye. Unlike traditional detectors that analyze static frames, our system uses **Active Entropy Sampling** to target high-motion segments and employs a **Hybrid Spatial-Temporal Network (EfficientNet-B3 + Bi-LSTM)** to detect micro-flickers and warping artifacts. We achieve **96.71% accuracy** on the FaceForensics++ benchmark by focusing on the "glitch in time" rather than just static pixels.
 
-<p align="center">
-  <strong>Detecting the invisible heartbeat of Synthetic Media.</strong>
-</p>
+## 🔗 Links
+* [GitHub Repository]([INSERT_YOUR_GITHUB_REPO_LINK])
+* [Demo Video]([INSERT_YOUR_YOUTUBE_OR_DRIVE_LINK])
+* [Project Screenshots/Drive]([INSERT_YOUR_DRIVE_FOLDER_LINK])
+* [Hosted Website]([INSERT_YOUR_STREAMLIT_SHARE_LINK])
 
-<img src="assets/demo_preview.gif" width="100%" alt="AIthentic Live Demo">
-<p><em>Watch the Neural Terminal analyze a deepfake in real-time.</em></p>
+## 🤖 Tech-Stack
+* **Language:** Python 3.10+
+* **Deep Learning:** PyTorch, Torchvision
+* **Model Architectures:** EfficientNet-B3 (Spatial Feature Extraction), Bi-Directional LSTM (Temporal Sequence Modeling), MTCNN (Face Detection)
+* **Computer Vision:** OpenCV, PIL, Active Entropy Algorithms
+* **Frontend/UI:** Streamlit, Custom CSS (Cyberpunk/SOC Theme), Plotly (Telemetry)
+* **GenAI:** Google Gemini 1.5 Flash API (Forensic Assistant)
+* **Data Handling:** NumPy, Pandas
 
-</div>
+## 🏗️ System Architecture
 
----
+### Front-end
+* **Streamlit Interface:** A "Cyber-Forensic" dashboard designed for Security Operations Centers (SOCs).
+* **Live Neural Terminal:** A simulated CLI that provides real-time transparency into the model's inference steps (tensor allocation, weight loading).
+* **Visuals:** Integrated Lottie animations and Neon Telemetry graphs for confidence scoring.
 
-## 🕵️‍♂️ Why This Tool Exists
-> **"Seeing is no longer believing."**
+### Back-end
+* **Inference Engine:** PyTorch pipeline utilizing `efficientnet_b3_lstm_active.pth` weights.
+* **Active Entropy Sampling (AES):** A logic layer that calculates pixel-difference entropy to ignore 90% of static frames and target the top 20 high-motion moments (blinking, talking).
 
-In 2024 alone, deepfake fraud cost companies over **$25 Billion**. From fake CEO calls to political disinformation, synthetic media is the new cybersecurity threat.
+### Machine Learning Pipeline
+1.  **Input Processing:** Video stream is scanned for high-entropy motion.
+2.  **Spatial Analysis (The Eye):** EfficientNet-B3 strips classification heads to extract 1536-dimensional feature vectors, spotting skin warping and blending artifacts.
+3.  **Temporal Analysis (The Memory):** Bi-Directional LSTM analyzes vector sequences forward and backward to detect "Temporal Jitter" (micro-flickering).
 
-Existing tools are too slow (analyzing every frame) or too dumb (looking at static pixels). **AIthentic** was built to catch the one thing AI generators can't hide yet: **The Glitch in Time.**
+## 📈 Progress
 
----
+### Fully Implemented Features
+* **Active Entropy Sampling:** Successfully filters useless background frames to optimize inference speed (~2.5s per video).
+* **Hybrid Detection Core:** The EfficientNet-B3 + Bi-LSTM architecture is fully trained and verified with **96.71% Test Accuracy** and **0.99 Precision**.
+* **Forensic Dashboard:** A complete UI with "Bouncer" logic visualizations, file upload, and real-time terminal logs.
+* **Gemini Assistant:** Integrated chatbot that explains forensic verdicts (e.g., "Why is this fake?") to non-technical users.
 
-## 💡 The "Bouncer" Analogy (How it works simply)
-Imagine a nightclub bouncer checking IDs.
-* **Traditional Detectors** just glance at the ID photo. If it looks real, you get in. (Deepfakes pass this easily because they generate perfect static images).
-* **AIthentic** doesn't just look at the photo. We ask you to **blink, talk, and turn your head.** We watch the *video* of your movements. If your lips jitter unnaturally or your blinking looks robotic, we know it's a fake.
+### Partially Implemented Features / Work in Progress
+* **Advanced Telemetry:** Detailed breakdown of specific artifact types (Lighting vs. Texture) is currently approximated; moving towards granular head-specific detection.
+* **Edge Deployment:** Work is underway to quantize the model for mobile/CCTV deployment without losing accuracy.
 
----
+## 🔮 Future Scope
+* **Audio-Visual Sync:** Integration of Wav2Lip-based models to detect desynchronization between lip movements and audio tracks.
+* **Adversarial Defense:** Training the model against "anti-forensic" noise attacks to ensure robustness in the wild.
+* **Browser Extension:** A lightweight plugin to flag synthetic media on social platforms (X/Twitter, LinkedIn) in real-time.
 
-## 🔬 Scientific Foundation & Architecture
+## 💸 Applications
+* **Legal & Judiciary:** Authenticating video evidence in court to prevent tampering or fabrication.
+* **News & Media:** verifying political speeches and breaking news footage before broadcast to combat disinformation.
+* **Digital Identity (KYC):** Enhancing banking security by detecting "virtual camera" injection attacks during remote video verification.
 
-Our architecture is a hybrid implementation derived from state-of-the-art forensic research.
+## 🛠 Project Setup
 
-### 1. ⚡ Active Entropy Sampling (AES)
-* **The Logic:** 90% of a video frame is useless background. Processing it is a waste of GPU.
-* **The Fix:** We calculate the **Pixel-Difference Entropy** for the entire video stream.
-* **The Result:** The system ignores static noise and surgically extracts the **Top 20 High-Motion Frames** (e.g., mid-blink, lip purse)—the exact moments where Deepfakes glitch.
-
-### 2. 👁️ Spatial Feature Extraction (EfficientNet-B3)
-* **Research Reference:** Inspired by *Li et al. (CVPRW 2019)*.
-* **Theory:** Deepfakes rely on affine warping to fit a face onto a head. This leaves microscopic artifacts at the blending boundaries.
-* **Implementation:** We use a pre-trained **EfficientNet-B3** to extract a 1536-dimensional feature vector encoding these subtle texture anomalies.
-
-### 3. 🧠 Temporal Sequence Modeling (Bi-LSTM)
-* **Research Reference:** Inspired by *Liu et al. (WACV 2023)*.
-* **Theory:** Fake videos suffer from "Temporal Identity Inconsistency"—the face in Frame 1 is mathematically slightly different from Frame 2.
-* **Implementation:** A **Bidirectional LSTM** analyzes the vector sequence *forwards and backwards*, catching **Temporal Jitter** (micro-flickering) caused by generator incoherence.
-
----
-
-## 📊 Performance Benchmarks (Verified)
-
-Rigorously trained and evaluated on the **FaceForensics++ (c23) and celeb-** dataset.
-
-| Metric | Result | Source |
-| :--- | :--- | :--- |
-| **Test Accuracy** | **96.71%** | `FINAL-MODEL-TEST.pdf` |
-| **Training Acc** | **99.42%** | `FINAL-MODEL-TRAIN.pdf` |
-| **Precision (Fake)**| **0.99** | Minimal False Positives |
-| **Inference Time** | **~2.5s** | Average per video |
-
----
-
-## 📡 Forensic Pipeline
-
-```mermaid
-graph TD
-    A[📹 Input Stream] -->|Entropy Algorithm| B(⚡ Active Sampling)
-    B -->|Filter Best 20 Frames| C{MTCNN Face Detect}
-    C -->|Aligned Faces| D[👁️ EfficientNet-B3]
-    D -->|1536-dim Vectors| E[🧠 Bi-Directional LSTM]
-    E -->|Temporal Analysis| F[🛡️ CONFIDENCE SCORE]
-    
-    F -->|Score < 0.5| G[✅ REAL FOOTAGE]
-    F -->|Score > 0.5| H[⚠️ DEEPFAKE DETECTED]
-    
-    style A fill:#00ff41,stroke:#333,stroke-width:2px,color:#000
-    style H fill:#ff003c,stroke:#333,stroke-width:2px,color:#fff
-    style G fill:#00ff41,stroke:#333,stroke-width:2px,color:#000
+Clone the GitHub repo.
+```bash
+git clone [INSERT_YOUR_GITHUB_REPO_LINK]
