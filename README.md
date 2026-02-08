@@ -37,17 +37,17 @@ AIthentic is an enterprise-grade forensic platform designed to expose Deepfake m
 ```mermaid
 graph TD
     %% Nodes
-    A[📹 Input Stream] -->|Entropy Scan| B(⚡ Active Sampling)
-    B -->|Top 20 Frames| C{MTCNN Face Detect}
-    C -->|Aligned Faces| D[👁️ EfficientNet-B3]
-    D -->|Feature Vectors| E[🧠 Bi-Directional LSTM]
-    E -->|Temporal Analysis| F[🛡️ CONFIDENCE SCORE]
+    A["📹 Input Stream"] -->|Entropy Scan| B("⚡ Active Sampling")
+    B -->|Top 20 Frames| C{"MTCNN Face Detect"}
+    C -->|Aligned Faces| D["👁️ EfficientNet-B3"]
+    D -->|Feature Vectors| E["🧠 Bi-Directional LSTM"]
+    E -->|Temporal Analysis| F["🛡️ CONFIDENCE SCORE"]
     
     %% Logic Flow
-    F -->|Score < 0.5| G[✅ REAL FOOTAGE]
-    F -->|Score > 0.5| H[⚠️ DEEPFAKE DETECTED]
+    F -->|Score < 0.5| G["✅ REAL FOOTAGE"]
+    F -->|Score > 0.5| H["⚠️ DEEPFAKE DETECTED"]
     
-    %% Styling for High Visibility
+    %% Styling
     classDef input fill:#00e676,stroke:#000,stroke-width:2px,color:#000;
     classDef process fill:#2979ff,stroke:#000,stroke-width:2px,color:#fff;
     classDef decision fill:#ff9100,stroke:#000,stroke-width:2px,color:#000;
