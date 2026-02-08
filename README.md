@@ -1,5 +1,5 @@
 # CoC Inheritance 2025
-# System Health Metric Analyzer: Real-time Monitoring & Analysis
+# AIthentic: Military-Grade Neural Forensics
 By **Team CodePagloos**
 
 ## Table of Contents
@@ -15,7 +15,7 @@ By **Team CodePagloos**
 * [👨‍🏫 Mentors](#-mentors)
 
 ## 📝 Description
-The System Health Metric Analyzer is a dual-platform application (Web & Desktop) designed to monitor, analyze, and visualize critical system performance metrics in real-time. It provides users with detailed insights into CPU usage, memory consumption, disk activity, and network traffic. By leveraging a robust backend with Supabase and secure Google OAuth authentication, the tool ensures data persistence and secure access across devices, empowering administrators and power users to maintain optimal system health.
+AIthentic is an enterprise-grade forensic platform designed to expose Deepfake media by analyzing temporal inconsistencies invisible to the human eye. Unlike traditional detectors that look at static pixels, our system uses **Active Entropy Sampling** to surgically target high-motion segments (blinking, talking) and employs a **Hybrid Spatial-Temporal Network (EfficientNet-B3 + Bi-LSTM)** to detect micro-flickers and warping artifacts. The platform achieves **96.71% accuracy** and features a cyber-forensic dashboard with a live neural terminal and an integrated AI assistant.
 
 ## 🔗 Links
 * [GitHub Repository]([INSERT_YOUR_GITHUB_REPO_LINK])
@@ -24,46 +24,39 @@ The System Health Metric Analyzer is a dual-platform application (Web & Desktop)
 * [Hosted Website]([INSERT_YOUR_STREAMLIT_SHARE_LINK])
 
 ## 🤖 Tech-Stack
-* **Language:** Python 3.12.0
-* **Frontend:** * **Web:** Streamlit
-    * **Desktop:** PyQt5
-* **Backend & Database:** Supabase (PostgreSQL)
-* **Authentication:** Google OAuth 2.0
-* **System Monitoring:** `psutil` library
-* **Data Visualization:** Plotly, Matplotlib
-* **Version Control:** Git & GitHub
+* **Language:** Python 3.10+
+* **Deep Learning:** PyTorch, Torchvision
+* **Model Architectures:** EfficientNet-B3 (Spatial Feature Extraction), Bi-Directional LSTM (Temporal Sequence Modeling), MTCNN (Face Detection)
+* **Computer Vision:** OpenCV, PIL, Active Entropy Algorithms
+* **Frontend/UI:** Streamlit, Custom CSS (Cyberpunk/SOC Theme), Plotly (Telemetry)
+* **GenAI:** Google Gemini 1.5 Flash API (Forensic Assistant)
+* **Data Handling:** NumPy, Pandas
 
 ## 🏗️ System Architecture
 
 ```mermaid
 graph TD
     %% Nodes
-    User[👤 User] -->|Authenticates| Auth[🔐 Google OAuth]
-    Auth -->|Access Granted| App{🖥️ Application}
+    A[📹 Input Stream] -->|Entropy Scan| B(⚡ Active Sampling)
+    B -->|Top 20 Frames| C{MTCNN Face Detect}
+    C -->|Aligned Faces| D[👁️ EfficientNet-B3]
+    D -->|Feature Vectors| E[🧠 Bi-Directional LSTM]
+    E -->|Temporal Analysis| F[🛡️ CONFIDENCE SCORE]
     
-    subgraph "Application Layer"
-        App -->|Web Access| Streamlit[🌐 Streamlit Web App]
-        App -->|Desktop Access| PyQt[💻 PyQt5 Desktop App]
-    end
+    %% Logic Flow
+    F -->|Score < 0.5| G[✅ REAL FOOTAGE]
+    F -->|Score > 0.5| H[⚠️ DEEPFAKE DETECTED]
     
-    subgraph "Logic & Monitoring"
-        Streamlit -->|Collects Metrics| PSUtil[⚙️ psutil Library]
-        PyQt -->|Collects Metrics| PSUtil
-    end
+    %% Styling for High Visibility
+    classDef input fill:#00e676,stroke:#000,stroke-width:2px,color:#000;
+    classDef process fill:#2979ff,stroke:#000,stroke-width:2px,color:#fff;
+    classDef decision fill:#ff9100,stroke:#000,stroke-width:2px,color:#000;
+    classDef real fill:#00e676,stroke:#000,stroke-width:2px,color:#000;
+    classDef fake fill:#ff1744,stroke:#000,stroke-width:2px,color:#fff;
     
-    subgraph "Data Layer"
-        PSUtil -->|Writes Data| DB[(🗄️ Supabase Database)]
-        DB -->|Reads Data| Streamlit
-        DB -->|Reads Data| PyQt
-    end
-
-    %% Styling
-    classDef user fill:#FFD700,stroke:#333,stroke-width:2px;
-    classDef auth fill:#4285F4,stroke:#333,stroke-width:2px,color:#fff;
-    classDef app fill:#34A853,stroke:#333,stroke-width:2px,color:#fff;
-    classDef db fill:#EA4335,stroke:#333,stroke-width:2px,color:#fff;
-    
-    class User user;
-    class Auth auth;
-    class Streamlit,PyQt app;
-    class DB db;
+    %% Apply Styles
+    class A,B input;
+    class C,D,E process;
+    class F decision;
+    class G real;
+    class H fake;
