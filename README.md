@@ -34,19 +34,29 @@ AIthentic is an enterprise-grade forensic platform designed to expose Deepfake m
 
 ## 🏗️ System Architecture
 
-### Front-end
-* **Streamlit Interface:** A "Cyber-Forensic" dashboard designed for Security Operations Centers (SOCs).
-* **Live Neural Terminal:** A simulated CLI that provides real-time transparency into the model's inference steps (tensor allocation, weight loading).
-* **Visuals:** Integrated Lottie animations and Neon Telemetry graphs for confidence scoring.
+graph TD
+    %% Nodes
+    A[📹 Input Stream] -->|Entropy Scan| B(⚡ Active Sampling)
+    B -->|Top 20 Frames| C{MTCNN Face Detect}
+    C -->|Aligned Faces| D[👁️ EfficientNet-B3]
+    D -->|Feature Vectors| E[🧠 Bi-Directional LSTM]
+    E -->|Temporal Analysis| F[🛡️ CONFIDENCE SCORE]
+    %% Logic Flow
+    F -->|Score < 0.5| G[✅ REAL FOOTAGE]
+    F -->|Score > 0.5| H[⚠️ DEEPFAKE DETECTED]
+    %% Styling for High Visibility
+    classDef input fill:#00e676,stroke:#000,stroke-width:2px,color:#000;
+    classDef process fill:#2979ff,stroke:#000,stroke-width:2px,color:#fff;
+    classDef decision fill:#ff9100,stroke:#000,stroke-width:2px,color:#000;
+    classDef real fill:#00e676,stroke:#000,stroke-width:2px,color:#000;
+    classDef fake fill:#ff1744,stroke:#000,stroke-width:2px,color:#fff;
+    %% Apply Styles
+    class A,B input;
+    class C,D,E process;
+    class F decision;
+    class G real;
+    class H fake;
 
-### Back-end
-* **Inference Engine:** PyTorch pipeline utilizing `efficientnet_b3_lstm_active.pth` weights.
-* **Active Entropy Sampling (AES):** A logic layer that calculates pixel-difference entropy to ignore 90% of static frames and target the top 20 high-motion moments (blinking, talking).
-
-### Machine Learning Pipeline
-1.  **Input Processing:** Video stream is scanned for high-entropy motion.
-2.  **Spatial Analysis (The Eye):** EfficientNet-B3 strips classification heads to extract 1536-dimensional feature vectors, spotting skin warping and blending artifacts.
-3.  **Temporal Analysis (The Memory):** Bi-Directional LSTM analyzes vector sequences forward and backward to detect "Temporal Jitter" (micro-flickering).
 
 ## 📈 Progress
 
@@ -73,5 +83,4 @@ AIthentic is an enterprise-grade forensic platform designed to expose Deepfake m
 ## 🛠 Project Setup
 
 Clone the GitHub repo.
-```bash
 git clone [INSERT_YOUR_GITHUB_REPO_LINK]
