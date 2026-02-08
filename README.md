@@ -15,7 +15,7 @@ By **Team CodePagloos**
 * [👨‍🏫 Mentors](#-mentors)
 
 ## 📝 Description
-AIthentic is an enterprise-grade forensic platform designed to expose Deepfake media by analyzing temporal inconsistencies invisible to the human eye. Unlike traditional detectors that analyze static frames, our system uses **Active Entropy Sampling** to target high-motion segments and employs a **Hybrid Spatial-Temporal Network (EfficientNet-B3 + Bi-LSTM)** to detect micro-flickers and warping artifacts. We achieve **96.71% accuracy** on the FaceForensics++ benchmark by focusing on the "glitch in time" rather than just static pixels.
+AIthentic is an enterprise-grade forensic platform designed to expose Deepfake media by analyzing temporal inconsistencies invisible to the human eye. Unlike traditional detectors that analyze static frames, our system uses **Active Entropy Sampling** to target high-motion segments and employs a **Hybrid Spatial-Temporal Network (EfficientNet-B3 + Bi-LSTM)** to detect micro-flickers and warping artifacts. The platform achieves **96.71% accuracy** and features a cyber-forensic dashboard with a live neural terminal and an integrated AI assistant.
 
 ## 🔗 Links
 * [GitHub Repository]([INSERT_YOUR_GITHUB_REPO_LINK])
@@ -34,19 +34,21 @@ AIthentic is an enterprise-grade forensic platform designed to expose Deepfake m
 
 ## 🏗️ System Architecture
 
-```mermaid
-graph TD
-    A[📹 Input Stream]:::input -->|Entropy Scan| B(⚡ Active Sampling):::input
-    B -->|Top 20 Frames| C{MTCNN Face Detect}:::process
-    C -->|Aligned Faces| D[👁️ EfficientNet-B3]:::process
-    D -->|Feature Vectors| E[🧠 Bi-Directional LSTM]:::process
-    E -->|Temporal Analysis| F[🛡️ CONFIDENCE SCORE]:::decision
-    
-    F -->|Score < 0.5| G[✅ REAL FOOTAGE]:::real
-    F -->|Score > 0.5| H[⚠️ DEEPFAKE DETECTED]:::fake
-    
-    classDef input fill:#00e676,stroke:#000,stroke-width:2px,color:#000;
-    classDef process fill:#2979ff,stroke:#000,stroke-width:2px,color:#fff;
-    classDef decision fill:#ff9100,stroke:#000,stroke-width:2px,color:#000;
-    classDef real fill:#00e676,stroke:#000,stroke-width:2px,color:#000;
-    classDef fake fill:#ff1744,stroke:#000,stroke-width:2px,color:#fff;
+### 📡 Data Pipeline Flow
+```text
+[ 📹 INPUT STREAM ] 
+       │
+       ▼
+( ⚡ Active Entropy Sampling ) ──▶ Filters 90% Static Frames
+       │
+       ▼
+{ 👤 MTCNN Face Detection } ───▶ Crops & Aligns Faces
+       │
+       ▼
+[ 👁️ EfficientNet-B3 ] ──────▶ Extracts Spatial Features (1536-dim vectors)
+       │
+       ▼
+[ 🧠 Bi-Directional LSTM ] ───▶ Analyzes Temporal Jitter (Forward/Backward)
+       │
+       ▼
+[ 🛡️ CONFIDENCE SCORE ] ──────▶ Verdict: REAL vs FAKE
