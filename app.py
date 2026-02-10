@@ -510,38 +510,50 @@ if st.session_state.page == "Dashboard":
         </div>
         """, unsafe_allow_html=True)
 
-        # --- FAQs ---
+    # --- FAQs ---
     st.markdown("---")
     st.subheader(">> FREQUENTLY ASKED QUESTIONS")
     
     faq_cols = st.columns(2)
     
-    # COLUMN 1
+    # === COLUMN 1 (Left) ===
     with faq_cols[0]:
-        # Q1: Reliability
+        # Q1: The most common question - Accuracy
         st.markdown('<div class="faq-container">', unsafe_allow_html=True)
-        with st.expander("❓ How accurate is this system?"): 
-            st.info("Our model currently achieves **96.71% accuracy**. Unlike humans who can be fooled by high-quality deepfakes, this AI detects micro-inconsistencies (like unnatural blinking or pulse patterns) that are invisible to the naked eye.")
+        with st.expander("❓ How accurate is this really?"): 
+            st.info("Our system currently has a **96.71% success rate**. While no AI is perfect, this tool catches 'micro-flickers' in eyes and lips that are impossible for humans to see. It is significantly more reliable than manual inspection.")
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Q2: Technology
+        # Q2: The technical curiosity - How it works
         st.markdown('<div class="faq-container">', unsafe_allow_html=True)
-        with st.expander("👁️ What is the AI actually looking for?"): 
-            st.write("It looks for two things: **Spatial Artifacts** (blurriness or weird textures on the face) and **Temporal Jitter** (how the face moves over time). Real faces move smoothly; Deepfakes often flicker or 'glitch' between frames.")
+        with st.expander("👁️ What exactly is it looking for?"): 
+            st.write("Deepfakes often struggle to keep a face consistent over time. We look for **'Temporal Jitter'**—tiny glitches that happen when a fake face moves. Real faces move smoothly; generated faces often vibrate or warp slightly.")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Q3: Practical usage - Speed
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("⏳ How long does scanning take?"): 
+            st.write("Most videos (under 1 minute) are analyzed in **15-30 seconds**. We use a smart 'Entropy Filter' to skip static frames (like backgrounds) and focus only on the moving parts of the face to speed up the process.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # COLUMN 2
+    # === COLUMN 2 (Right) ===
     with faq_cols[1]:
-        # Q3: Modern Threats
+        # Q4: Scope - Audio vs Video
         st.markdown('<div class="faq-container">', unsafe_allow_html=True)
-        with st.expander("🚀 Does this work on new AI (like Sora/Kling)?"): 
-            st.success("Yes. While new AI models create better images, they still struggle with perfect physics over time. Our 'Temporal Analysis' (LSTM) layer is specifically designed to catch these motion errors, regardless of which tool created the fake.")
+        with st.expander("🔊 Does this detect fake audio too?"): 
+            st.warning("Currently, this version focuses **only on Visual Forensics** (Face Swaps & Lip Syncs). Audio detection is in our roadmap for the next update (v2.0). For now, we recommend verifying the video source separately.")
         st.markdown('</div>', unsafe_allow_html=True)
         
-        # Q4: Privacy
+        # Q5: Privacy - Data Safety
         st.markdown('<div class="faq-container">', unsafe_allow_html=True)
-        with st.expander("🔒 Is my uploaded video safe?"): 
-            st.warning("Absolutely. We operate on a **Zero-Retention Policy**. Your video is processed in temporary memory for analysis and is immediately erased from our system once the report is generated. We do not store or share your footage.")
+        with st.expander("🔒 Is my uploaded video saved?"): 
+            st.error("Absolutely not. We operate on a **Zero-Retention Policy**. Your video is processed in temporary RAM for analysis and is permanently wiped from our server the moment you close this tab.")
+        st.markdown('</div>', unsafe_allow_html=True)
+        
+        # Q6: Troubleshooting - False Positives
+        st.markdown('<div class="faq-container">', unsafe_allow_html=True)
+        with st.expander("⚠️ Why did it flag a real video as Fake?"): 
+            st.write("This can happen if the video has **extreme compression** (very low quality) or **bad lighting**. Heavy compression creates 'artifacts' that look very similar to Deepfake glitches. We recommend using 720p resolution or higher for best results.")
         st.markdown('</div>', unsafe_allow_html=True)
 
 
