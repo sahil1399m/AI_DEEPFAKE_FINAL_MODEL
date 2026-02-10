@@ -417,8 +417,8 @@ if st.session_state.page == "Dashboard":
     
     st.markdown('<div style="margin-top: 30px;"></div>', unsafe_allow_html=True)
     st.markdown('<h1 class="glitch-title">AI THENTIC</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="tech-subtitle">>> Clear, Authoritative, Understandable
-<<</p>', unsafe_allow_html=True)
+    st.markdown('<p class="tech-subtitle">>> ADVANCED VIDEO FORENSICS SYSTEM <<</p>', unsafe_allow_html=True)
+
     
     st.markdown("""
     <div style="background: rgba(0,0,0,0.6); border-top: 1px solid #333; border-bottom: 1px solid #333; padding: 5px; overflow: hidden; white-space: nowrap; margin: 20px 0;">
