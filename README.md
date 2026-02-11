@@ -85,3 +85,39 @@ graph TD
     style A fill:#00ff41,stroke:#333,stroke-width:2px,color:#000
     style H fill:#ff003c,stroke:#333,stroke-width:2px,color:#fff
     style G fill:#00ff41,stroke:#333,stroke-width:2px,color:#000
+```
+
+## 🤖 Tech Stack
+
+* **Frontend:** Streamlit, Custom CSS (Cyberpunk Theme)
+* **Deep Learning:** PyTorch, Torchvision
+* **Computer Vision:** OpenCV (cv2), MTCNN (Face Detection)
+* **Data Processing:** NumPy, Pandas, PIL
+* **GenAI:** Google Generative AI (Gemini)
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions to improve the forensic accuracy of AIthentic!
+
+1.  **Fork the repository** to your GitHub account.
+2.  **Create a new branch** for your feature:
+    ```bash
+    git checkout -b feature-branch
+    ```
+3.  **Commit your changes** with descriptive messages:
+    ```bash
+    git commit -m "Added new entropy algorithm"
+    ```
+4.  **Push to the branch**:
+    ```bash
+    git push origin feature-branch
+    ```
+5.  **Open a Pull Request** and describe your changes.
+
+---
+
+<div align="center">
+  Made with ❤️ by <strong>Team CodePagloos</strong>
+</div>
