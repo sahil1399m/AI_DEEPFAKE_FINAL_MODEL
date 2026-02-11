@@ -27,49 +27,53 @@ Follow these steps to set up the project locally.
 ### 1. Clone the Repository
 ```bash
 git clone [https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL.git](https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL.git)
-cd AI_DEEPFAKE_FINAL_MODEL* **Hybrid Detection Core:** The EfficientNet-B3 + Bi-LSTM architecture is fully trained and verified with **96.71% Test Accuracy**.
-* **Forensic Dashboard:** A complete UI with "Bouncer" logic visualizations, file upload, and real-time "Live Terminal" logs.
-* **Gemini Assistant:** Integrated chatbot that explains forensic verdicts (e.g., "Why is this fake?") to non-technical users.
-
-<a name="-future-scope"></a>
-## 🔮 Future Scope
-* **Audio-Visual Sync:** Integration of Wav2Lip-based models to detect desynchronization between lip movements and audio.
-* **Adversarial Defense:** Training against "anti-forensic" noise attacks (Gaussian blur/compression).
-* **Browser Extension:** Lightweight plugin to flag synthetic media on X/Twitter in real-time.
-
-<a name="-applications"></a>
-## 💸 Applications
-1. **Legal & Judiciary:** Authenticating video evidence in court to prevent tampering.
-2. **News & Media:** Verifying political speeches and breaking news footage before broadcast.
-3. **Digital Identity (KYC):** Detecting "virtual camera" injection attacks during remote video verification.
-
-<a name="-project-setup"></a>
-## 🛠 Project Setup
-
-#### 1. Clone the Repository
-```bash
-git clone [https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL](https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL)
-cd AIthentic
+cd AI_DEEPFAKE_FINAL_MODEL
 ```
-#### 2. Install Dependencies
+### 2. Create a Virtual Environment 
+```bash
+# Windows 
+python -m venv venv
+.\venv\Scripts\activate
+
+# Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+### 3. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
-#### 3. Run the Application
-```bash
-streamlit run app.py
-```
+## 🤖 Tech Stack
 
-<a name="-team-members"></a>
-## 👨‍💻 Team Members
+* **Frontend:** Streamlit, Custom CSS (Cyberpunk Theme)
+* **Deep Learning:** PyTorch, Torchvision
+* **Computer Vision:** OpenCV (cv2), MTCNN (Face Detection)
+* **Data Processing:** NumPy, Pandas, PIL
+* **GenAI:** Google Generative AI (Gemini)
 
-* **Sahil Desai:** [GitHub Profile](https://github.com/SahilDesai-0)
-* **Himanshu:** [GitHub Profile](https://github.com/SahilDesai-0)
-* **Tejas:** [GitHub Profile](https://github.com/SahilDesai-0)
-* **Krish:** [GitHub Profile](https://github.com/SahilDesai-0)
+---
 
-<a name="-mentors"></a>
-## 👨‍🏫 Mentors
+## 🤝 Contributing
 
-* **Abhishek Kotwani:** [GitHub/LinkedIn](https://github.com/SahilDesai-0)
-* **Om Mukherjee:** [GitHub/LinkedIn](https://github.com/SahilDesai-0)
+We welcome contributions to improve the forensic accuracy of AIthentic!
+
+1.  **Fork the repository** to your GitHub account.
+2.  **Create a new branch** for your feature:
+    ```bash
+    git checkout -b feature-branch
+    ```
+3.  **Commit your changes** with descriptive messages:
+    ```bash
+    git commit -m "Added new entropy algorithm"
+    ```
+4.  **Push to the branch**:
+    ```bash
+    git push origin feature-branch
+    ```
+5.  **Open a Pull Request** and describe your changes.
+
+---
+
+<div align="center">
+  Made with ❤️ by <strong>Team CodePagloos</strong>
+</div>
