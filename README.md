@@ -1,114 +1,33 @@
-<h1 align="center">
-  <a href="https://github.com/CommunityOfCoders/Inheritance2k25">
-    CoC Inheritance 2025
-  </a>
-  <br>
-  AIthentic: Military-Grade Neural Forensics
-</h1>
+# 👁️ AIthentic: Deepfake Detection System
 
-<div align="center">
-  By <strong>Team CodePagloos</strong>
-</div>
-<hr>
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![Framework](https://img.shields.io/badge/Streamlit-1.32.0-red)
+![Model](https://img.shields.io/badge/PyTorch-EfficientNet%2BBiLSTM-orange)
+![License](https://img.shields.io/badge/License-MIT-green)
 
-<details>
-<summary><strong>Table of Contents</strong> (Click to Expand)</summary>
+**AIthentic** is a military-grade forensic tool designed to detect deepfake videos using a hybrid **Spatial-Temporal** architecture. It combines **EfficientNet-B3** (for spatial feature extraction) and **Bi-Directional LSTMs** (for temporal consistency checking) to flag synthetic media with **96.71% accuracy**.
 
-- [📝 Description](#-description)
-- [🔗 Links](#-links)
-- [🤖 Tech-Stack](#-tech-stack)
-- [🏗️ System Architecture](#-system-architecture)
-- [📈 Progress](#-progress)
-- [🔮 Future Scope](#-future-scope)
-- [💸 Applications](#-applications)
-- [🛠 Project Setup](#-project-setup)
-- [👨‍💻 Team Members](#-team-members)
-- [👨‍🏫 Mentors](#-mentors)
+---
 
-</details>
+## 🚀 Features
 
-<a name="-description"></a>
-## 📝 Description
+* **🕵️‍♂️ Active Entropy Sampling:** Intelligent frame selection that ignores static backgrounds and focuses on high-motion facial areas.
+* **🧠 Hybrid Neural Network:** * **Spatial:** EfficientNet-B3 (Pre-trained on ImageNet).
+    * **Temporal:** Bi-Directional LSTM to detect "flicker" and "jitter" over time.
+* **🖥️ Cyber-Forensic Dashboard:** A futuristic SOC-style UI built with Streamlit.
+* **🤖 AI Assistant:** Integrated Google Gemini 1.5 Flash API for explaining forensic results (Optional).
+* **📊 Live Telemetry:** Real-time system resource monitoring (simulated for UI).
 
-**AIthentic** is an enterprise-grade forensic platform designed to expose Deepfake media by analyzing temporal inconsistencies invisible to the human eye. Unlike traditional detectors that analyze static frames, our system uses **Active Entropy Sampling** to target high-motion segments and employs a **Hybrid Spatial-Temporal Network (EfficientNet-B3 + Bi-LSTM)** to detect micro-flickers and warping artifacts.
+---
 
-The platform achieves **96.71% accuracy** and features a cyber-forensic dashboard with a live neural terminal and an integrated AI assistant.
+## 🛠️ Installation Guide
 
-<a name="-links"></a>
-## 🔗 Links
+Follow these steps to set up the project locally.
 
-- [GitHub Repository](https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL)
-- [Demo Video]([INSERT_YOUR_YOUTUBE_LINK])
-- [Project Screenshots]([INSERT_YOUR_DRIVE_LINK])
-- [Hosted Website](https://aideepfakefinalmodel-8klv8esicpxfjwcq3b7jjj.streamlit.app/)
-
-<a name="-tech-stack"></a>
-## 🤖 Tech-Stack
-
-* **Language:** Python 3.10+
-* **Deep Learning:** PyTorch, Torchvision
-* **Model Architectures:**
-    * `EfficientNet-B3` (Spatial Feature Extraction)
-    * `Bi-Directional LSTM` (Temporal Sequence Modeling)
-    * `MTCNN` (Face Detection)
-* **Computer Vision:** OpenCV, PIL, Active Entropy Algorithms
-* **Frontend/UI:** Streamlit, Custom CSS (Cyberpunk/SOC Theme), Plotly (Telemetry)
-* **GenAI:** Google Gemini 1.5 Flash API (Forensic Assistant)
-* **Data Handling:** NumPy, Pandas
-
-<a name="-system-architecture"></a>
-## 🏗️ System Architecture
-
-Our architecture combines spatial feature extraction with temporal sequence analysis to detect anomalies that occur over time, not just in single frames.
-
-```mermaid
-graph TD
-    subgraph "Input Layer"
-      A[📹 INPUT VIDEO STREAM]:::input
-    end
-
-    subgraph "Preprocessing Engine"
-      B(⚡ Active Entropy Sampling):::process
-      C{👤 Face Detection & Alignment}:::process
-    end
-
-    subgraph "Deep Learning Core"
-      D[👁️ EfficientNet-B3<br/><i>Spatial Analysis</i>]:::model
-      E[🧠 Bi-Directional LSTM<br/><i>Temporal Analysis</i>]:::model
-    end
-
-    subgraph "Forensic Output"
-      F[🛡️ CONFIDENCE SCORE]:::logic
-      G[✅ REAL FOOTAGE]:::safe
-      H[⚠️ DEEPFAKE DETECTED]:::alert
-    end
-
-    %% Flow Connections
-    A -->|Extract Frames| B
-    B -->|Top 20 High-Entropy Frames| C
-    C -->|Cropped Faces 224x224| D
-    D -->|Feature Vectors 1536-dim| E
-    E -->|Sequence Analysis| F
-    
-    %% Logic Logic
-    F -- Score < 0.5 --> G
-    F -- Score > 0.5 --> H
-
-    %% Styling Definitions (Cyberpunk Theme)
-    classDef input fill:#000,stroke:#00ff41,stroke-width:2px,color:#00ff41;
-    classDef process fill:#000,stroke:#2979ff,stroke-width:2px,color:#2979ff;
-    classDef model fill:#1a1a2e,stroke:#d946ef,stroke-width:2px,color:#d946ef;
-    classDef logic fill:#000,stroke:#fbbf24,stroke-width:2px,color:#fbbf24;
-    classDef safe fill:#064e3b,stroke:#00ff41,stroke-width:2px,color:#fff;
-    classDef alert fill:#450a0a,stroke:#ff1744,stroke-width:2px,color:#fff;
-```
-
-<a name="-progress"></a>
-## 📈 Progress
-
-### Fully Implemented Features
-* **Active Entropy Sampling:** Successfully filters 90% of useless background frames to optimize inference speed (~2.5s per video).
-* **Hybrid Detection Core:** The EfficientNet-B3 + Bi-LSTM architecture is fully trained and verified with **96.71% Test Accuracy**.
+### 1. Clone the Repository
+```bash
+git clone [https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL.git](https://github.com/sahil1399m/AI_DEEPFAKE_FINAL_MODEL.git)
+cd AI_DEEPFAKE_FINAL_MODEL* **Hybrid Detection Core:** The EfficientNet-B3 + Bi-LSTM architecture is fully trained and verified with **96.71% Test Accuracy**.
 * **Forensic Dashboard:** A complete UI with "Bouncer" logic visualizations, file upload, and real-time "Live Terminal" logs.
 * **Gemini Assistant:** Integrated chatbot that explains forensic verdicts (e.g., "Why is this fake?") to non-technical users.
 
