@@ -647,7 +647,7 @@ if st.session_state.page == "Dashboard":
                             
                             if "429" in str(e):
                                 st.warning("Quota Exceeded. Please wait 1 minute.")
-                else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
+                            else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
     
     with c_anim:
         if lottie_chatbot:
