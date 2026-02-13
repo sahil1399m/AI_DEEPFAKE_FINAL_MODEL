@@ -592,62 +592,69 @@ if st.session_state.page == "Dashboard":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-    # Chatbot
+   # Chatbot
     st.markdown("---")
     c_chat, c_anim = st.columns([2, 1])
     with c_chat:
         st.markdown("### 💬 SECURE COMMS CHANNEL")
-        if "messages" not in st.session_state: st.session_state.messages = []
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]): st.markdown(msg["content"])
-        if prompt := st.chat_input("Query the forensic AI..."):
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"): st.markdown(prompt)
-            with st.chat_message("assistant"):
-                        # 1. Define the Prompt (This was missing!)
-                        # Check if we have analysis results to refer to
-                        if 'last_result' in st.session_state:
-                            res = st.session_state['last_result']
-                            verdict = res['verdict']
-                            conf = f"{res['confidence']*100:.2f}%"
-                            prob = f"{res['prob']:.4f}"
-                        else:
-                            # Fallback if user chats before uploading a video
-                            verdict = "N/A (No Video Analyzed)"
+        
+        # 1. CHECK API STATUS
+        if not gemini_active:
+            st.warning("⚠️ COMMS OFFLINE: API KEY NOT DETECTED IN SECRETS.")
+        else:
+            # 2. INIT HISTORY
+            if "messages" not in st.session_state: st.session_state.messages = []
+            
+            # 3. DISPLAY HISTORY
+            for msg in st.session_state.messages:
+                with st.chat_message(msg["role"]): st.markdown(msg["content"])
+            
+            # 4. HANDLE INPUT
+            if prompt := st.chat_input("Query the forensic AI..."):
+                st.session_state.messages.append({"role": "user", "content": prompt})
+                with st.chat_message("user"): st.markdown(prompt)
+                
+                with st.chat_message("assistant"):
+                    # A. Define Context Variables (Safely)
+                    if 'last_result' in st.session_state:
+                        res = st.session_state['last_result']
+                        verdict = res.get('verdict', 'N/A')
+                        try:
+                            conf = f"{float(res.get('confidence', 0))*100:.2f}%"
+                            prob = f"{float(res.get('prob', 0)):.4f}"
+                        except:
                             conf = "N/A"
                             prob = "N/A"
+                    else:
+                        verdict = "N/A (No Video Analyzed)"
+                        conf = "N/A"
+                        prob = "N/A"
 
-                        full_prompt = f"""
-                        {PROJECT_CONTEXT}
-                        
-                        CURRENT ANALYSIS DATA:
-                        Verdict: {verdict}
-                        Confidence: {conf}
-                        Raw Probability: {prob}
-                        
-                        USER QUESTION: {prompt}
-                        
-                        INSTRUCTION: Answer briefly (max 3 sentences) as a military forensic expert. 
-                        If the verdict is N/A, tell the user to upload a video first.
-                        """
+                    # B. Define Prompt (Moved outside try/except to fix NameError)
+                    full_prompt = f"""
+                    {PROJECT_CONTEXT}
+                    
+                    CURRENT ANALYSIS DATA:
+                    Verdict: {verdict}
+                    Confidence: {conf}
+                    Raw Probability: {prob}
+                    
+                    USER QUESTION: {prompt}
+                    
+                    INSTRUCTION: Answer briefly (max 3 sentences) as a military forensic expert. 
+                    If the verdict is N/A, tell the user to upload a video first.
+                    """
 
-                        # 2. Call the API (Debug Mode Enabled)
-                        try:
-                            # Use 'gemini-pro' as it is the most stable model for free tier
-                            model_gemini = genai.GenerativeModel('gemini-1.5-flash')
-                            
-                            response = model_gemini.generate_content(full_prompt)
-                            
-                            st.markdown(response.text)
-                            st.session_state.messages.append({"role": "assistant", "content": response.text})
-                            
-                        except Exception as e:
-                            # Show the exact error if something goes wrong
-                            st.error(f"⚠️ SYSTEM ERROR: {str(e)}")
-                            
-                            if "429" in str(e):
-                                st.warning("Quota Exceeded. Please wait 1 minute.")
-                            else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
+                    # C. API Call (Strictly using 1.5-Flash)
+                    try:
+                        model_gemini = genai.GenerativeModel('gemini-1.5-flash')
+                        response = model_gemini.generate_content(full_prompt)
+                        
+                        st.markdown(response.text)
+                        st.session_state.messages.append({"role": "assistant", "content": response.text})
+                        
+                    except Exception as e:
+                        st.error(f"⚠️ COMMS ERROR: {str(e)}")
     
     with c_anim:
         if lottie_chatbot:
