@@ -774,6 +774,16 @@ elif st.session_state.page == "Analysis Console":
                         probs = torch.nn.functional.softmax(output, dim=1)
                         real_score, fake_score = probs[0][0].item(), probs[0][1].item()
                     
+                    # ---------------------------------------------------------
+                    # 🟢 CRITICAL FIX: SAVE RESULTS TO SESSION STATE FOR CHATBOT
+                    # ---------------------------------------------------------
+                    st.session_state['last_result'] = {
+                        "verdict": "DEEPFAKE" if fake_score > 0.5 else "REAL",
+                        "confidence": fake_score if fake_score > 0.5 else real_score,
+                        "prob": fake_score
+                    }
+                    # ---------------------------------------------------------
+
                     log_update(">> COMPLETED.", "ok", 0)
                     log_update(f">> FINAL CONFIDENCE SCORE: {fake_score:.4f}", "msg", 0)
 
@@ -830,7 +840,6 @@ elif st.session_state.page == "Analysis Console":
                     cols2 = st.columns(5)
                     for i, face in enumerate(faces[5:10]):
                         with cols2[i]: st.image(face, caption=f"FRAME ID: {random.randint(100,999)}", use_container_width=True)
-
 # ==========================================
 # 📄 PAGE 3: METHODOLOGY
 # ==========================================
