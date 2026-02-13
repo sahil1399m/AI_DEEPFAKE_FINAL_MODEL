@@ -634,7 +634,7 @@ if st.session_state.page == "Dashboard":
                         # 2. Call the API (Debug Mode Enabled)
                         try:
                             # Use 'gemini-pro' as it is the most stable model for free tier
-                            model_gemini = genai.GenerativeModel('gemini-pro')
+                            model_gemini = genai.GenerativeModel('gemini-1.5-flash')
                             
                             response = model_gemini.generate_content(full_prompt)
                             
