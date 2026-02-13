@@ -615,7 +615,7 @@ if st.session_state.page == "Dashboard":
                 with st.chat_message("user"): st.markdown(prompt)
                 
                 with st.chat_message("assistant"):
-                    # A. Define Context Variables (Safely)
+                    # A. Define Context Variables
                     if 'last_result' in st.session_state:
                         res = st.session_state['last_result']
                         verdict = res.get('verdict', 'N/A')
@@ -630,7 +630,7 @@ if st.session_state.page == "Dashboard":
                         conf = "N/A"
                         prob = "N/A"
 
-                    # B. Define Prompt (Moved outside try/except to fix NameError)
+                    # B. Define Prompt
                     full_prompt = f"""
                     {PROJECT_CONTEXT}
                     
@@ -645,8 +645,9 @@ if st.session_state.page == "Dashboard":
                     If the verdict is N/A, tell the user to upload a video first.
                     """
 
-                    # C. API Call (Strictly using 1.5-Flash)
+                    # C. API Call with AUTO-DIAGNOSIS
                     try:
+                        # Try the newest Flash model first
                         model_gemini = genai.GenerativeModel('gemini-1.5-flash')
                         response = model_gemini.generate_content(full_prompt)
                         
@@ -654,7 +655,24 @@ if st.session_state.page == "Dashboard":
                         st.session_state.messages.append({"role": "assistant", "content": response.text})
                         
                     except Exception as e:
-                        st.error(f"⚠️ COMMS ERROR: {str(e)}")
+                        # If Flash fails, TRY TO DIAGNOSE
+                        st.error(f"⚠️ MODEL CONNECTION FAILED: {str(e)}")
+                        
+                        try:
+                            st.warning("🔄 RUNNING DIAGNOSTICS... LISTING AVAILABLE MODELS FOR YOUR KEY:")
+                            available_models = []
+                            for m in genai.list_models():
+                                if 'generateContent' in m.supported_generation_methods:
+                                    available_models.append(m.name)
+                            
+                            if available_models:
+                                st.code(f"AVAILABLE MODELS:\n{chr(10).join(available_models)}")
+                                st.info("👉 Please update the model name in app.py to one of the above.")
+                            else:
+                                st.error("❌ NO MODELS AVAILABLE. Check your API Key permissions.")
+                                
+                        except Exception as diag_e:
+                            st.error(f"❌ DIAGNOSTICS FAILED: {str(diag_e)}")
     
     with c_anim:
         if lottie_chatbot:
