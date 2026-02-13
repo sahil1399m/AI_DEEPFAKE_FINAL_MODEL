@@ -604,27 +604,49 @@ if st.session_state.page == "Dashboard":
             st.session_state.messages.append({"role": "user", "content": prompt})
             with st.chat_message("user"): st.markdown(prompt)
             with st.chat_message("assistant"):
-                message_placeholder = st.empty()
-                if gemini_active:
-                    # ... inside the chatbot loop ...
+                        # 1. Define the Prompt (This was missing!)
+                        # Check if we have analysis results to refer to
+                        if 'last_result' in st.session_state:
+                            res = st.session_state['last_result']
+                            verdict = res['verdict']
+                            conf = f"{res['confidence']*100:.2f}%"
+                            prob = f"{res['prob']:.4f}"
+                        else:
+                            # Fallback if user chats before uploading a video
+                            verdict = "N/A (No Video Analyzed)"
+                            conf = "N/A"
+                            prob = "N/A"
+
+                        full_prompt = f"""
+                        {PROJECT_CONTEXT}
+                        
+                        CURRENT ANALYSIS DATA:
+                        Verdict: {verdict}
+                        Confidence: {conf}
+                        Raw Probability: {prob}
+                        
+                        USER QUESTION: {prompt}
+                        
+                        INSTRUCTION: Answer briefly (max 3 sentences) as a military forensic expert. 
+                        If the verdict is N/A, tell the user to upload a video first.
+                        """
+
+                        # 2. Call the API (Debug Mode Enabled)
                         try:
-                            # 1. Use 'gemini-pro' (it is the most stable free model)
+                            # Use 'gemini-pro' as it is the most stable model for free tier
                             model_gemini = genai.GenerativeModel('gemini-pro')
                             
-                            # 2. Generate content
                             response = model_gemini.generate_content(full_prompt)
                             
-                            # 3. Display success
                             st.markdown(response.text)
                             st.session_state.messages.append({"role": "assistant", "content": response.text})
                             
                         except Exception as e:
-                            # 4. DEBUG MODE: Show the ACTUAL error from Google
+                            # Show the exact error if something goes wrong
                             st.error(f"⚠️ SYSTEM ERROR: {str(e)}")
                             
-                            # Optional: Helpful tip if it's a quota issue
                             if "429" in str(e):
-                                st.warning("Quota Exceeded. Please try again in a minute.")
+                                st.warning("Quota Exceeded. Please wait 1 minute.")
                 else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
     
     with c_anim:
