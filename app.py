@@ -606,12 +606,25 @@ if st.session_state.page == "Dashboard":
             with st.chat_message("assistant"):
                 message_placeholder = st.empty()
                 if gemini_active:
-                    try:
-                        model_gemini = genai.GenerativeModel("gemini-1.5-flash")
-                        response = model_gemini.generate_content(f"{PROJECT_CONTEXT}\nUser: {prompt}")
-                        message_placeholder.markdown(response.text)
-                        st.session_state.messages.append({"role": "assistant", "content": response.text})
-                    except: message_placeholder.error("COMMS LINK FAILED.")
+                    # ... inside the chatbot loop ...
+                        try:
+                            # 1. Use 'gemini-pro' (it is the most stable free model)
+                            model_gemini = genai.GenerativeModel('gemini-pro')
+                            
+                            # 2. Generate content
+                            response = model_gemini.generate_content(full_prompt)
+                            
+                            # 3. Display success
+                            st.markdown(response.text)
+                            st.session_state.messages.append({"role": "assistant", "content": response.text})
+                            
+                        except Exception as e:
+                            # 4. DEBUG MODE: Show the ACTUAL error from Google
+                            st.error(f"⚠️ SYSTEM ERROR: {str(e)}")
+                            
+                            # Optional: Helpful tip if it's a quota issue
+                            if "429" in str(e):
+                                st.warning("Quota Exceeded. Please try again in a minute.")
                 else: message_placeholder.warning("OFFLINE MODE ACTIVATED.")
     
     with c_anim:
