@@ -110,11 +110,11 @@ bg_image_base64 = get_base64_of_bin_file("assets/backimg3.jpg")
 # ==========================================
 
 # 1. Try to load the image
-bg_image_base64 = get_base64_of_bin_file("assets/backimg2.jpg")
+bg_image_base64 = get_base64_of_bin_file("assets/backimg3.jpg")
 
 # 2. DEBUG: If image is missing, show a warning at the top (You can remove this later)
 if not bg_image_base64:
-    st.error("⚠️ ERROR: Could not find 'assets/backimg2.jpg'. Please check the folder name and filename exactly.")
+    st.error("⚠️ ERROR: Could not find 'assets/backimg3.jpg'. Please check the folder name and filename exactly.")
 
 # 3. Configure the CSS
 if bg_image_base64:
