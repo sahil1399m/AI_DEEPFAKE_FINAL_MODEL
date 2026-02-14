@@ -118,12 +118,10 @@ if bg_image_base64:
     }}
     """
 else:
+    # 🟢 GRID REMOVED HERE: Just a solid black/dark background now
     background_style = """
     [data-testid="stAppViewContainer"] {
         background-color: #050505;
-        background-image: linear-gradient(rgba(0, 243, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.05) 1px, transparent 1px);
-        background-size: 30px 30px;
     }
     """
 
@@ -592,7 +590,7 @@ if st.session_state.page == "Dashboard":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-   # Chatbot
+    # Chatbot
     st.markdown("---")
     c_chat, c_anim = st.columns([2, 1])
     with c_chat:
@@ -648,7 +646,7 @@ if st.session_state.page == "Dashboard":
                     # C. API Call with AUTO-DIAGNOSIS
                     try:
                         # Try the newest Flash model first
-                        model_gemini = genai.GenerativeModel('gemini-2.5-flash')
+                        model_gemini = genai.GenerativeModel('gemini-1.5-flash')
                         response = model_gemini.generate_content(full_prompt)
                         
                         st.markdown(response.text)
