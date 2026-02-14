@@ -106,23 +106,15 @@ lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/backimg.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE (CLEAN BACKGROUND)
 # ==========================================
 
-if bg_image_base64:
-    background_style = f"""
-    [data-testid="stAppViewContainer"] {{
-        background: radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.95) 100%), url("data:image/jpg;base64,{bg_image_base64}");
-        background-size: cover;
-        background-attachment: fixed;
-    }}
-    """
-else:
-    background_style = """
-    [data-testid="stAppViewContainer"] {
-        background-color: #050505;
-    }
-    """
+# 1. Force Solid Black Background (No Image, No Grid)
+background_style = """
+[data-testid="stAppViewContainer"] {
+    background-color: #050505;
+}
+"""
 
 st.markdown(f"""
 <style>
@@ -140,13 +132,7 @@ st.markdown(f"""
     ::-webkit-scrollbar {{ width: 6px; background: #000; }}
     ::-webkit-scrollbar-thumb {{ background: var(--neon-blue); border-radius: 2px; }}
 
-    /* Scanlines */
-    .scanlines {{
-        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-        background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-        background-size: 100% 4px, 6px 100%;
-        pointer-events: none; z-index: 9999;
-    }}
+    /* REMOVED SCANLINES CLASS TO DELETE THE GRID OVERLAY */
 
     {background_style}
     
@@ -249,22 +235,10 @@ st.markdown(f"""
         border-left: 4px solid var(--neon-green);
         font-size: 0.85rem; 
         line-height: 1.5;
-        white-space: normal; /* Prevents raw string issue */
+        white-space: normal;
     }}
-    .log-line {{ 
-        margin-bottom: 3px; 
-        border-bottom: 1px solid rgba(255,255,255,0.05); 
-        display: flex; 
-        align-items: center; 
-        width: 100%;
-    }}
-    .log-time {{ 
-        color: #666; 
-        margin-right: 10px; 
-        min-width: 80px; 
-        font-size: 0.8rem; 
-        font-family: 'Consolas', monospace;
-    }}
+    .log-line {{ margin-bottom: 3px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; width: 100%; }}
+    .log-time {{ color: #666; margin-right: 10px; min-width: 80px; font-size: 0.8rem; font-family: 'Consolas', monospace; }}
     .log-msg {{ color: var(--neon-blue); }}
     .log-sys {{ color: var(--neon-purple); font-weight: bold; }}
     .log-warn {{ color: var(--neon-red); }}
@@ -272,9 +246,7 @@ st.markdown(f"""
 
     .faq-container {{ border: 1px solid #333; margin-bottom: 10px; background: rgba(255,255,255,0.02); transition:0.3s; }}
     .faq-container:hover {{ border-color: var(--neon-blue); background: rgba(0,243,255,0.05); }}
-
 </style>
-<div class="scanlines"></div>
 """, unsafe_allow_html=True)
 
 # ==========================================
