@@ -634,7 +634,7 @@ if st.session_state.page == "Dashboard":
                     # C. API Call with AUTO-DIAGNOSIS
                     try:
                         # Try the newest Flash model first
-                        model_gemini = genai.GenerativeModel('gemini-1.5-flash')
+                        model_gemini = genai.GenerativeModel('gemini-2.5-flash')
                         response = model_gemini.generate_content(full_prompt)
                         
                         st.markdown(response.text)
