@@ -106,15 +106,34 @@ lottie_chatbot = load_lottie_local("assets/animation3.json")
 bg_image_base64 = get_base64_of_bin_file("assets/backimg2.jpg")
 
 # ==========================================
-# 🖌️ 4. ULTRA-MODERN CSS ENGINE (CLEAN BACKGROUND)
+# 🖌️ 4. ULTRA-MODERN CSS ENGINE
 # ==========================================
 
-# 1. Force Solid Black Background (No Image, No Grid)
-background_style = """
-[data-testid="stAppViewContainer"] {
-    background-color: #050505;
-}
-"""
+# 1. Try to load the image
+bg_image_base64 = get_base64_of_bin_file("assets/backimg2.jpg")
+
+# 2. DEBUG: If image is missing, show a warning at the top (You can remove this later)
+if not bg_image_base64:
+    st.error("⚠️ ERROR: Could not find 'assets/backimg2.jpg'. Please check the folder name and filename exactly.")
+
+# 3. Configure the CSS
+if bg_image_base64:
+    # I changed the opacity from 0.7/0.95 to 0.3/0.8 so the image shines through!
+    background_style = f"""
+    [data-testid="stAppViewContainer"] {{
+        background: radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.8) 100%), url("data:image/jpg;base64,{bg_image_base64}");
+        background-size: cover;
+        background-attachment: fixed;
+        background-position: center;
+    }}
+    """
+else:
+    # Fallback to black if image fails
+    background_style = """
+    [data-testid="stAppViewContainer"] {
+        background-color: #050505;
+    }
+    """
 
 st.markdown(f"""
 <style>
@@ -131,8 +150,6 @@ st.markdown(f"""
     
     ::-webkit-scrollbar {{ width: 6px; background: #000; }}
     ::-webkit-scrollbar-thumb {{ background: var(--neon-blue); border-radius: 2px; }}
-
-    /* REMOVED SCANLINES CLASS TO DELETE THE GRID OVERLAY */
 
     {background_style}
     
