@@ -103,7 +103,7 @@ def get_base64_of_bin_file(bin_file):
 lottie_left_scan = load_lottie_local("assets/animation1.json")
 lottie_right_scan = load_lottie_local("assets/animation2.json")
 lottie_chatbot = load_lottie_local("assets/animation3.json")
-bg_image_base64 = get_base64_of_bin_file("assets/back_ground_img.jpg")
+bg_image_base64 = get_base64_of_bin_file("assets/backimg.jpg")
 
 # ==========================================
 # 🖌️ 4. ULTRA-MODERN CSS ENGINE
