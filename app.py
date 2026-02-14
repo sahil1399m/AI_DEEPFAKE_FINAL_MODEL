@@ -118,7 +118,6 @@ if bg_image_base64:
     }}
     """
 else:
-    # 🟢 GRID REMOVED HERE: Just a solid black/dark background now
     background_style = """
     [data-testid="stAppViewContainer"] {
         background-color: #050505;
