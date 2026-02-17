@@ -422,7 +422,7 @@ with st.sidebar:
     st.line_chart(chart_data, height=60, color=["#00f3ff", "#bc13fe", "#0aff48"]) 
 
     # Status Badge
-    if groq_active::
+    if groq_active:
         st.markdown('<div style="background: rgba(10,255,72,0.1); border: 1px solid #0aff48; text-align: center; padding: 4px;"><span style="color: #0aff48; font-family: Share Tech Mono; font-size: 0.7rem;">● GROQ CORE ONLINE</span></div>', unsafe_allow_html=True)
     else:
         st.markdown('<div style="background: rgba(255,0,60,0.1); border: 1px solid #ff003c; text-align: center; padding: 4px;"><span style="color: #ff003c; font-family: Share Tech Mono; font-size: 0.7rem;">● GROQ CORE OFFLINE</span></div>', unsafe_allow_html=True)
