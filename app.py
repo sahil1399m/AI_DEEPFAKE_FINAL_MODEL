@@ -13,7 +13,7 @@ import random
 import pandas as pd
 from streamlit_lottie import st_lottie
 from facenet_pytorch import MTCNN
-import google.generativeai as genai
+from groq import Groq
 import gdown
 import plotly.graph_objects as go 
 
@@ -575,71 +575,71 @@ if st.session_state.page == "Dashboard":
 
 
     # ==========================================
-# 💬 UPDATED SECURE COMMS CHANNEL
-# ==========================================
-with c_chat:
-    st.markdown("### 💬 SECURE COMMS CHANNEL")
-    
-    if not groq_active:
-        st.warning("⚠️ COMMS OFFLINE: GROQ_API_KEY NOT DETECTED IN SECRETS.")
-    else:
-        # Initialize history if empty
-        if "messages" not in st.session_state: 
-            st.session_state.messages = []
+    # 💬 UPDATED SECURE COMMS CHANNEL
+    # ==========================================
+    with c_chat:
+        st.markdown("### 💬 SECURE COMMS CHANNEL")
         
-        # Display history
-        for msg in st.session_state.messages:
-            with st.chat_message(msg["role"]): 
-                st.markdown(msg["content"])
-        
-        # Handle Input
-        if prompt := st.chat_input("Query the forensic AI..."):
-            # Add user message to state
-            st.session_state.messages.append({"role": "user", "content": prompt})
-            with st.chat_message("user"): 
-                st.markdown(prompt)
+        if not groq_active:
+            st.warning("⚠️ COMMS OFFLINE: GROQ_API_KEY NOT DETECTED IN SECRETS.")
+        else:
+            # Initialize history if empty
+            if "messages" not in st.session_state: 
+                st.session_state.messages = []
             
-            with st.chat_message("assistant"):
-                response_placeholder = st.empty()
-                full_response = ""
-
-                # --- A. Context Injection ---
-                # Pull the latest scan results for the AI to "know" what just happened
-                res = st.session_state.get('last_result', {})
-                verdict_ctx = res.get('verdict', 'No video analyzed yet')
-                conf_ctx = f"{float(res.get('confidence', 0))*100:.2f}%" if res else "N/A"
+            # Display history
+            for msg in st.session_state.messages:
+                with st.chat_message(msg["role"]): 
+                    st.markdown(msg["content"])
+            
+            # Handle Input
+            if prompt := st.chat_input("Query the forensic AI..."):
+                # Add user message to state
+                st.session_state.messages.append({"role": "user", "content": prompt})
+                with st.chat_message("user"): 
+                    st.markdown(prompt)
                 
-                # Combine instructions + specific scan data
-                system_instruction = f"{PROJECT_CONTEXT}\n\nLATEST_SCAN_DATA: Verdict={verdict_ctx}, Confidence={conf_ctx}"
-
-                # --- B. Groq API Call ---
-                try:
-                    # Llama 3.3 70B is currently the best balance of speed/intelligence on Groq
-                    completion = client.chat.completions.create(
-                        model="llama-3.3-70b-versatile",
-                        messages=[
-                            {"role": "system", "content": system_instruction},
-                            *st.session_state.messages  # Pass the whole conversation list!
-                        ],
-                        stream=True
-                    )
-
-                    # --- C. Streaming Logic ---
-                    for chunk in completion:
-                        if chunk.choices[0].delta.content:
-                            full_response += chunk.choices[0].delta.content
-                            response_placeholder.markdown(full_response + "▌")
-                    
-                    response_placeholder.markdown(full_response)
-                    st.session_state.messages.append({"role": "assistant", "content": full_response})
-                
-                except Exception as e:
-                    st.error(f"📡 UPLINK ERROR: {str(e)}")
-                    
+                with st.chat_message("assistant"):
+                    response_placeholder = st.empty()
+                    full_response = ""
     
-    with c_anim:
-        if lottie_chatbot:
-            st_lottie(lottie_chatbot, height=250, key="bot")
+                    # --- A. Context Injection ---
+                    # Pull the latest scan results for the AI to "know" what just happened
+                    res = st.session_state.get('last_result', {})
+                    verdict_ctx = res.get('verdict', 'No video analyzed yet')
+                    conf_ctx = f"{float(res.get('confidence', 0))*100:.2f}%" if res else "N/A"
+                    
+                    # Combine instructions + specific scan data
+                    system_instruction = f"{PROJECT_CONTEXT}\n\nLATEST_SCAN_DATA: Verdict={verdict_ctx}, Confidence={conf_ctx}"
+    
+                    # --- B. Groq API Call ---
+                    try:
+                        # Llama 3.3 70B is currently the best balance of speed/intelligence on Groq
+                        completion = client.chat.completions.create(
+                            model="llama-3.3-70b-versatile",
+                            messages=[
+                                {"role": "system", "content": system_instruction},
+                                *st.session_state.messages  # Pass the whole conversation list!
+                            ],
+                            stream=True
+                        )
+    
+                        # --- C. Streaming Logic ---
+                        for chunk in completion:
+                            if chunk.choices[0].delta.content:
+                                full_response += chunk.choices[0].delta.content
+                                response_placeholder.markdown(full_response + "▌")
+                        
+                        response_placeholder.markdown(full_response)
+                        st.session_state.messages.append({"role": "assistant", "content": full_response})
+                    
+                    except Exception as e:
+                        st.error(f"📡 UPLINK ERROR: {str(e)}")
+                        
+        
+        with c_anim:
+            if lottie_chatbot:
+                st_lottie(lottie_chatbot, height=250, key="bot")
 
 # ==========================================
 # 🕵️ PAGE 2: ANALYSIS CONSOLE (FIXED LOGGING)
