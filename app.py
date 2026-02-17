@@ -574,60 +574,67 @@ if st.session_state.page == "Dashboard":
         st.markdown('</div>', unsafe_allow_html=True)
 
 
-    # Chatbot
-    st.markdown("---")
-    c_chat, c_anim = st.columns([2, 1])
-    with c_chat:
-        st.markdown("### 💬 SECURE COMMS CHANNEL")
+    # ==========================================
+# 💬 UPDATED SECURE COMMS CHANNEL
+# ==========================================
+with c_chat:
+    st.markdown("### 💬 SECURE COMMS CHANNEL")
+    
+    if not groq_active:
+        st.warning("⚠️ COMMS OFFLINE: GROQ_API_KEY NOT DETECTED IN SECRETS.")
+    else:
+        # Initialize history if empty
+        if "messages" not in st.session_state: 
+            st.session_state.messages = []
         
-        if not groq_active:
-            st.warning("⚠️ COMMS OFFLINE: GROQ_API_KEY NOT DETECTED.")
-        else:
-            if "messages" not in st.session_state: 
-                st.session_state.messages = []
+        # Display history
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]): 
+                st.markdown(msg["content"])
+        
+        # Handle Input
+        if prompt := st.chat_input("Query the forensic AI..."):
+            # Add user message to state
+            st.session_state.messages.append({"role": "user", "content": prompt})
+            with st.chat_message("user"): 
+                st.markdown(prompt)
             
-            for msg in st.session_state.messages:
-                with st.chat_message(msg["role"]): 
-                    st.markdown(msg["content"])
-            
-            if prompt := st.chat_input("Query the forensic AI..."):
-                st.session_state.messages.append({"role": "user", "content": prompt})
-                with st.chat_message("user"): 
-                    st.markdown(prompt)
+            with st.chat_message("assistant"):
+                response_placeholder = st.empty()
+                full_response = ""
+
+                # --- A. Context Injection ---
+                # Pull the latest scan results for the AI to "know" what just happened
+                res = st.session_state.get('last_result', {})
+                verdict_ctx = res.get('verdict', 'No video analyzed yet')
+                conf_ctx = f"{float(res.get('confidence', 0))*100:.2f}%" if res else "N/A"
                 
-                with st.chat_message("assistant"):
-                    # Get analysis context
-                    res = st.session_state.get('last_result', {})
-                    verdict = res.get('verdict', 'N/A (No Video Analyzed)')
-                    conf = f"{float(res.get('confidence', 0))*100:.2f}%" if res else "N/A"
+                # Combine instructions + specific scan data
+                system_instruction = f"{PROJECT_CONTEXT}\n\nLATEST_SCAN_DATA: Verdict={verdict_ctx}, Confidence={conf_ctx}"
 
-                    # Prepare the system instructions
-                    full_prompt = f"VERDICT: {verdict}\nCONFIDENCE: {conf}\nUSER_PROMPT: {prompt}"
+                # --- B. Groq API Call ---
+                try:
+                    # Llama 3.3 70B is currently the best balance of speed/intelligence on Groq
+                    completion = client.chat.completions.create(
+                        model="llama-3.3-70b-versatile",
+                        messages=[
+                            {"role": "system", "content": system_instruction},
+                            *st.session_state.messages  # Pass the whole conversation list!
+                        ],
+                        stream=True
+                    )
 
-                    response_placeholder = st.empty()
-                    full_response = ""
+                    # --- C. Streaming Logic ---
+                    for chunk in completion:
+                        if chunk.choices[0].delta.content:
+                            full_response += chunk.choices[0].delta.content
+                            response_placeholder.markdown(full_response + "▌")
                     
-                    # Call Groq with streaming
-                    try:
-                        completion = client.chat.completions.create(
-                            model="llama-3.3-70b-versatile",
-                            messages=[
-                                {"role": "system", "content": PROJECT_CONTEXT},
-                                {"role": "user", "content": full_prompt}
-                            ],
-                            stream=True
-                        )
-
-                        for chunk in completion:
-                            if chunk.choices[0].delta.content:
-                                full_response += chunk.choices[0].delta.content
-                                response_placeholder.markdown(full_response + "▌")
-                        
-                        response_placeholder.markdown(full_response)
-                        st.session_state.messages.append({"role": "assistant", "content": full_response})
-                    
-                    except Exception as e:
-                        st.error(f"📡 UPLINK ERROR: {str(e)}")
+                    response_placeholder.markdown(full_response)
+                    st.session_state.messages.append({"role": "assistant", "content": full_response})
+                
+                except Exception as e:
+                    st.error(f"📡 UPLINK ERROR: {str(e)}")
                     
     
     with c_anim:
