@@ -27,24 +27,20 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ==========================================
-# 🔑 2. API SETUP (SECURE & ROBUST)
-# ==========================================
-gemini_active = False  # Default to False (Offline)
+import streamlit as st
+from groq import Groq  # Replace google.generativeai
+
+# --- 2. API SETUP (SECURE) ---
+groq_active = False
 
 try:
-    # Check if key exists in secrets (Safety check for local/cloud)
-    if "GOOGLE_API_KEY" in st.secrets:
-        api_key = st.secrets["GOOGLE_API_KEY"]
-        
-        # Validate it's not a placeholder
-        if api_key != "PASTE_YOUR_KEY_HERE" and api_key != "xyz":
-            genai.configure(api_key=api_key)
-            gemini_active = True
-            
-except Exception as e:
-    # Fail silently to keep app running if API connection errors occur
-    gemini_active = False
+    # Access the key from Streamlit Secrets
+    if "GROQ_API_KEY" in st.secrets:
+        api_key = st.secrets["GROQ_API_KEY"]
+        client = Groq(api_key=api_key)
+        groq_active = True
+except Exception:
+    groq_active = False
 
 # ==========================================
 # 🧠 3. AI CONTEXT (MILITARY-GRADE)
@@ -584,81 +580,55 @@ if st.session_state.page == "Dashboard":
     with c_chat:
         st.markdown("### 💬 SECURE COMMS CHANNEL")
         
-        # 1. CHECK API STATUS
-        if not gemini_active:
-            st.warning("⚠️ COMMS OFFLINE: API KEY NOT DETECTED IN SECRETS.")
+        if not groq_active:
+            st.warning("⚠️ COMMS OFFLINE: GROQ_API_KEY NOT DETECTED.")
         else:
-            # 2. INIT HISTORY
-            if "messages" not in st.session_state: st.session_state.messages = []
+            if "messages" not in st.session_state: 
+                st.session_state.messages = []
             
-            # 3. DISPLAY HISTORY
             for msg in st.session_state.messages:
-                with st.chat_message(msg["role"]): st.markdown(msg["content"])
+                with st.chat_message(msg["role"]): 
+                    st.markdown(msg["content"])
             
-            # 4. HANDLE INPUT
             if prompt := st.chat_input("Query the forensic AI..."):
                 st.session_state.messages.append({"role": "user", "content": prompt})
-                with st.chat_message("user"): st.markdown(prompt)
+                with st.chat_message("user"): 
+                    st.markdown(prompt)
                 
                 with st.chat_message("assistant"):
-                    # A. Define Context Variables
-                    if 'last_result' in st.session_state:
-                        res = st.session_state['last_result']
-                        verdict = res.get('verdict', 'N/A')
-                        try:
-                            conf = f"{float(res.get('confidence', 0))*100:.2f}%"
-                            prob = f"{float(res.get('prob', 0)):.4f}"
-                        except:
-                            conf = "N/A"
-                            prob = "N/A"
-                    else:
-                        verdict = "N/A (No Video Analyzed)"
-                        conf = "N/A"
-                        prob = "N/A"
+                    # Get analysis context
+                    res = st.session_state.get('last_result', {})
+                    verdict = res.get('verdict', 'N/A (No Video Analyzed)')
+                    conf = f"{float(res.get('confidence', 0))*100:.2f}%" if res else "N/A"
 
-                    # B. Define Prompt
-                    full_prompt = f"""
-                    {PROJECT_CONTEXT}
-                    
-                    CURRENT ANALYSIS DATA:
-                    Verdict: {verdict}
-                    Confidence: {conf}
-                    Raw Probability: {prob}
-                    
-                    USER QUESTION: {prompt}
-                    
-                    INSTRUCTION: Answer briefly (max 3 sentences) as a military forensic expert. 
-                    If the verdict is N/A, tell the user to upload a video first.
-                    """
+                    # Prepare the system instructions
+                    full_prompt = f"VERDICT: {verdict}\nCONFIDENCE: {conf}\nUSER_PROMPT: {prompt}"
 
-                    # C. API Call with AUTO-DIAGNOSIS
+                    response_placeholder = st.empty()
+                    full_response = ""
+                    
+                    # Call Groq with streaming
                     try:
-                        # Try the newest Flash model first
-                        model_gemini = genai.GenerativeModel('gemini-2.5-flash')
-                        response = model_gemini.generate_content(full_prompt)
+                        completion = client.chat.completions.create(
+                            model="llama-3.3-70b-versatile",
+                            messages=[
+                                {"role": "system", "content": PROJECT_CONTEXT},
+                                {"role": "user", "content": full_prompt}
+                            ],
+                            stream=True
+                        )
+
+                        for chunk in completion:
+                            if chunk.choices[0].delta.content:
+                                full_response += chunk.choices[0].delta.content
+                                response_placeholder.markdown(full_response + "▌")
                         
-                        st.markdown(response.text)
-                        st.session_state.messages.append({"role": "assistant", "content": response.text})
-                        
+                        response_placeholder.markdown(full_response)
+                        st.session_state.messages.append({"role": "assistant", "content": full_response})
+                    
                     except Exception as e:
-                        # If Flash fails, TRY TO DIAGNOSE
-                        st.error(f"⚠️ MODEL CONNECTION FAILED: {str(e)}")
-                        
-                        try:
-                            st.warning("🔄 RUNNING DIAGNOSTICS... LISTING AVAILABLE MODELS FOR YOUR KEY:")
-                            available_models = []
-                            for m in genai.list_models():
-                                if 'generateContent' in m.supported_generation_methods:
-                                    available_models.append(m.name)
-                            
-                            if available_models:
-                                st.code(f"AVAILABLE MODELS:\n{chr(10).join(available_models)}")
-                                st.info("👉 Please update the model name in app.py to one of the above.")
-                            else:
-                                st.error("❌ NO MODELS AVAILABLE. Check your API Key permissions.")
-                                
-                        except Exception as diag_e:
-                            st.error(f"❌ DIAGNOSTICS FAILED: {str(diag_e)}")
+                        st.error(f"📡 UPLINK ERROR: {str(e)}")
+                    
     
     with c_anim:
         if lottie_chatbot:
